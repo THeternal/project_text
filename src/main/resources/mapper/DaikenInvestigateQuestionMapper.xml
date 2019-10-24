@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenInvestigateQuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.kemean.bean.DaikenInvestigateQuestion" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="investigate_id" property="investigateId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="SMALLINT" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="record_answer" property="recordAnswer" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+  </resultMap>
+</mapper>

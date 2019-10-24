@@ -1,0 +1,96 @@
+package com.kemean.controller.admin.sale;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminShopService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.shop.AdminShopBO;
+import com.kemean.vo.po.admin.AdminMonitorPO;
+import com.kemean.vo.po.admin.shop.AdminShopPO;
+import com.kemean.vo.po.admin.shop.AdminShopUpdatePO;
+
+/**
+ * 销售负责店铺管理
+ * 
+ * @Date 2018年7月13日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+
+@Controller
+@RequestMapping("sale/shop")
+public class AdminSaleShopController extends DaikenBaseController {
+
+	@Autowired
+	private AdminShopService adminShopService;
+
+	/**
+	 * 店铺列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月13日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String shopPage() {
+		return "sale/shop";
+	}
+
+	/**
+	 * 获取所负责的店铺列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月13日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "page_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminShopBO>> shopData(@Valid AdminShopPO adminShopPO) {
+		return adminShopService.shopData(adminShopPO, getAdminLoginSale());
+	}
+
+	/**
+	 * 监听商铺状态/平台推荐
+	 *
+	 * @author huangyujian
+	 * @date 2018年4月8日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "status_operate", method = RequestMethod.GET)
+	public KemeanResult<String> shopStatusOperate(@Valid AdminMonitorPO adminMonitorPO) {
+		return adminShopService.shopStatusOperate(adminMonitorPO);
+	}
+
+	/**
+	 * 商铺详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@RequestMapping(value = "info_page", method = RequestMethod.GET)
+	public String shopInfoPage(Integer objId) {
+		request.setAttribute("pageData", adminShopService.shopInfoData(objId, null));
+		return "sale/shopInfo";
+	}
+
+	/**
+	 * 修改商铺信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "info_update", method = RequestMethod.POST)
+	public KemeanResult<String> shopInfoUpdate(@Valid AdminShopUpdatePO adminShopUpdatePO) {
+		return adminShopService.shopInfoUpdate(adminShopUpdatePO, null);
+	}
+
+}

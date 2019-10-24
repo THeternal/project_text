@@ -1,0 +1,79 @@
+package com.kemean.interceptor;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.alibaba.fastjson.JSONObject;
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.DaikenUserEnum;
+import com.kemean.constant.DaikenUserEnum.DaikenUserStatusEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanResultEnum;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.vo.bo.KemeanResult;
+
+/**
+ * 
+ * 商户端用户拦截
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Component
+public class BusinessLoginInterceptor extends HandlerInterceptorAdapter {
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	protected KemeanRedisService redisService;
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		String userToken = request.getHeader(KemeanConstant.USER_TOKEN);
+		if (StringUtils.isBlank(userToken)) {
+			String info = JSONObject.toJSONString(new KemeanResult<>(KemeanResultEnum.TOKEN_BLANK));
+			responseResult(response, info);
+			return false;
+		}
+		String cachekey = String.format(DaikenRedisKeyEnum.USER_BUSINESS.getKey(), userToken);
+		String cacheUser = redisService.getString(cachekey);
+		if (StringUtils.isNoneBlank(cacheUser)) {
+			return true;
+		}
+		DaikenUser dbUser = daikenUserDao.selectByToken(userToken,
+				Arrays.asList(DaikenUserEnum.DaikenUserTypeEnum.BUSINESS_SON.getType(),
+						DaikenUserEnum.DaikenUserTypeEnum.BUSINESS.getType()));
+		if (dbUser == null) {
+			String info = JSONObject.toJSONString(new KemeanResult<>(KemeanResultEnum.LOGIN_INVALID));
+			responseResult(response, info);
+			return false;
+		}
+		if (DaikenUserStatusEnum.DISABLED.getStatus().equals(dbUser.getUserStatus())) {
+			String info = JSONObject.toJSONString(new KemeanResult<>(KemeanResultEnum.ACCOUNT_DISABLED));
+			responseResult(response, info);
+			return false;
+		}
+		redisService.setString(cachekey, JSONObject.toJSONString(dbUser));
+		return true;
+	}
+
+	private void responseResult(HttpServletResponse response, String info) throws IOException {
+		response.setStatus(200);
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().write(info);
+	}
+}

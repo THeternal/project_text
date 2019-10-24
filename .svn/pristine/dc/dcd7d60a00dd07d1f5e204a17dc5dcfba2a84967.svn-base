@@ -1,0 +1,29 @@
+package com.kemean.constant;
+
+public enum DaikenFinanceTypeEnum {
+
+	/** 调研点赞收入 **/
+	INVESTIGATE_LIKE(1101),
+	/** 调研投票收入 **/
+	INVESTIGATE_VOTE(1102),
+	/** 调研问卷收入 **/
+	INVESTIGATE_QUESTION(1103),
+	/** 售后红包收入 **/
+	LATER_RED_INCOME(1104),
+	/** 在线支付 **/
+	LINE_PAY(1201);
+	private Integer type;
+
+	private DaikenFinanceTypeEnum(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+}

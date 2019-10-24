@@ -1,0 +1,7 @@
+package com.kemean.dao;
+
+import com.kemean.bean.DaikenInvestigateOptions;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenInvestigateOptionsDao extends Idao<DaikenInvestigateOptions> {
+}

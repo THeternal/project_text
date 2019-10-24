@@ -1,0 +1,20 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.mysql.DaikenGoodsOldDB;
+
+public interface DaikenGoodsOldMapper extends TkMapper<DaikenGoodsOld> {
+
+	/**
+	 * @author huwei
+	 * @date 2018年7月7日
+	 */
+	List<DaikenGoodsOldDB> oldGoodsList(@Param("categoryIds") List<Integer> categoryIds, @Param("descStr") String descStr,
+			@Param("maxPriceSales") Double maxPriceSales, @Param("minPriceSales") Double minPriceSales,
+			@Param("isPurchasing") Boolean isPurchasing, @Param("keyWord") String keyWord);
+}

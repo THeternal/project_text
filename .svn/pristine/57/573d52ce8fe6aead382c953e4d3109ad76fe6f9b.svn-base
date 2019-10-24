@@ -1,0 +1,319 @@
+package com.kemean.vo.bo.com;
+
+import java.util.List;
+
+public class CBaseUserInfoBO {
+
+	/**
+	 * 用户token
+	 */
+	private String token;
+
+	/**
+	 * 余额
+	 */
+	private Double balancePrice;
+
+	/**
+	 * 冻结资金
+	 */
+	private Double frozenCapital;
+
+	/**
+	 * token余额
+	 */
+	private Double balanceToken;
+
+	/**
+	 * 头像
+	 */
+	private String headImg;
+
+	/**
+	 * 昵称
+	 */
+	private String nickName;
+
+	/**
+	 * 年龄
+	 */
+	private Integer age;
+
+	/**
+	 * 性别
+	 */
+	private String sexMan;
+
+	/**
+	 * 职业
+	 */
+	private String profession;
+
+	/**
+	 * 手机
+	 */
+	private String phone;
+
+	/**
+	 * 兴趣
+	 */
+	private List<String> hobbiesInterests;
+
+	/**
+	 * 调研平台收费
+	 */
+	private Double investigatePlatformCharge;
+
+	/**
+	 * 消息数量
+	 */
+	private Integer numMessage;
+
+	/**
+	 * 未参与调研数量
+	 */
+	private Integer numNoInvestigate;
+
+	/**
+	 * 资料是否填写完成
+	 */
+	private Boolean isFillUserInfo;
+
+	/**
+	 * 待付款的数量
+	 */
+	private Integer numNoPayOrder;
+
+	/**
+	 * 待发货数量
+	 */
+	private Integer numNoSendOrder;
+
+	/**
+	 * 待收货数量
+	 */
+	private Integer numNoTakeGoodsOrder;
+
+	/**
+	 * 待评价数量
+	 */
+	private Integer numNoAppraisalOrder;
+
+	/**
+	 * 本月任务收益
+	 */
+	private Double currMonthTaskPrice;
+
+	/**
+	 * 本月卖货收益
+	 */
+	private Double currMonthSellGoodsPrice;
+
+	/**
+	 * 本月买货收益
+	 */
+	private Double currMonthBuyGoodsPrice;
+
+	/**
+	 * 本月帮卖收益
+	 */
+	private Double currMonthHellpGoodsPrice;
+
+	/**
+	 * 代卖金额
+	 */
+	private Double currMonthHellpMoneyPrice;
+
+	public Double getFrozenCapital() {
+		return frozenCapital;
+	}
+
+	public void setFrozenCapital(Double frozenCapital) {
+		this.frozenCapital = frozenCapital;
+	}
+
+	public Double getInvestigatePlatformCharge() {
+		return investigatePlatformCharge;
+	}
+
+	public void setInvestigatePlatformCharge(Double investigatePlatformCharge) {
+		this.investigatePlatformCharge = investigatePlatformCharge;
+	}
+
+	public Integer getNumMessage() {
+		return numMessage;
+	}
+
+	public void setNumMessage(Integer numMessage) {
+		this.numMessage = numMessage;
+	}
+
+	public Integer getNumNoInvestigate() {
+		return numNoInvestigate;
+	}
+
+	public void setNumNoInvestigate(Integer numNoInvestigate) {
+		this.numNoInvestigate = numNoInvestigate;
+	}
+
+	public Boolean getIsFillUserInfo() {
+		return isFillUserInfo;
+	}
+
+	public void setIsFillUserInfo(Boolean isFillUserInfo) {
+		this.isFillUserInfo = isFillUserInfo;
+	}
+
+	public Integer getNumNoPayOrder() {
+		return numNoPayOrder;
+	}
+
+	public void setNumNoPayOrder(Integer numNoPayOrder) {
+		this.numNoPayOrder = numNoPayOrder;
+	}
+
+	public Integer getNumNoSendOrder() {
+		return numNoSendOrder;
+	}
+
+	public void setNumNoSendOrder(Integer numNoSendOrder) {
+		this.numNoSendOrder = numNoSendOrder;
+	}
+
+	public Integer getNumNoTakeGoodsOrder() {
+		return numNoTakeGoodsOrder;
+	}
+
+	public void setNumNoTakeGoodsOrder(Integer numNoTakeGoodsOrder) {
+		this.numNoTakeGoodsOrder = numNoTakeGoodsOrder;
+	}
+
+	public Integer getNumNoAppraisalOrder() {
+		return numNoAppraisalOrder;
+	}
+
+	public void setNumNoAppraisalOrder(Integer numNoAppraisalOrder) {
+		this.numNoAppraisalOrder = numNoAppraisalOrder;
+	}
+
+	public Double getCurrMonthTaskPrice() {
+		return currMonthTaskPrice;
+	}
+
+	public void setCurrMonthTaskPrice(Double currMonthTaskPrice) {
+		this.currMonthTaskPrice = currMonthTaskPrice;
+	}
+
+	public Double getCurrMonthSellGoodsPrice() {
+		return currMonthSellGoodsPrice;
+	}
+
+	public void setCurrMonthSellGoodsPrice(Double currMonthSellGoodsPrice) {
+		this.currMonthSellGoodsPrice = currMonthSellGoodsPrice;
+	}
+
+	public Double getCurrMonthBuyGoodsPrice() {
+		return currMonthBuyGoodsPrice;
+	}
+
+	public void setCurrMonthBuyGoodsPrice(Double currMonthBuyGoodsPrice) {
+		this.currMonthBuyGoodsPrice = currMonthBuyGoodsPrice;
+	}
+
+	public Double getCurrMonthHellpGoodsPrice() {
+		return currMonthHellpGoodsPrice;
+	}
+
+	public void setCurrMonthHellpGoodsPrice(Double currMonthHellpGoodsPrice) {
+		this.currMonthHellpGoodsPrice = currMonthHellpGoodsPrice;
+	}
+
+	public Double getCurrMonthHellpMoneyPrice() {
+		return currMonthHellpMoneyPrice;
+	}
+
+	public void setCurrMonthHellpMoneyPrice(Double currMonthHellpMoneyPrice) {
+		this.currMonthHellpMoneyPrice = currMonthHellpMoneyPrice;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Double getBalancePrice() {
+		return balancePrice;
+	}
+
+	public void setBalancePrice(Double balancePrice) {
+		this.balancePrice = balancePrice;
+	}
+
+	public Double getBalanceToken() {
+		return balanceToken;
+	}
+
+	public void setBalanceToken(Double balanceToken) {
+		this.balanceToken = balanceToken;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+
+	public String getSexMan() {
+		return sexMan;
+	}
+
+	public void setSexMan(String sexMan) {
+		this.sexMan = sexMan;
+	}
+
+	public String getProfession() {
+		return profession;
+	}
+
+	public void setProfession(String profession) {
+		this.profession = profession;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public List<String> getHobbiesInterests() {
+		return hobbiesInterests;
+	}
+
+	public void setHobbiesInterests(List<String> hobbiesInterests) {
+		this.hobbiesInterests = hobbiesInterests;
+	}
+
+}

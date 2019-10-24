@@ -1,0 +1,123 @@
+package com.kemean.controller.admin.shop;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminShopService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.po.KemeanPageAdminPO;
+import com.kemean.vo.po.admin.shop.AdminShopReplyBO;
+import com.kemean.vo.po.admin.shop.AdminShopReplyPO;
+import com.kemean.vo.po.admin.shop.AdminShopUpdatePO;
+
+/**
+ * 店铺管理
+ * 
+ * @Date 2018年6月21日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("shop/info")
+public class AdminShopInfoController extends DaikenBaseController {
+
+	@Autowired
+	private AdminShopService adminShopService;
+
+	/**
+	 * 主页
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月18日
+	 */
+	@RequestMapping(value = "home", method = RequestMethod.GET)
+	public String home() {
+		request.setAttribute("shopData", getAdminLoginShop());
+		return "shop/home";
+	}
+
+	/**
+	 * 商铺详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String shopInfoPage() {
+		request.setAttribute("pageData", adminShopService.shopInfoData(null, getAdminLoginShop()));
+		return KemeanConstant.ADMIN_FOLDER + "shopInfo";
+	}
+
+	/**
+	 * 修改商铺信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "shop_info_update", method = RequestMethod.POST)
+	public KemeanResult<String> shopInfoUpdate(@Valid AdminShopUpdatePO adminShopUpdatePO) {
+		return adminShopService.shopInfoUpdate(adminShopUpdatePO, getAdminLoginShop());
+	}
+
+	/**
+	 * 店铺默认消息回复管理
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	@RequestMapping(value = "reply_page", method = RequestMethod.GET)
+	public String shopMsgReplyPage() {
+		return KemeanConstant.ADMIN_FOLDER + "shopReply";
+	}
+
+	/**
+	 * 店铺默认消息回复data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "reply_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminShopReplyBO>> shopMsgReplyData(@Valid KemeanPageAdminPO kemeanPageAdminPO) {
+		return adminShopService.shopMsgReplyData(kemeanPageAdminPO);
+	}
+
+	/**
+	 * 删除消息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月10日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "reply_data_del", method = RequestMethod.GET)
+	public KemeanResult<String> shopMsgReplyDel(@RequestParam Integer objId) {
+		adminShopService.shopMsgReplyDel(objId);
+		return new KemeanResult<>();
+	}
+
+	/**
+	 * 添加/修改消息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月10日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "reply_operate", method = RequestMethod.POST)
+	public KemeanResult<String> shopMsgReplyOperate(@Valid AdminShopReplyPO adminShopReplyPO) {
+		adminShopService.shopMsgReplyOperate(adminShopReplyPO);
+		return new KemeanResult<>();
+	}
+
+}

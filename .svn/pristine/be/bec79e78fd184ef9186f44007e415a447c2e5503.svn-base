@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenComplaintMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenComplaint">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="complaint_type" property="complaintType"
+			jdbcType="SMALLINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="user_type" property="userType" jdbcType="SMALLINT" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="complaint_status" property="complaintStatus"
+			jdbcType="SMALLINT" />
+		<result column="admin_serivce_id" property="adminSerivceId"
+			jdbcType="INTEGER" />
+		<result column="admin_serivce_name" property="adminSerivceName"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+	
+<select id="selectSerivceDealCount" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+			DATE_FORMAT(a.`update_time`,'%Y-%m-%d') AS name,
+			COUNT(*) AS y
+		FROM
+			`daiken_complaint` a
+		WHERE a.`data_deleted` = FALSE
+		<if test="complaintStatus!=null and complaintStatus!=''">
+			AND a.`complaint_status`= #{complaintStatus,jdbcType=INTEGER}
+		</if>
+		<if test="adminSerivceId!=null and adminSerivceId!=''">
+			AND a.`admin_serivce_id`= #{adminSerivceId,jdbcType=INTEGER}
+		</if>
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`update_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`update_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`update_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+</mapper>

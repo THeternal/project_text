@@ -1,0 +1,19 @@
+package com.kemean.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import com.kemean.bean.KemeanFinanceClear;
+import com.kemean.dao.su.Idao;
+
+public interface KemeanFinanceClearDao extends Idao<KemeanFinanceClear> {
+
+	/**
+	 * 结算流水
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	List<KemeanFinanceClear> closeAccountList(Date plusDay, Integer shopId, Integer pageNo, Integer pageSize);
+
+}

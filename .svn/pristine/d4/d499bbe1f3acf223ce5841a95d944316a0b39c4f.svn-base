@@ -1,0 +1,41 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.KemeanConfig;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanConfigDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.KemeanConfigMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class KemeanConfigDaoImpl extends DaoSupport<KemeanConfig> implements KemeanConfigDao {
+
+	@Autowired
+	private KemeanConfigMapper mapper;
+
+	@Override
+	protected Mapper<KemeanConfig> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<KemeanConfig> configData(List<Integer> types, Integer page, Integer limit) {
+		Example example = new Example(KemeanConfig.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("type", types);
+		PageHelper.startPage(page, limit);
+		return mapper.selectByExample(example);
+	}
+
+}

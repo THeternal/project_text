@@ -1,0 +1,122 @@
+package com.kemean.vo.mysql;
+
+import java.util.Date;
+
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class ImRecordRedis {
+
+	@NotNull(message = "接收人Id不能为空")
+	private String toUserId;
+
+	@NotNull(message = "消息类型不能为空")
+	private Integer messageType;
+
+	/**
+	 * 内容
+	 */
+	private String content;
+
+	/**
+	 * 发送人
+	 */
+	private String fromUserId;
+	/**
+	 * 发送时间
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+	private Date date;
+	/**
+	 * 头像
+	 */
+	private String headImg;
+	/**
+	 * 昵称
+	 */
+	private String name;
+
+	/**
+	 * 操作类型
+	 */
+	private Integer operationType;
+
+	/**
+	 * 未读消息数量
+	 */
+	private Integer messageNum;
+
+	public Integer getOperationType() {
+		return operationType;
+	}
+
+	public void setOperationType(Integer operationType) {
+		this.operationType = operationType;
+	}
+
+	public Integer getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(Integer messageType) {
+		this.messageType = messageType;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getFromUserId() {
+		return fromUserId;
+	}
+
+	public void setFromUserId(String fromUserId) {
+		this.fromUserId = fromUserId;
+	}
+
+	public String getToUserId() {
+		return toUserId;
+	}
+
+	public void setToUserId(String toUserId) {
+		this.toUserId = toUserId;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getMessageNum() {
+		return messageNum;
+	}
+
+	public void setMessageNum(Integer messageNum) {
+		this.messageNum = messageNum;
+	}
+
+}

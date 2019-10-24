@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">订单编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_order_no"
+						placeholder="请输入订单编号" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md6 layui-col-sm6">
+			<label class="layui-form-label">时间：</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_start"
+					placeholder="请选择开始时间" />
+			</div>
+			-
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_end"
+					placeholder="请选择开始结束" />
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">商品编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_goods_no"
+						placeholder="请输入商品编号" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm5">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">订单状态：</label>
+				<div class="layui-input-inline">
+					<select class="param_order_status">
+						<option value="">全部</option>
+						<option value="1201">待发货</option>
+						<option value="1202">已发货</option>
+						<option value="1301">已完成</option>
+						<option value="1401">售后</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md2 layui-col-sm3">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+	<!-- <div
+		id="courier_info_div"
+		class="layui-hide">
+		<div
+			class="layui-form-item layui-form"
+			style="margin-top: 10px;">
+			<label class="layui-form-label">快递公司:</label>
+			<div class="layui-input-inline">
+				<select
+					class="param_companyNo"
+					lay-search="">
+					<option value="">直接选择或搜索选择</option>
+					<option
+						th:value="${item.companyNo}"
+						th:text="${item.companyName}"
+						th:each="item : ${courierData}"></option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">快递单号:</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_expressWaybillNo"
+					placeholder="请输入快递单号" />
+			</div>
+		</div>
+	</div> -->
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/shop/order/order_data_list}]]*/;
+    
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+        laydate.render({
+			elem : '.param_date_start',
+			type : 'date'
+		});
+		
+		laydate.render({
+			elem : '.param_date_end',
+			type : 'date'
+		});
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'orderNo',
+                    title: '订单编号',
+                },
+                {
+                    field: 'goodsUid',
+                    title: '商品编号',
+                },
+                {
+                    field: 'goodsTitles',
+                    title: '商品名称'
+                },
+                {
+                    field: 'quantity',
+                    title: '商品数量',
+                    width: 90
+                },
+                {
+                    field: 'salesPrice',
+                    title: '销售金额',
+                    width: 90
+                },
+                {
+                    field: 'pricePurchasing',
+                    title: '代卖成本',
+                    width: 90
+                },
+                {
+                    field: 'redBeforeAndAfter',
+                    title: '红包成本',
+                    width: 90
+                },
+                {
+                    field: 'pricePay',
+                    title: '实际销售额',
+                    width: 98
+                },
+                {
+                	field: 'statusShopStr',
+                    title: '订单状态',
+                },
+                {
+                    field: 'createTime',
+                    title: '下单时间',
+                },
+                {
+                	title:'操作',
+                	toolbar: "#operate",
+                	width: 110
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+    });
+
+    function search() {
+        var table = layui.table;
+        var paramOrderNo = $(".param_order_no").val();
+        var paramGoodsNo = $(".param_goods_no").val();
+        var paramOrderStatus = $(".param_order_status").val();
+        var paramDateStart = $(".param_date_start").val();
+		var paramDateEnd = $(".param_date_end").val();
+		
+		if(Date.parse(paramDateStart) > Date.parse(paramDateEnd)){
+			layer.msg('开始日期不能大于结束日期');
+			return false;
+		};
+        
+        table.reload("dataTable",
+        {
+            page: {curr: 1},
+            where: {
+            	orderNo: paramOrderNo,
+            	goodsUid: paramGoodsNo,
+            	orderStatus: paramOrderStatus,
+            	startDate: paramDateStart,
+            	endDate: paramDateEnd
+            }
+        });
+    }
+    
+    //发货
+    /* function shipGoods(orderNos){
+    	$("#courier_info_div").removeClass("layui-hide");
+		layer.open({
+			type:1,
+			title : "填写发货信息",
+			content :$("#courier_info_div"),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '确认' ],
+			offset:"100px",
+			btn1 : function() {
+				var param_companyNo=$(".param_companyNo").val();
+				var param_expressWaybillNo=$(".param_expressWaybillNo").val();
+				if(!param_companyNo){
+					layer.msg("请选择快递公司");
+					return false;
+				}
+				if(!param_expressWaybillNo){
+					layer.msg("请输入快点单号");
+					return false;
+				}
+				$.ajax({
+					type:"POST",
+					url:url_send,
+					contentType: "application/json; charset=utf-8",
+					dataType:"json",
+					data:JSON.stringify({orderNo:orderNos,companyNo:param_companyNo,expressWaybillNo:param_expressWaybillNo}),
+					success:function(data){
+						layer.msg(data.info);
+			    	}
+				});
+			},
+			cancel:function(){
+				$("#courier_info_div").addClass("layui-hide");
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	} */
+    
+    /* function returnGoodsCheck(orderNo,goodsId,skuNo){
+    	layer.alert('是否退款?',{
+			 icon: 8,
+			title : "商品确认退款",
+			skin: 'layui-layer-molv',
+			area : [ '287px', '165px' ],
+			btn : [ '是','否' ],
+			offset: '100px',
+			yes : function() {
+				$.ajax({
+					type:"POST",
+					url:url_after_good,
+					contentType: "application/json; charset=utf-8",
+					dataType:"json",
+					data:JSON.stringify({flag:true,orderNo:orderNo,goodsId:goodsId,skuNo:skuNo}),
+					success:function(data){
+						if(data.success){
+						var index = parent.layer.getFrameIndex(window.name);
+				       	 parent.layer.close(index);
+						}else{
+							layer.msg(data.info);
+						}
+			    	}
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+    } */
+    
+    /* function returnGoodsRefuse(orderNo,goodsId,skuNo){
+    	layer.alert('是否拒绝退款?',{
+			 icon: 8,
+			title : "拒绝退款",
+			skin: 'layui-layer-molv',
+			area : [ '287px', '165px' ],
+			btn : [ '是','否' ],
+			offset: '100px',
+			yes : function() {
+				$.ajax({
+					type:"POST",
+					url:url_after_good,
+					contentType: "application/json; charset=utf-8",
+					dataType:"json",
+					data:JSON.stringify({flag:false,orderNo:orderNo,goodsId:goodsId,skuNo:skuNo}),
+					success:function(data){
+						if(data.success){
+						var index = parent.layer.getFrameIndex(window.name);
+				       	 parent.layer.close(index);
+						}else{
+							layer.msg(data.info);
+						}
+			    	}
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+    } */
+    
+    
+</script>
+
+<!-- 
+{{# if(d.statusShop=='1402' || d.statusShop=='1201'|| d.statusShop=='1202' || d.statusShop=='1301'){ }}
+		<button class="layui-btn layui-btn-sm layui-disabled"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;退款</button>
+		<button class="layui-btn layui-btn-sm layui-disabled"><i class="fa fa-lock" aria-hidden="true"></i>&nbsp;拒绝退款</button> 		
+	{{# } }}
+
+	{{# if(d.statusShop=='1401' || d.statusShop=='1403'){ }}
+	<button class="layui-btn layui-btn-sm" onclick="returnGoodsCheck('{{d.orderNo}}',{{d.goodsId}},'{{d.skuNo}}')"><i class="fa fa-exchange" aria-hidden="true"></i>&nbsp;退款</button>
+	<button class="layui-btn layui-btn-sm" onclick="returnGoodsCheck('{{d.orderNo}}',{{d.goodsId}},'{{d.skuNo}}')"><i class="fa fa-lock" aria-hidden="true"></i>&nbsp;拒绝退款</button> 		
+	<button class="layui-btn layui-btn-sm layui-disabled"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;发货</button> 		
+	{{# } }}
+	
+	{{# if(d.statusShop=='1201'){ }}
+	<button class="layui-btn layui-btn-sm" onclick="shipGoods('{{d.orderNo}}')"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;发货</button> 
+	{{# } }}
+
+	{{# if(d.statusShop=='1202'|| d.statusShop=='1402'){ }}
+	<button class="layui-btn layui-btn-sm layui-disabled"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;发货</button> 	
+	{{# } }}
+	<button class="layui-btn layui-btn-sm" onclick="deleteByObjId({{d.objId}},url_order_del)"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>
+ -->
+
+<script
+	type="text/html"
+	id="operate">
+	 <a th:href="@{/shop/order/info_page?objId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;详细信息</a>
+</script>
+</html>

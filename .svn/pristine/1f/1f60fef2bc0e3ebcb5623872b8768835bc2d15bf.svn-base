@@ -1,0 +1,58 @@
+package com.kemean.controller.admin;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.KemeanBaseController;
+import com.kemean.service.admin.AdminPlatformService;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.po.admin.AdminChartPO;
+
+/**
+ * 平台管理
+ * 
+ * @Date 2018年7月9日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("admin/platform")
+public class AdminPlatformController extends KemeanBaseController {
+
+	@Autowired
+	private AdminPlatformService adminPlatformService;
+
+	/**
+	 * 平台总销售额 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+
+	@RequestMapping(value = "sale_chart", method = RequestMethod.GET)
+	public String platformSaleChart(@Valid AdminChartPO adminChartPO) {
+		request.setAttribute("pageData", adminPlatformService.platformSaleData(adminChartPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "platformSaleChart";
+
+	}
+
+	/**
+	 * 平台总销售额 data
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "sale_data", method = RequestMethod.GET)
+	public List<AdminChartBO> platformSaleData(@Valid AdminChartPO adminChartPO) {
+		return adminPlatformService.platformSaleData(adminChartPO, 0);
+	}
+
+}

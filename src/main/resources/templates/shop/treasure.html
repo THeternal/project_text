@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item" style="display: none;">
+				<label class="layui-form-label">商品序号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_label"
+						th:value="${pageData.goodsId}"
+						placeholder="商品序号"
+						readonly="readonly" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">购买屏位：</label>
+				<div class="layui-input-block">
+					<select class="param_screen_position">
+						<option value="">----请选择----</option>
+						<option
+							th:each="item:${pageData.chargeMoney}"
+							th:value="${item.screenPosition}"
+							th:text="${item.screenPositionStr}" />
+
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">点击数：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_buy_click_num"
+						placeholder="请输入购买点击数" />
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="addHotTreasure()">购买</button>
+					<button
+						class="layui-btn layui-btn-primary"
+						onclick="history.back();">
+						<i
+							class="fa fa-arrow-left"
+							aria-hidden="true"></i>&nbsp;返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var pageData = /*[[${pageData}]]*/;
+	var url_add_hot_treasure = /*[[@{/admin/treasure/add_hot_treasure}]]*/;
+	function addHotTreasure(){
+		var paramScreenPosition = $('.param_screen_position').val();
+		if(!paramScreenPosition){
+			layer.msg('请选择购买屏位!');
+			return false;
+		}
+		
+		var paramBuyClickNum = $('.param_buy_click_num').val();
+		if(!paramBuyClickNum){
+			layer.msg('请输入购买点击数');
+			return false;
+		}
+		
+		var paramGoodsId = pageData.goodsId;
+		var paramGoodsTitle = pageData.goodsTitle;
+		
+		$.get(url_add_hot_treasure,{
+			goodsId : paramGoodsId,
+			goodsTitle : paramGoodsTitle,
+			screenPosition : paramScreenPosition,
+			buyClickNum : paramBuyClickNum
+		},function(result){
+			var flag = result.success;
+			var msg = result.info;
+			if(!flag){
+				layer.msg(result.info);
+				return false;
+			}
+			
+			var table = layui.table;
+			layer.open({
+				title : "系统提示",
+				content : msg,
+				skin : "layui-layer-molv",
+				area : [ '500px', '180px' ],
+				btn : [ '确定' ],
+				offset : '100px',
+				btn1 : function(index) {
+					parent.layer.close(index);
+				},
+				closeBtn : 1,
+				anim : 0
+			})
+			
+		});
+	}
+	
+	layui.use([ 'table', 'upload','element' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		var element = layui.element;
+
+		form = layui.form;
+	});
+</script>
+
+</html>

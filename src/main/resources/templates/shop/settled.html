@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">入户类型</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">入驻类型：</label>
+					<div class="layui-input-block param_settledPersonal">
+						<input
+							type="radio"
+							name="settled_type"
+							value="1"
+							lay-filter="settled_type"
+							title="个人"
+							checked="checked" /> <input
+							type="radio"
+							name="settled_type"
+							lay-filter="settled_type"
+							value="0"
+							title="企业" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">店铺信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">店铺logo：</label>
+					<div class="layui-input-block">
+						<img
+							class="param_shop_logo"
+							width="200px"
+							th:onclick="'javascript:visitImg(this.src);'" />
+					</div>
+					<div
+						class="layui-input-block"
+						style="margin-top: 10px;">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_shop_logo">
+							<i class="layui-icon">&#xe67c;</i>上传
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md8 layui-col-sm9 layui-col-sm10">
+					<label class="layui-form-label">店铺名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_shopName"
+							placeholder="请输入店铺名称"
+							onblur="verifyBlankFunc(this.value,'店铺名称')" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">店铺类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_shopTypeStr"
+							value="个人"
+							readonly="readonly" />
+					</div>
+				</div>
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 license_location">
+					<label class="layui-form-label">经营场所：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_businessLicenseLocation_p"
+							placeholder="请输入店铺经营场所"
+							onblur="verifyBlankFunc(this.value,'经营场所')" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md8 layui-col-sm9 layui-col-sm10">
+					<label class="layui-form-label">店铺介绍：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_presentation"
+							placeholder="请输入店铺介绍"
+							onblur="verifyBlankFunc(this.value,'店铺介绍')" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-user"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">负责人信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">姓名：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_principalName"
+							placeholder="请输入负责人的姓名"
+							onblur="verifyBlankFunc(this.value,'负责人的姓名')" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">手机号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_principalPhone"
+							placeholder="请输入负责人的手机号码"
+							onblur="verifyPhoneFunc(this.value)" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_principalIdCard"
+							placeholder="请输入负责人的身份证号码"
+							onblur="verifyIdCardFunc(this.value,'负责人的身份证号码',18)" />
+					</div>
+				</div>
+				<div
+					class="layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1"
+					id="legal_person_div">
+					<label class="layui-form-label">法人名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_legalPersonName"
+							placeholder="请输入法人名称"
+							onblur="verifyBlankFunc(this.value,'法人名称')" />
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item layui-form">
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证有效期：</label>
+					<div class="layui-input-block param_isIdCardValidity">
+						<input
+							type="radio"
+							value="1"
+							class="param_is_id_card_validity"
+							lay-filter="idCardFilter"
+							name="param_is_id_card_validity"
+							title="长期"
+							checked="checked" /> <input
+							type="radio"
+							class="param_is_id_card_validity"
+							name="param_is_id_card_validity"
+							lay-filter="idCardFilter"
+							value="0"
+							title="固定" />
+					</div>
+				</div>
+				<div
+					class="layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1 layui-hide"
+					id="idCard_div">
+					<label class="layui-form-label">有效日期：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_periodOfValidity"
+							placeholder="请选择身份证有效日期"
+							onblur="verifyBlankFunc(this.value,'身份证有效日期')" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证正面照片：</label>
+					<div class="layui-input-block">
+						<img
+							class="param_principalIdCardFrontImg"
+							width="200px"
+							th:onclick="'javascript:visitImg(this.src);'" />
+					</div>
+					<div
+						class="layui-input-block"
+						style="margin-top: 10px;">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_before_img">
+							<i class="layui-icon">&#xe67c;</i>上传
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证背面照片：</label>
+					<div class="layui-input-block">
+						<img
+							class="param_principalIdCardReverseImg"
+							width="200px"
+							th:onclick="'javascript:visitImg(this.src);'" />
+					</div>
+					<div
+						class="layui-input-block"
+						style="margin-top: 10px;">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_after_img">
+							<i class="layui-icon">&#xe67c;</i>上传
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card layui-hide"
+		style="margin-top: 30px;"
+		id="license_div">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-picture-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">资质照</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">营业执照正面照：</label>
+					<div class="layui-input-block">
+						<img
+							class="param_businessLicenseImg"
+							width="200px"
+							th:onclick="'javascript:visitImg(this.src);'" />
+					</div>
+					<div
+						class="layui-input-block"
+						style="margin-top: 10px;">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_license_img">
+							<i class="layui-icon">&#xe67c;</i>上传
+						</button>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item layui-form">
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">营业执照名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_businessLicenseName"
+							placeholder="请输入营业执照名称"
+							onblur="verifyBlankAndLengthFunc(this.value,'营业执照名称',32)" />
+					</div>
+				</div>
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">注册号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_businessLicenseRegisterNo"
+							placeholder="请输入营业执照注册号码"
+							onblur="verifyBlankAndLengthFunc(this.value,'营业执照注册号码',16)" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form">
+				<div class=" layui-col-md8 layui-col-sm9 layui-col-sm10 ">
+					<label class="layui-form-label">经营地址：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_businessLicenseLocation_c"
+							placeholder="请输入营业执照经营场所"
+							onblur="verifyBlankAndLengthFunc(this.value,'营业执照经营场所',16)" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-user"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">账户信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">手机号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_phone"
+							onfocusout="verfiyPhone()"
+							placeholder="请输入登陆的手机号码" /> <label
+							id="verify_phone"
+							style="color: red;"></label>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">验证码：</label>
+					<div class="layui-input-inline">
+						<input
+							type="text"
+							class="layui-input param_sendCode"
+							placeholder="请输入验证码" />
+					</div>
+					<div class="layui-col-md1 layui-col-sm1">
+						<button
+							class="layui-btn layui-btn-primary"
+							onclick="getSendCode(this)">获取验证码</button>
+					</div>
+				</div>
+
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md3 layui-col-sm4 layui-col-sm5 ">
+					<label class="layui-form-label">登陆密码：</label>
+					<div class="layui-input-block">
+						<input
+							type="password"
+							oninput="verfiyPassWord()"
+							class="layui-input param_login_frist_password"
+							placeholder="请输入登陆密码" /><label
+							id="verify_frist_password"
+							style="color: red;"></label>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md3 layui-col-sm4 layui-col-sm5">
+					<label class="layui-form-label">确认密码：</label>
+					<div class="layui-input-block">
+						<input
+							type="password"
+							class="layui-input param_login_confirm_password"
+							placeholder="请再次输入密码" /><label
+							id="verify_confirm_password"
+							style="color: red;"></label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="registered()">
+				<i
+					class="fa fa-check-square-o"
+					aria-hidden="true"></i>&nbsp;&nbsp;提交审核
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/verify.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_shop_prompt_page = /*[[@{/shop/open/prompt}]]*/;
+	var url_phone_verfiy_page = /*[[@{/shop/open/phone_check}]]*/;
+	var url_sendCode_page = /*[[@{/api/common/send_code}]]*/;
+	var url_register_page = /*[[@{/shop/open/settled_data}]]*/;
+	var form;
+	layui.use([ 'form', 'upload','laydate'], function() {
+		form = layui.form;
+		var upload = layui.upload;
+		var laydate=layui.laydate;
+		laydate.render({
+			elem : '.param_periodOfValidity',
+			type : 'date'
+		});
+		
+		
+		//监听入驻类型
+		form.on('radio(settled_type)', function(data){
+			if(data.value==="0"){
+				//企业
+				$("#license_div").removeClass("layui-hide");
+				$(".license_location").addClass("layui-hide");
+				$(".param_shopTypeStr").attr("value", "企业");
+				$("#legal_person_div").show();
+			}else{
+				$("#license_div").addClass("layui-hide");
+				$(".param_shopTypeStr").attr("value", "个人");
+				$(".license_location").removeClass("layui-hide");
+				$("#legal_person_div").hide();
+			}
+		});  
+		
+		//监听身份证有效
+		form.on('radio(idCardFilter)', function(data){
+			if(data.value==="0"){
+				$("#idCard_div").removeClass("layui-hide");
+			}else{
+				$("#idCard_div").addClass("layui-hide");
+			}
+		});  
+		
+		//上传店铺logo
+		 upload.render({
+				elem : '#upload_shop_logo',
+				url : url_upload_img,
+				data:{resetName:true},
+				done : function(res) {
+					//上传完毕回调
+					$(".param_shop_logo").prop("src",res.data);
+					layer.msg('上传成功');
+				}
+			});
+
+		//上传营业执照
+		 upload.render({
+				elem : '#upload_license_img',
+				url : url_upload_img,
+				data:{resetName:true},
+				done : function(res) {
+					//上传完毕回调
+					$(".param_businessLicenseImg").prop("src",res.data);
+					layer.msg('上传成功');
+				}
+			});
+		
+		//上传身份证正面照
+		 upload.render({
+				elem : '#upload_before_img',
+				url : url_upload_img,
+				data:{resetName:true},
+				done : function(res) {
+					//上传完毕回调
+					$(".param_principalIdCardFrontImg").prop("src",res.data);
+					layer.msg('上传成功');
+				}
+			});
+		
+		//上传身份证背面照
+		 upload.render({
+				elem : '#upload_after_img',
+				url : url_upload_img,
+				data:{resetName:true},
+				done : function(res) {
+					//上传完毕回调
+					$(".param_principalIdCardReverseImg").prop("src",res.data);
+					layer.msg('上传成功');
+				}
+			});
+		
+	});
+	
+	//校验手机号码
+	var verfiyPhoneFalg=true;
+	function verfiyPhone(){
+		var phone=$(".param_phone").val();
+		if(!phone){
+			layer.msg('请输入登陆的手机号码');
+			verfiyPhoneFalg=false;
+		}
+		//手机号码校验
+		var reg=new RegExp('^1\\d{10}$');
+		if(!reg.test(phone)){
+			layer.msg('手机号码格式不正确');
+			verfiyPhoneFalg=false;
+			return verfiyPhoneFalg;
+		}
+		$.get(url_phone_verfiy_page, {phone:phone}, function(data) {
+			if(!data.success){
+				layer.msg(data.info);
+				verfiyPhoneFalg=false;
+			}
+		});
+		 return verfiyPhoneFalg;
+	}
+	
+	
+	
+	var readonly = false;
+	var clear;
+	function getCodeState(_this) {
+	      readonly = true;
+	      _this.innerHTML = "60S后重新获取";
+	      var s = 60;
+	      clear = setInterval(function() {
+	        s--;
+	        _this.innerHTML = s + "S后重新获取";
+	       
+	        if ( 0 >= s) {
+	          clearInterval(clear);
+	          _this.innerHTML = "获取验证码";
+	          readonly = false;
+	        }
+	       
+	      }, 1000);
+	    }
+	    
+	//发送验证码
+	function getSendCode(_this){
+			if(verfiyPhoneFalg){
+				 if(readonly){
+						 layer.msg('验证码已发送');
+				    	return false;
+				    }else{
+				    	getCodeState(_this);
+				    }
+			}
+		
+		  
+			  var phone=$(".param_phone").val();
+			  
+			  
+				$.ajax({
+					type:"POST",
+					url:url_sendCode_page,
+					contentType: "application/json; charset=utf-8",
+					dataType:"json",
+					data:JSON.stringify({
+						phone:phone,type:3201
+					}),
+					success:function(data){
+						if(data.success){
+							getCodeState(_this);
+						}
+					}
+				});
+    		
+    	}
+			
+	
+	//校验登陆密码
+	function verfiyPassWord(){
+		var frist_password=$(".param_login_frist_password").val();
+		if(!frist_password){
+			document.getElementById("verify_frist_password").innerHTML="请输入登陆密码";
+			return false;
+		}
+		//登陆密码校验
+		var reg=new RegExp('/^[A-Za-z0-9]{6,12}$/');
+		 /*<![CDATA[*/
+		if(frist_password.length<6){
+			document.getElementById("verify_frist_password").innerHTML="密码至少为6位";
+			return false;
+		}
+		  /*]]>*/
+		  
+		$("#verify_frist_password").hide();
+		
+	}
+	
+	
+
+	function registered() {
+		verfiyPhone();
+		var frist_password=$(".param_login_frist_password").val();
+		var confirm_password=$(".param_login_confirm_password").val();
+		if(frist_password != confirm_password){
+			document.getElementById("verify_confirm_password").innerHTML="两次密码不一致";
+			return false;
+		}
+		var param_sendCode=$(".param_sendCode").val();
+		if(!param_sendCode){
+			layer.msg('验证码不能为空');
+			return false;
+		}
+		
+		var phone=$(".param_phone").val();
+		
+		
+		var param_settledPersonal=$(".param_settledPersonal").find("input[type='radio']").prop("checked");
+		
+		var param_shopLogo=$(".param_shop_logo").attr("src");
+		if(!param_shopLogo){
+			layer.msg('请上传店铺logo');
+			return false;
+		}
+		
+		var param_shopName=$(".param_shopName").val();
+		if(!param_shopName){
+			layer.msg('请输入店铺名称');
+			return false;
+		}
+		
+		var param_principalName=$(".param_principalName").val();
+		if(!param_principalName){
+			layer.msg('请输入店铺负责人姓名');
+			return false;
+		}
+		
+		var param_principalPhone=$(".param_principalPhone").val();
+		if(!param_principalPhone){
+			layer.msg('请输入店铺负责人的手机号码');
+			return false;
+		}
+		
+		var param_principalIdCard=$(".param_principalIdCard").val();
+		if(!param_principalIdCard){
+			layer.msg('请输入店铺负责人的身份证号码');
+			return false;
+		}
+		
+		
+		var param_presentation=$(".param_presentation").val();
+		
+		if(!param_presentation){
+			layer.msg('请输入店铺介绍');
+			return false;
+		}
+		
+		var param_principalIdCard=$(".param_principalIdCard").val();
+	
+		
+		var param_isIdCardValidity=$(".param_isIdCardValidity").find("input[type='radio']").prop("checked");
+		
+		var param_periodOfValidity=$(".param_periodOfValidity").val();
+		if(param_isIdCardValidity == "0"){
+			if(!param_periodOfValidity){
+				layer.msg('请选择身份证有效日期');
+				return false;
+			}
+		}
+		
+		var param_principalIdCardFrontImg=$(".param_principalIdCardFrontImg").attr("src");
+		if(!param_principalIdCardFrontImg){
+			layer.msg('请上传负责人身份证正面照片');
+			return false;
+		}
+		
+		var param_principalIdCardReverseImg=$(".param_principalIdCardReverseImg").attr("src");
+		if(!param_principalIdCardReverseImg){
+			layer.msg('请上传负责人身份证背面照片');
+			return false;
+		}
+		
+		
+		   var param_businessLicenseImg=$(".param_businessLicenseImg").attr("src");
+		
+			var param_legalPersonName=$(".param_legalPersonName").val();
+			
+			
+			var param_businessLicenseName=$(".param_businessLicenseName").val();
+		
+			
+			var param_businessLicenseRegisterNo=$(".param_businessLicenseRegisterNo").val();
+			var param_businessLicenseLocation="";
+			 param_businessLicenseLocation=$(".param_businessLicenseLocation_p").val();
+			if(!param_settledPersonal){
+				 param_businessLicenseLocation=$(".param_businessLicenseLocation_c").val();
+			}
+			
+		
+			$.ajax({
+				type:"POST",
+				url:url_register_page,
+				contentType: "application/json; charset=utf-8",
+				dataType:"json",
+				data:JSON.stringify({phone:phone,code:param_sendCode,password:md5(confirm_password),shopLogo:param_shopLogo,settledPersonal:param_settledPersonal,
+					shopName:param_shopName,principalName:param_principalName,presentation:param_presentation,
+				principalPhone:param_principalPhone,principalIdCard:param_principalIdCard,isIdCardValidity:param_isIdCardValidity,periodOfValidity:param_periodOfValidity,
+				principalIdCardFrontImg:param_principalIdCardFrontImg,principalIdCardReverseImg:param_principalIdCardReverseImg,legalPersonName:param_legalPersonName,
+				businessLicenseImg:param_businessLicenseImg,businessLicenseName:param_businessLicenseName,businessLicenseRegisterNo:param_businessLicenseRegisterNo,
+				businessLicenseLocation:param_businessLicenseLocation
+				}),
+				success:function(data){
+					showResultMsgAndJumpByFlag(data.success,data.info,url_shop_prompt_page);
+	    	 }
+			});
+		
+	}
+
+
+</script>
+
+
+</html>

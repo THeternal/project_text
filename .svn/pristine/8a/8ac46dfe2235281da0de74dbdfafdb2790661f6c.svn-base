@@ -1,0 +1,30 @@
+package com.kemean.vo.bo.admin.shop;
+
+import java.util.List;
+
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public class AdminShopChartBO {
+
+	// 个人商铺数量
+	private List<AdminChartBO> userShopNum;
+	// 个人商铺数量
+	private List<AdminChartBO> companyShopNum;
+
+	public List<AdminChartBO> getUserShopNum() {
+		return userShopNum;
+	}
+
+	public void setUserShopNum(List<AdminChartBO> userShopNum) {
+		this.userShopNum = userShopNum;
+	}
+
+	public List<AdminChartBO> getCompanyShopNum() {
+		return companyShopNum;
+	}
+
+	public void setCompanyShopNum(List<AdminChartBO> companyShopNum) {
+		this.companyShopNum = companyShopNum;
+	}
+
+}

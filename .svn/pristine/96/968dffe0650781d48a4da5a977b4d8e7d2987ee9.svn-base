@@ -1,0 +1,20 @@
+package com.kemean.constant;
+
+public enum DaikenFinanceTypeClearEnum {
+
+	CASH_SHOP(1101);
+	private Integer type;
+
+	private DaikenFinanceTypeClearEnum(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+}

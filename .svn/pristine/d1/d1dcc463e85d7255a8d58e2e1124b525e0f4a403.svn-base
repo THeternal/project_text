@@ -1,0 +1,14 @@
+#appid
+wx.open.appid=
+#app密钥
+wx.open.app-secret=
+#商户号
+wx.business.mchid=
+#商户平台设置的密钥key
+wx.business.key=
+#回调地址
+wx.notify.url=
+#小程序appid
+wx.small.appid=wxb9f3040a696f6cc4
+#小程序app密钥
+wx.small.app-secret=0c3de35f223ddeec53fb1bafe7e31785

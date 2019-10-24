@@ -1,0 +1,176 @@
+package com.kemean.vo.bo.c.order;
+
+import java.util.List;
+
+public class OrderListBO {
+
+	/*
+	 * 订单编号
+	 */
+	private String orderNo;
+
+	/**
+	 * 商铺id
+	 */
+	private Integer shopId;
+
+	/**
+	 * 商铺名称
+	 */
+	private String shopName;
+
+	/**
+	 * 商铺图片
+	 */
+	private String shopLogo;
+
+	/**
+	 * 购买商品
+	 */
+	private List<OrderListGoodsBO> orderListGoods;
+
+	/**
+	 * 订单状态
+	 */
+	private Integer statusUser;
+
+	/**
+	 * 订单状态Str
+	 */
+	private String statusUserStr;
+
+	/**
+	 * 邮费
+	 */
+	private Double postage;
+
+	/**
+	 * 支付价格
+	 */
+	private Double pricePay;
+
+	/**
+	 * 总数量
+	 */
+	private Integer sumQuantity;
+
+	/**
+	 * 是否是一手订单 true-一手订单，false-二手订单
+	 */
+	private Boolean isNewGoods;
+
+	/**
+	 * 快递公司编号
+	 */
+	private String companyNo;
+
+	/**
+	 * 快递单号
+	 */
+	private String expressWaybillNo;
+
+	public String getCompanyNo() {
+		return companyNo;
+	}
+
+	public void setCompanyNo(String companyNo) {
+		this.companyNo = companyNo;
+	}
+
+	public String getExpressWaybillNo() {
+		return expressWaybillNo;
+	}
+
+	public void setExpressWaybillNo(String expressWaybillNo) {
+		this.expressWaybillNo = expressWaybillNo;
+	}
+
+	public Boolean getIsNewGoods() {
+		return isNewGoods;
+	}
+
+	public void setIsNewGoods(Boolean isNewGoods) {
+		this.isNewGoods = isNewGoods;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public Integer getSumQuantity() {
+		return sumQuantity;
+	}
+
+	public void setSumQuantity(Integer sumQuantity) {
+		this.sumQuantity = sumQuantity;
+	}
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public String getStatusUserStr() {
+		return statusUserStr;
+	}
+
+	public void setStatusUserStr(String statusUserStr) {
+		this.statusUserStr = statusUserStr;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public List<OrderListGoodsBO> getOrderListGoods() {
+		return orderListGoods;
+	}
+
+	public void setOrderListGoods(List<OrderListGoodsBO> orderListGoods) {
+		this.orderListGoods = orderListGoods;
+	}
+
+	public Integer getStatusUser() {
+		return statusUser;
+	}
+
+	public void setStatusUser(Integer statusUser) {
+		this.statusUser = statusUser;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Double getPricePay() {
+		return pricePay;
+	}
+
+	public void setPricePay(Double pricePay) {
+		this.pricePay = pricePay;
+	}
+
+}

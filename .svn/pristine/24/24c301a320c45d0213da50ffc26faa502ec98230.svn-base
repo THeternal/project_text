@@ -1,0 +1,535 @@
+package com.kemean.service.consumer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.kemean.bean.DaikenGoodsBaseCategory;
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.bean.DaikenGoodsPurchasing;
+import com.kemean.bean.DaikenOrderAppraisal;
+import com.kemean.bean.DaikenShop;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.DaikenUserShop;
+import com.kemean.bean.KemeanCollect;
+import com.kemean.constant.DaikenCollectTypeEnum;
+import com.kemean.constant.DaikenGoodsType;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenGoodsBaseCategoryDao;
+import com.kemean.dao.DaikenGoodsNewDao;
+import com.kemean.dao.DaikenGoodsNewSkuDao;
+import com.kemean.dao.DaikenGoodsOldDao;
+import com.kemean.dao.DaikenGoodsPurchasingDao;
+import com.kemean.dao.DaikenOrderAppraisalDao;
+import com.kemean.dao.DaikenShopDao;
+import com.kemean.dao.DaikenUserShopDao;
+import com.kemean.dao.KemeanCollectDao;
+import com.kemean.util.DaikenUtil;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.c.mall.GoodsAppraisalListBO;
+import com.kemean.vo.bo.c.mall.GoodsAppraisalTopListBO;
+import com.kemean.vo.bo.c.mall.NewGoodsInfoBO;
+import com.kemean.vo.bo.c.mall.NewGoodsListBO;
+import com.kemean.vo.bo.c.mall.OldGoodsInfoBO;
+import com.kemean.vo.bo.c.mall.OldGoodsListBO;
+import com.kemean.vo.bo.c.mall.RecordTypeFBO;
+import com.kemean.vo.bo.c.mall.ShopInfoBO;
+import com.kemean.vo.bo.c.mall.SkuNoBO;
+import com.kemean.vo.mysql.DaikenGoodsNewDB;
+import com.kemean.vo.mysql.DaikenGoodsOldDB;
+import com.kemean.vo.po.KemeanPageApiPO;
+import com.kemean.vo.po.c.mall.GoodsAppraisalListPO;
+import com.kemean.vo.po.c.mall.GoodsAppraisalTopListPO;
+import com.kemean.vo.po.c.mall.GoodsInfoPO;
+import com.kemean.vo.po.c.mall.NewGoodsListPO;
+import com.kemean.vo.po.c.mall.OldGoodsListPO;
+
+/**
+ * 【客户端】 商城业务层
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+public class CMallService {
+
+	@Autowired
+	private DaikenGoodsNewDao daikenGoodsNewDao;
+
+	@Autowired
+	private DaikenShopDao daikenShopDao;
+
+	@Autowired
+	private DaikenOrderAppraisalDao daikenOrderAppraisalDao;
+
+	@Autowired
+	private KemeanCollectDao kemeanCollectDao;
+
+	@Autowired
+	private DaikenGoodsNewSkuDao daikenGoodsNewSkuDao;
+
+	@Autowired
+	private DaikenGoodsBaseCategoryDao daikenGoodsBaseCategoryDao;
+
+	@Autowired
+	private DaikenGoodsOldDao daikenGoodsOldDao;
+
+	@Autowired
+	private DaikenGoodsPurchasingDao daikenGoodsPurchasingDao;
+
+	@Autowired
+	private DaikenUserShopDao daikenUserShopDao;
+
+	/**
+	 * 一手商品列表（分类商品、热销商品、店铺商品、帮买商品）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public KemeanPageApiBO<List<NewGoodsListBO>> newGoodsList(NewGoodsListPO newGoodsListPO) {
+		String keyWord = "";
+		if (newGoodsListPO.getKeyWord() != null) {
+			keyWord = newGoodsListPO.getKeyWord();
+		}
+
+		String descStr = "";
+		if (newGoodsListPO.getIsHot() != null) {
+			if (newGoodsListPO.getIsHot()) {
+				descStr += " sales_num, ";
+			}
+		}
+		if (newGoodsListPO.getRedPacket() != null) {
+			if (newGoodsListPO.getRedPacket()) {
+				descStr += " red_after, ";
+			}
+		}
+		if (newGoodsListPO.getDiscount() != null) {
+			if (newGoodsListPO.getDiscount()) {
+				descStr += " min_discount, ";
+			}
+		}
+		if (StringUtils.isNotBlank(descStr)) {
+			descStr = descStr.substring(0, descStr.length() - 2);
+		}
+		// 设置一个最大值
+		Double maxPriceSales = 1000000000.0;
+		if (newGoodsListPO.getMaxPriceSales() != null) {
+			maxPriceSales = newGoodsListPO.getMaxPriceSales();
+		}
+		// 设置一个最小值
+		Double minPriceSales = 0.0;
+		if (newGoodsListPO.getMinPriceSales() != null) {
+			minPriceSales = newGoodsListPO.getMinPriceSales();
+		}
+		// 是否帮代卖
+		Boolean purchasing = false;
+		if (newGoodsListPO.getPurchasing() != null) {
+			purchasing = newGoodsListPO.getPurchasing();
+		}
+		List<Integer> categoryIds = new ArrayList<Integer>();
+		if (newGoodsListPO.getCategoryId() == null) {
+			// 加载全部的商品分类
+			List<DaikenGoodsBaseCategory> dbGoodsBaseCategorys = daikenGoodsBaseCategoryDao.selectByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "level" }, new Object[] { false, 3 });
+			if (CollectionUtils.isNotEmpty(dbGoodsBaseCategorys)) {
+				for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbGoodsBaseCategorys) {
+					categoryIds.add(daikenGoodsBaseCategory.getId());
+				}
+			}
+		} else {
+			categoryIds.add(newGoodsListPO.getCategoryId());
+		}
+		PageHelper.startPage(newGoodsListPO.getPageNo(), newGoodsListPO.getPageSize());
+		List<DaikenGoodsNewDB> dbGoodsNews = daikenGoodsNewDao.newGoodsList(descStr, minPriceSales, maxPriceSales,
+				categoryIds, purchasing, keyWord);
+		List<NewGoodsListBO> result = new ArrayList<NewGoodsListBO>(dbGoodsNews.size());
+		if (CollectionUtils.isEmpty(dbGoodsNews)) {
+			return new KemeanPageApiBO<List<NewGoodsListBO>>(0l, 1, result);
+		}
+		for (DaikenGoodsNewDB daikenGoodsNewDB : dbGoodsNews) {
+			NewGoodsListBO bo = new NewGoodsListBO();
+			BeanUtils.copyProperties(daikenGoodsNewDB, bo);
+			bo.setPriceSales(daikenGoodsNewDB.getMinPriceSales());
+			bo.setPriceStore(daikenGoodsNewDB.getMinPriceStore());
+			bo.setHeadImg(JSONArray.parseArray(daikenGoodsNewDB.getImgsHead(), String.class).get(0));
+			bo.setSalesTypeStr(parseSalesTypeStr(daikenGoodsNewDB.getSalesType()));
+			if (daikenGoodsNewDB.getUserShopId() == null) {
+				bo.setUserShopId(0);
+			}
+			result.add(bo);
+		}
+		PageInfo<DaikenGoodsNewDB> pageInfo = new PageInfo<DaikenGoodsNewDB>(dbGoodsNews);
+		return new KemeanPageApiBO<List<NewGoodsListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 二手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public KemeanPageApiBO<List<OldGoodsListBO>> oldGoodsList(OldGoodsListPO oldGoodsListPO) {
+		String keyWord = "";
+		if (oldGoodsListPO.getKeyWord() != null) {
+			keyWord = oldGoodsListPO.getKeyWord();
+		}
+		List<Integer> categoryIds = new ArrayList<Integer>();
+		if (oldGoodsListPO.getCategoryId() == null) {
+			// 加载全部的商品分类
+			List<DaikenGoodsBaseCategory> dbGoodsBaseCategorys = daikenGoodsBaseCategoryDao.selectByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "level" }, new Object[] { false, 3 });
+			if (CollectionUtils.isNotEmpty(dbGoodsBaseCategorys)) {
+				for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbGoodsBaseCategorys) {
+					categoryIds.add(daikenGoodsBaseCategory.getId());
+				}
+			}
+		} else {
+			categoryIds.add(oldGoodsListPO.getCategoryId());
+		}
+		String descStr = "";
+		if (oldGoodsListPO.getIsQuality() != null) {
+			if (oldGoodsListPO.getIsQuality()) {
+				descStr += " quality, ";
+			}
+		}
+		if (oldGoodsListPO.getRedPacket() != null) {
+			if (oldGoodsListPO.getRedPacket()) {
+				descStr += " red_after, ";
+			}
+		}
+
+		descStr += " create_time, ";
+
+		if (StringUtils.isNotBlank(descStr)) {
+			descStr = descStr.substring(0, descStr.length() - 2);
+		}
+		// 设置一个最大值
+		Double maxPriceSales = 1000000000.0;
+		if (oldGoodsListPO.getMaxPriceSales() != null) {
+			maxPriceSales = oldGoodsListPO.getMaxPriceSales();
+		}
+		// 设置一个最小值
+		Double minPriceSales = 0.0;
+		if (oldGoodsListPO.getMinPriceSales() != null) {
+			minPriceSales = oldGoodsListPO.getMinPriceSales();
+		}
+		// 是否帮卖
+		Boolean isPurchasing = false;
+		if (oldGoodsListPO.getIsPurchasing() != null) {
+			isPurchasing = oldGoodsListPO.getIsPurchasing();
+		}
+		PageHelper.startPage(oldGoodsListPO.getPageNo(), oldGoodsListPO.getPageSize());
+		List<DaikenGoodsOldDB> dbGoodsOlds = daikenGoodsOldDao.oldGoodsList(categoryIds, descStr, maxPriceSales,
+				minPriceSales, isPurchasing, keyWord);
+		// TODO 缺少被帮卖商品信息
+		List<OldGoodsListBO> result = new ArrayList<OldGoodsListBO>(dbGoodsOlds.size());
+		if (CollectionUtils.isEmpty(dbGoodsOlds)) {
+			return new KemeanPageApiBO<List<OldGoodsListBO>>(0l, 1, result);
+		}
+		for (DaikenGoodsOldDB daikenGoodsOld : dbGoodsOlds) {
+			OldGoodsListBO bo = new OldGoodsListBO();
+			BeanUtils.copyProperties(daikenGoodsOld, bo);
+			List<String> headImg = JSONArray.parseArray(daikenGoodsOld.getImgsHead(), String.class);
+			if (headImg.size() >= 3) {
+				headImg = headImg.subList(0, 3);
+			}
+			bo.setHeadImg(headImg);
+			bo.setQualityStr(daikenGoodsOld.getQuality() + "成新");
+			bo.setTwoDayMinuteStr(DaikenUtil.getTwoDayMinuteStr(daikenGoodsOld.getCreateTime(), new Date()));
+			if (daikenGoodsOld.getUserShopId() == null) {
+				bo.setUserShopId(0);
+			}
+			result.add(bo);
+		}
+		PageInfo<DaikenGoodsOldDB> pageInfo = new PageInfo<DaikenGoodsOldDB>(dbGoodsOlds);
+		return new KemeanPageApiBO<List<OldGoodsListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 获取一手商品信息 skuNo组成（商品id + 规格id + 规格内容--父（MD5加密） + 规格内容--子（MD5加密））
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public NewGoodsInfoBO newGoodsInfo(Integer objId, DaikenUser daikenUser) {
+		DaikenGoodsNew dbGoodsNew = daikenGoodsNewDao.selectById(objId);
+		DaikenShop dbShop = daikenShopDao.selectById(dbGoodsNew.getShopId());
+		NewGoodsInfoBO bo = new NewGoodsInfoBO();
+		BeanUtils.copyProperties(dbGoodsNew, bo);
+		BeanUtils.copyProperties(dbShop, bo);
+		bo.setId(dbGoodsNew.getId());
+		bo.setImgsHead(JSONArray.parseArray(dbGoodsNew.getImgsHead(), String.class));
+		bo.setImgsDesc(JSONArray.parseArray(dbGoodsNew.getImgsDesc(), String.class));
+		List<DaikenGoodsNew> dbGoodsNews = daikenGoodsNewDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "shopId" }, new Object[] { false, dbShop.getId() });
+		List<DaikenOrderAppraisal> dbOrderAppraisals = daikenOrderAppraisalDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idShop" }, new Object[] { false, dbShop.getId() });
+		bo.setGoodsNum(dbGoodsNews.size());
+		bo.setAppraisalNum(dbOrderAppraisals.size());
+		bo.setOld(false);
+		bo.setIsCollect(false);
+		KemeanCollect dbCollect = kemeanCollectDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId", "type", "typeId" },
+				new Object[] { false, daikenUser.getId(), DaikenCollectTypeEnum.NEW_GOODS_COLLECT.getType(), objId });
+		if (dbCollect != null) {
+			bo.setIsCollect(true);
+		}
+		List<DaikenGoodsNewSku> dbGoodsNewSkus = daikenGoodsNewSkuDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "goodsId" }, new Object[] { false, objId });
+		List<SkuNoBO> skuNoBOs = new ArrayList<SkuNoBO>(dbGoodsNewSkus.size());
+		if (CollectionUtils.isNotEmpty(dbGoodsNewSkus)) {
+			for (DaikenGoodsNewSku daikenGoodsNewSku : dbGoodsNewSkus) {
+				SkuNoBO skuBO = new SkuNoBO();
+				BeanUtils.copyProperties(daikenGoodsNewSku, skuBO);
+				Integer stock = daikenGoodsNewSku.getStock() - daikenGoodsNewSku.getSalesNum();
+				skuBO.setStock(stock);
+				skuBO.setRecordType(DaikenUtil.parseJsonObject(daikenGoodsNewSku.getRecordType()));
+				if (stock >= 1) {
+					skuNoBOs.add(skuBO);
+				}
+			}
+		}
+		bo.setSkuNoBO(skuNoBOs);
+		bo.setRecordTypeFBO(JSONArray.parseArray(dbGoodsNew.getRecordType(), RecordTypeFBO.class));
+		bo.setIsPurchasing(false);
+		DaikenUserShop dbUserShop = daikenUserShopDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId" }, new Object[] { false, daikenUser.getId() });
+		if (dbUserShop != null) {
+			DaikenGoodsPurchasing dbGoodsPurchasing = daikenGoodsPurchasingDao.selectUniqueEntityByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "userShopId", "old", "goodsId" },
+					new Object[] { false, dbUserShop.getId(), false, dbGoodsNew.getId() });
+			if (dbGoodsPurchasing != null) {
+				bo.setIsPurchasing(true);
+			}
+		}
+		// 撸羊毛
+		bo.setWoolLabel(daikenUser.getWoolLabel());
+		return bo;
+	}
+
+	/**
+	 * 获取二手商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public OldGoodsInfoBO oldGoodsInfo(Integer objId, DaikenUser daikenUser) {
+		OldGoodsInfoBO bo = new OldGoodsInfoBO();
+		DaikenGoodsOld dbGoodsOld = daikenGoodsOldDao.selectById(objId);
+		BeanUtils.copyProperties(dbGoodsOld, bo);
+		bo.setQualityStr(dbGoodsOld.getQuality() + "成新");
+		bo.setHeadImg(JSONArray.parseArray(dbGoodsOld.getImgsHead(), String.class));
+		// 判断是否收藏
+		bo.setIsCollect(false);
+		KemeanCollect dbCollects = kemeanCollectDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId", "type", "typeId" }, new Object[] { false,
+						daikenUser.getId(), DaikenCollectTypeEnum.SECOND_GOODS_COLLECT.getType(), objId });
+		if (dbCollects != null) {
+			bo.setIsCollect(true);
+		}
+		bo.setIsPurchasing(false);
+		DaikenUserShop dbUserShop = daikenUserShopDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId" }, new Object[] { false, daikenUser.getId() });
+		if (dbUserShop != null) {
+			DaikenGoodsPurchasing dbGoodsPurchasing = daikenGoodsPurchasingDao.selectUniqueEntityByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "userShopId", "old", "goodsId" },
+					new Object[] { false, dbUserShop.getId(), true, dbGoodsOld.getId() });
+			if (dbGoodsPurchasing != null) {
+				bo.setIsPurchasing(true);
+			}
+		}
+		// 撸羊毛
+		bo.setWoolLabel(daikenUser.getWoolLabel());
+		return bo;
+	}
+
+	/**
+	 * 获取商店信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public ShopInfoBO shopInfo(Integer shopId, DaikenUser daikenUser) {
+		DaikenShop dbShop = daikenShopDao.selectById(shopId);
+		ShopInfoBO bo = new ShopInfoBO();
+		BeanUtils.copyProperties(dbShop, bo);
+		bo.setIsCollect(false);
+		KemeanCollect dbCollect = kemeanCollectDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId", "type", "typeId" },
+				new Object[] { false, daikenUser.getId(), DaikenCollectTypeEnum.SHOP_COLLECT.getType(), shopId });
+		if (dbCollect != null) {
+			bo.setIsCollect(true);
+		}
+		return bo;
+	}
+
+	/**
+	 * 获取商店全部商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	public KemeanPageApiBO<List<NewGoodsListBO>> goodsInfo(GoodsInfoPO goodsInfoPO) {
+		List<Integer> categoryIds = new ArrayList<Integer>();
+		if (goodsInfoPO.getCategoryId() == null) {
+			// 加载全部的商品分类
+			List<DaikenGoodsBaseCategory> dbGoodsBaseCategorys = daikenGoodsBaseCategoryDao.selectByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "level" }, new Object[] { false, 3 });
+			if (CollectionUtils.isNotEmpty(dbGoodsBaseCategorys)) {
+				for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbGoodsBaseCategorys) {
+					categoryIds.add(daikenGoodsBaseCategory.getId());
+				}
+			}
+		} else {
+			categoryIds.add(goodsInfoPO.getCategoryId());
+		}
+
+		String title = "";
+		if (goodsInfoPO.getTitle() != null) {
+			title = goodsInfoPO.getTitle();
+		}
+
+		List<DaikenGoodsNew> dbGoodsNew = daikenGoodsNewDao.goodsInfo(categoryIds, title, goodsInfoPO.getShopId(),
+				goodsInfoPO.getPageNo(), goodsInfoPO.getPageSize());
+
+		List<NewGoodsListBO> result = new ArrayList<NewGoodsListBO>(dbGoodsNew.size());
+		if (CollectionUtils.isEmpty(dbGoodsNew)) {
+			return new KemeanPageApiBO<List<NewGoodsListBO>>(0l, 1, result);
+		}
+		for (DaikenGoodsNew daikenGoodsNew : dbGoodsNew) {
+			NewGoodsListBO bo = new NewGoodsListBO();
+			BeanUtils.copyProperties(daikenGoodsNew, bo);
+			bo.setPriceSales(daikenGoodsNew.getMinPriceSales());
+			bo.setPriceStore(daikenGoodsNew.getMinPriceStore());
+			bo.setHeadImg(JSONArray.parseArray(daikenGoodsNew.getImgsHead(), String.class).get(0));
+			bo.setSalesTypeStr(parseSalesTypeStr(daikenGoodsNew.getSalesType()));
+			result.add(bo);
+		}
+		PageInfo<DaikenGoodsNew> pageInfo = new PageInfo<DaikenGoodsNew>(dbGoodsNew);
+		return new KemeanPageApiBO<List<NewGoodsListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 获取商品评论 type:1101商铺 1102商品
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	public KemeanPageApiBO<List<GoodsAppraisalListBO>> goodsAppraisalList(GoodsAppraisalListPO goodsAppraisalListPO) {
+		List<Integer> appraisalTypes = new ArrayList<Integer>();
+		if (goodsAppraisalListPO.getAppraisalType() != null) {
+			appraisalTypes.add(goodsAppraisalListPO.getAppraisalType());
+		} else {
+			appraisalTypes.add(1);
+			appraisalTypes.add(2);
+			appraisalTypes.add(3);
+		}
+		List<DaikenOrderAppraisal> dbOrderAppraisals = daikenOrderAppraisalDao.goodsAppraisalList(appraisalTypes,
+				goodsAppraisalListPO.getObjId(), goodsAppraisalListPO.getIsNewGoods(), goodsAppraisalListPO.getPageNo(),
+				goodsAppraisalListPO.getPageSize());
+
+		List<GoodsAppraisalListBO> result = new ArrayList<GoodsAppraisalListBO>(dbOrderAppraisals.size());
+		if (dbOrderAppraisals.isEmpty()) {
+			return new KemeanPageApiBO<List<GoodsAppraisalListBO>>(0l, 1, result);
+		}
+		for (DaikenOrderAppraisal daikenOrderAppraisal : dbOrderAppraisals) {
+			GoodsAppraisalListBO bo = new GoodsAppraisalListBO();
+			BeanUtils.copyProperties(daikenOrderAppraisal, bo);
+			if (StringUtils.isNotBlank(daikenOrderAppraisal.getContentImg())) {
+				bo.setContentImg(JSONArray.parseArray(daikenOrderAppraisal.getContentImg(), String.class));
+			} else {
+				bo.setContentImg(Arrays.asList());
+			}
+			if (StringUtils.isNotBlank(daikenOrderAppraisal.getContent())
+					|| StringUtils.isNotBlank(daikenOrderAppraisal.getContentImg())) {
+				result.add(bo);
+			}
+		}
+		PageInfo<DaikenOrderAppraisal> pageInfo = new PageInfo<DaikenOrderAppraisal>();
+		return new KemeanPageApiBO<List<GoodsAppraisalListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 推荐商品（个人中心、商品内页）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	public KemeanPageApiBO<List<NewGoodsListBO>> recommendGoods(KemeanPageApiPO kemeanPageApiPO,
+			DaikenUser loginConsumer) {
+		List<DaikenGoodsNew> dbGoodsNews = daikenGoodsNewDao.recommendGoods(kemeanPageApiPO.getPageNo(),
+				kemeanPageApiPO.getPageSize());
+		List<NewGoodsListBO> result = new ArrayList<NewGoodsListBO>(dbGoodsNews.size());
+		for (DaikenGoodsNew daikenGoodsNew : dbGoodsNews) {
+			NewGoodsListBO bo = new NewGoodsListBO();
+			BeanUtils.copyProperties(daikenGoodsNew, bo);
+			bo.setHeadImg(JSONArray.parseArray(daikenGoodsNew.getImgsHead(), String.class).get(0));
+			bo.setPriceStore(daikenGoodsNew.getMinPriceStore());
+			bo.setPriceSales(daikenGoodsNew.getMinPriceSales());
+			bo.setSalesTypeStr(parseSalesTypeStr(daikenGoodsNew.getSalesType()));
+			result.add(bo);
+		}
+		PageInfo<DaikenGoodsNew> pageInfo = new PageInfo<DaikenGoodsNew>(dbGoodsNews);
+		return new KemeanPageApiBO<List<NewGoodsListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 商品类型转换
+	 * 
+	 * @author huwei
+	 * @date 2018年6月29日
+	 */
+	public String parseSalesTypeStr(Integer salesType) {
+		String salesTypeStr = "正常售卖";
+		if (salesType.equals(DaikenGoodsType.SalesType.DISCOUNT_FAMOUS_BRAND.getType())) {
+			salesTypeStr = "名牌折扣";
+		}
+		if (salesType.equals(DaikenGoodsType.SalesType.DISCOUNT_LIMITED_TIME.getType())) {
+			salesTypeStr = "限时折扣";
+		}
+		if (salesType.equals(DaikenGoodsType.SalesType.NINE_EXEMPTION_POSTAGE.getType())) {
+			salesTypeStr = "9.9包邮";
+		}
+		if (salesType.equals(DaikenGoodsType.SalesType.LOSS_MONEY.getType())) {
+			salesTypeStr = "亏本走量";
+		}
+		return salesTypeStr;
+	}
+
+	/**
+	 * 获取商品评论（赞，一般，踩）
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	public GoodsAppraisalTopListBO goodsAppraisalNum(GoodsAppraisalTopListPO goodsAppraisalTopListPO) {
+		GoodsAppraisalTopListBO bo = new GoodsAppraisalTopListBO();
+		// 踩
+		bo.setBadNum(daikenOrderAppraisalDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "isNewGoods", "idGoods", "score" }, new Object[] { false,
+						goodsAppraisalTopListPO.getIsNewGoods(), goodsAppraisalTopListPO.getObjId(), 1 }));
+		// 一般
+		bo.setCommonNum(daikenOrderAppraisalDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "isNewGoods", "idGoods", "score" }, new Object[] { false,
+						goodsAppraisalTopListPO.getIsNewGoods(), goodsAppraisalTopListPO.getObjId(), 2 }));
+		// 赞
+		bo.setGoodNum(daikenOrderAppraisalDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "isNewGoods", "idGoods", "score" }, new Object[] { false,
+						goodsAppraisalTopListPO.getIsNewGoods(), goodsAppraisalTopListPO.getObjId(), 3 }));
+		return bo;
+	}
+
+}

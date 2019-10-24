@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">店铺信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">Logo：</label>
+					<div class="layui-input-block">
+						<img
+							th:src="${pageData.shopLogo}"
+							class="param_shopLogo"
+							width="200px"
+							th:onclick="'javascript:visitImg(this.src);'" />
+
+					</div>
+					<div
+						class="layui-input-block"
+						style="margin-top: 10px;">
+						<button
+							type="button"
+							class="layui-btn"
+							id="uploadimg">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">店铺名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_shopName"
+							th:value="${pageData.shopName}"
+							placeholder="请输入店铺名称" />
+					</div>
+				</div>
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">店铺类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.settledTypeStr}" />
+					</div>
+				</div>
+
+
+			</div>
+
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">公司名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.businessLicenseName}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">联系电话：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_shopPhone"
+							th:value="${pageData.shopPhone}"
+							placeholder="请输入联系电话" />
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">营业状态：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.workStatus}?'营业中':'打烊'" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">好评度：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.degreeOfPraise}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">赞：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly "
+							th:value="${pageData.numPraise}" />
+					</div>
+				</div>
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">一般：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.numCommon}" />
+					</div>
+				</div>
+
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">踩：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.numTrample}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">收藏：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.numCollect}" />
+					</div>
+				</div>
+
+
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">物流服务：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.logisticsService}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">经营场所：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.businessLicenseLocation}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6 ">
+					<label class="layui-form-label">店铺介绍：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							readonly="readonly"
+							class="layui-textarea param_presentation layui-word-aux"
+							th:text="${pageData.presentation}"
+							placeholder="请输入店铺介绍" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<button
+			class="layui-btn"
+			style="margin-top: 10px; margin-left: 50px;"
+			th:onclick="'javascript:update(\''+${pageData.id}+'\');'">
+			<i
+				class="fa fa-edit"
+				aria-hidden="true"></i>&nbsp;更新
+		</button>
+		<button
+			class="layui-btn layui-btn-primary"
+			style="margin-top: 10px; margin-left: 50px;"
+			onclick="history.back()">
+			<i
+				class="fa fa-arrow-left"
+				aria-hidden="true"></i>&nbsp;返回
+		</button>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var pageData=/*[[${pageData}]]*/;
+	var url_shop_page = /*[[@{/admin/shop/}]]*/;
+	var url_update_shop = /*[[@{/admin/shop/shop_info_update}]]*/;
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	
+	layui.use([ 'form', 'upload'], function() {
+		var form = layui.form;
+		var upload = layui.upload;
+		var myIndex=0;
+		var uploadInst = upload.render({
+			elem : '#uploadimg',
+			url : url_upload_img,
+			data:{resetName:true},
+			done : function(res) {
+				//上传完毕回调
+				$(".param_shopLogo").prop("src",res.data);
+				layer.msg('上传成功');
+			}
+		});
+	});
+
+	function update(objId) {
+		var paramShopLogo = $(".param_shopLogo").prop("src");
+		
+		if(!paramShopLogo){
+			layer.msg('商铺logo不能为空');
+			return false;
+		}
+		
+		var paramPresentation = $(".param_presentation").val();
+		if(!paramPresentation){
+			layer.msg('商铺介绍不能为空');
+			return false;
+		}
+		
+		var paramShopName = $(".param_shopName").val();
+		if(!paramShopName){
+			layer.msg('商铺名称不能为空');
+			return false;
+		}
+		
+		var paramShopPhone = $(".param_shopPhone").val();
+		if(!paramShopPhone){
+			layer.msg('商铺联系电话不能为空');
+			return false;
+		}
+		
+	
+		$.post(url_update_shop,
+				{shopId:pageData.id,
+				shopLogo:paramShopLogo,
+				presentation:paramPresentation,
+				shopName:paramShopName,
+				shopPhone:paramShopPhone
+			   },function(result){
+			showResultMsgAndJump(result.info,url_shop_page);
+	 	});
+	}
+
+
+</script>
+
+
+</html>

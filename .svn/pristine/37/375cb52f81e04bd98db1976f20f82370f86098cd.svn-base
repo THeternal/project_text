@@ -1,0 +1,283 @@
+package com.kemean.controller.admin;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.KemeanBaseController;
+import com.kemean.service.admin.AdminCommonService;
+import com.kemean.service.admin.AdminGoodsService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.goods.AdminGoodsCategoryBO;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewBO;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewSkuBO;
+import com.kemean.vo.po.admin.AdminMonitorPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsCategoryAddPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsCategoryPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsListPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsNewSkuUpdatePO;
+import com.kemean.vo.po.admin.goods.AdminGoodsNewUpdatePO;
+
+/**
+ * 商品管理
+ * 
+ * @Date 2018年6月25日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("admin/goods")
+public class AdminGoodsController extends KemeanBaseController {
+
+	@Autowired
+	private AdminGoodsService adminGoodsService;
+
+	@Autowired
+	private AdminCommonService adminCommonService;
+
+	/**
+	 * 一手商品 列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "new", method = RequestMethod.GET)
+	public String goodsNewPage(@RequestParam Integer objId) {
+		request.setAttribute("shopData", adminGoodsService.shopName(objId));
+		return KemeanConstant.ADMIN_FOLDER + "goodsNew";
+	}
+
+	/**
+	 * 添加 一手商品 列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "new_add_page", method = RequestMethod.GET)
+	public String goodsNewAddPage(@RequestParam Integer shopId) {
+		request.setAttribute("shopId", shopId);
+		request.setAttribute("category", adminCommonService.goodsBeseCategory(0));
+		return KemeanConstant.ADMIN_FOLDER + "goodsNewAdd";
+	}
+
+	/**
+	 * 一手商品列表 Data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "news_page_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminGoodsNewBO>> goodsNewListData(@Valid AdminGoodsListPO adminGoodsListPO) {
+		return adminGoodsService.goodsNewListData(adminGoodsListPO, null);
+
+	}
+
+	/**
+	 * 操作商品上下架/推荐状态
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "status_operate", method = RequestMethod.GET)
+	public KemeanResult<String> goodsNewStatusOperate(@Valid AdminMonitorPO adminMonitorPO) {
+		return adminGoodsService.goodsNewStatusOperate(adminMonitorPO,getLoginAdminUser());
+	}
+
+	/**
+	 * 商品详情
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "news_info_page", method = RequestMethod.GET)
+	public String goodsNewInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData", adminGoodsService.goodsNewInfoData(objId));
+		return KemeanConstant.ADMIN_FOLDER + "goodsNewInfo";
+	}
+
+	/**
+	 * 商品SKU
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_sku_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminGoodsNewSkuBO>> goodsNewSkuData(@RequestParam Integer objId,
+			@RequestParam Integer limit, @RequestParam Integer page) {
+		return adminGoodsService.goodsNewSkuData(objId, page, limit);
+
+	}
+
+	/**
+	 * 商品信息修改
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_update", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewUpdate(@Valid AdminGoodsNewUpdatePO adminGoodsNewUpdatePO) {
+		return adminGoodsService.goodsNewUpdate(adminGoodsNewUpdatePO);
+
+	}
+
+	/**
+	 * 商品信息删除
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_del", method = RequestMethod.GET)
+	public KemeanResult<String> goodsNewDel(@RequestParam Integer objId) {
+		return adminGoodsService.goodsNewDel(objId);
+
+	}
+
+	/**
+	 * 商品信息添加
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_add", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewAdd(@Valid @RequestBody AdminGoodsNewUpdatePO adminGoodsNewUpdatePO) {
+		return adminGoodsService.addGoods(adminGoodsNewUpdatePO);
+
+	}
+
+	/**
+	 * 商品SKU信息更改
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月26日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_sku_update", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewSkuUpdate(@Valid AdminGoodsNewSkuUpdatePO adminGoodsNewSkuUpdatePO) {
+		return adminGoodsService.goodsNewSkuUpdate(adminGoodsNewSkuUpdatePO);
+	}
+
+	/**
+	 * 商品一级分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@RequestMapping(value = "category_page", method = RequestMethod.GET)
+	public String goodsCategoryPage() {
+		return KemeanConstant.ADMIN_FOLDER + "goodsCategory";
+
+	}
+
+	/**
+	 * 商品二级分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@RequestMapping(value = "category_two_page", method = RequestMethod.GET)
+	public String goodsCategoryTwoPage(@RequestParam Integer pid) {
+		request.setAttribute("pageData", adminGoodsService.getCategoryName(pid));
+		return KemeanConstant.ADMIN_FOLDER + "goodsCategoryTwo";
+
+	}
+
+	/**
+	 * 商品三级分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@RequestMapping(value = "category_three_page", method = RequestMethod.GET)
+	public String goodsCategoryThreePage(@RequestParam Integer pid) {
+		request.setAttribute("pageData", adminGoodsService.getCategoryName(pid));
+		return KemeanConstant.ADMIN_FOLDER + "goodsCategoryThree";
+
+	}
+
+	/**
+	 * 添加商品三级分类page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@RequestMapping(value = "category_three_add_page", method = RequestMethod.GET)
+	public String goodsCategoryThreeAddPage(@RequestParam Integer pid) {
+		request.setAttribute("pid", pid);
+		request.setAttribute("baseTypeData", adminGoodsService.getGoodsType());
+		return KemeanConstant.ADMIN_FOLDER + "goodsCategoryThreeAdd";
+	}
+
+	/**
+	 * 添加商品三级分类详情page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@RequestMapping(value = "category_three_info_page", method = RequestMethod.GET)
+	public String goodsCategoryThreeInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData", adminGoodsService.goodsCategoryInfo(objId));
+		request.setAttribute("baseTypeData", adminGoodsService.getGoodsType());
+		return KemeanConstant.ADMIN_FOLDER + "goodsCategoryThreeInfo";
+	}
+
+	/**
+	 * 商品分类data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "category_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminGoodsCategoryBO>> goodsCategoryData(
+			@Valid AdminGoodsCategoryPO adminGoodsCategoryPO) {
+		return adminGoodsService.goodsCategoryData(adminGoodsCategoryPO);
+	}
+
+	/**
+	 * 添加/修改商品一二级分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@ResponseBody
+	@RequestMapping(value = "category_operate", method = RequestMethod.POST)
+	public KemeanResult<String> goodsCategoryOperate(@Valid AdminGoodsCategoryAddPO adminGoodsCategoryAddPO) {
+		return adminGoodsService.goodsCategoryOperate(adminGoodsCategoryAddPO);
+	}
+
+	/**
+	 * 删除商品分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月11日
+	 */
+
+	@ResponseBody
+	@RequestMapping(value = "category_del", method = RequestMethod.GET)
+	public KemeanResult<String> goodsCategoryDel(@RequestParam Integer objId) {
+		return adminGoodsService.goodsCategoryDel(objId);
+	}
+
+}

@@ -1,0 +1,60 @@
+package com.kemean.service.consumer;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.DaikenImMessageTypeEnum;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.vo.mysql.ImRecordRedis;
+
+/**
+ * 【客户端】消息业务层
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+public class CMessageService {
+
+	@Autowired
+	private KemeanRedisService kemeanRedisService;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	/**
+	 * IM记录
+	 * 
+	 * @author huwei
+	 * @date 2018年7月24日
+	 */
+	public void imRecord(ImRecordRedis imRecordPO) {
+		DaikenUser dbUser = daikenUserDao.selectUniqueEntityByProperty("uId", imRecordPO.getFromUserId());
+		imRecordPO.setDate(new Date());
+		imRecordPO.setName(dbUser.getNickName());
+		imRecordPO.setHeadImg(dbUser.getHeadImg());
+		imRecordPO.setFromUserId(dbUser.getUid() + "");
+		if (DaikenImMessageTypeEnum.IMG.getType().equals(imRecordPO.getMessageType())) {
+			imRecordPO.setContent("[图片]");
+		}
+		if (DaikenImMessageTypeEnum.POSITION.getType().equals(imRecordPO.getMessageType())) {
+			imRecordPO.setContent("[位置]");
+		}
+		if (DaikenImMessageTypeEnum.VOICE.getType().equals(imRecordPO.getMessageType())) {
+			imRecordPO.setContent("[语音]");
+		}
+		kemeanRedisService.hset(
+				String.format(DaikenRedisKeyEnum.IM_RECORD_USER_COMVERSATION.getKey(), imRecordPO.getToUserId()),
+				dbUser.getUid() + "", JSONObject.toJSONString(imRecordPO));
+		kemeanRedisService.incrBy(String.format(DaikenRedisKeyEnum.IM_RECORD_MESSAGE_NUMBER.getKey(),
+				imRecordPO.getToUserId(), dbUser.getUid()), 1);
+	}
+
+}

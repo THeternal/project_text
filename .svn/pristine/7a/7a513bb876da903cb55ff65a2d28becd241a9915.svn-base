@@ -1,0 +1,274 @@
+package com.kemean.service.admin;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageInfo;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.bean.DaikenInvestigateQuestionUser;
+import com.kemean.bean.DaikenShop;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.DaikenUserSales;
+import com.kemean.bean.KemeanAdminUser;
+import com.kemean.bean.KemeanFinanceClear;
+import com.kemean.constant.DaikenConfigEnum;
+import com.kemean.constant.DaikenFinanceTypeClearEnum;
+import com.kemean.constant.DaikenMapData;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanFinanceEnum;
+import com.kemean.constant.KemeanMapData;
+import com.kemean.dao.DaikenGoodsNewDao;
+import com.kemean.dao.DaikenInvestigateDao;
+import com.kemean.dao.DaikenInvestigateOperationDao;
+import com.kemean.dao.DaikenInvestigateQuestionUserDao;
+import com.kemean.dao.DaikenOrderGoodsDao;
+import com.kemean.dao.DaikenShopDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.dao.DaikenUserSalesDao;
+import com.kemean.dao.KemeanFinanceClearDao;
+import com.kemean.service.common.CommonService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.bo.admin.platform.AdminFinanceListBO;
+import com.kemean.vo.bo.admin.platform.AdminIncomeBO;
+import com.kemean.vo.bo.admin.platform.AdminPlatformWorkBO;
+import com.kemean.vo.bo.admin.platform.AdminPromotionBO;
+import com.kemean.vo.bo.admin.platform.AdminQuestionUserBO;
+import com.kemean.vo.bo.admin.platform.AdminSalePerformanceBO;
+import com.kemean.vo.po.admin.AdminDatePO;
+import com.kemean.vo.po.admin.platform.AdminFinancePO;
+import com.kemean.vo.po.admin.platform.AdminInvestQuestionUserPO;
+import com.kemean.vo.po.admin.platform.AdminPromotionPO;
+import com.kemean.vo.po.admin.platform.AdminSalePerformancePO;
+
+@Service
+public class AdminPlatformService {
+
+	@Autowired
+	private DaikenOrderGoodsDao daikenOrderGoodsDao;
+
+	@Autowired
+	private DaikenGoodsNewDao daikenGoodsNewDao;
+
+	@Autowired
+	private DaikenInvestigateDao daikenInvestigateDao;
+
+	@Autowired
+	private DaikenInvestigateOperationDao investigateOperationDao;
+
+	@Autowired
+	private DaikenShopDao daikenShopDao;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenUserSalesDao daikenUserSalesDao;
+
+	@Autowired
+	private DaikenInvestigateQuestionUserDao daikenInvestigateQuestionUserDao;
+
+	@Autowired
+	private KemeanFinanceClearDao kemeanFinanceClearDao;
+
+	@Autowired
+	private CommonService commonService;
+
+	/**
+	 * 平台总销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	public List<AdminChartBO> platformSaleData(AdminDatePO adminChartPO, Integer limit) {
+		return daikenOrderGoodsDao.selectGoodInSalePrice(null, null, null, adminChartPO.getDateStart(),
+				adminChartPO.getDateEnd(), null, limit);
+	}
+
+	/**
+	 * 平台四个促销推广报表data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	public KemeanPageAdminBO<List<AdminPromotionBO>> platformPromotionData(AdminPromotionPO adminPromotionPO) {
+		List<DaikenGoodsNew> dbGoodsNew = daikenGoodsNewDao.selectGoodsPromotionData(adminPromotionPO.getType(), null,
+				adminPromotionPO.getGoodsTitle(), adminPromotionPO.getDateStart(), adminPromotionPO.getDateEnd(),
+				adminPromotionPO.getPage(), adminPromotionPO.getLimit());
+
+		List<AdminPromotionBO> result = Lists.transform(dbGoodsNew, new Function<DaikenGoodsNew, AdminPromotionBO>() {
+
+			@Override
+			public AdminPromotionBO apply(DaikenGoodsNew input) {
+				AdminPromotionBO bo = new AdminPromotionBO();
+				BeanUtils.copyProperties(input, bo);
+				DaikenShop dbShop = daikenShopDao.selectById(input.getShopId());
+				if (dbShop != null) {
+					bo.setShopName(dbShop.getShopName());
+				}
+				bo.setTypeStr(DaikenMapData.salesType.get(input.getSalesType()));
+				return bo;
+			}
+		});
+		return new KemeanPageAdminBO<List<AdminPromotionBO>>(new PageInfo<>(dbGoodsNew).getTotal(), result);
+	}
+
+	/**
+	 * 平台精准投放（问卷调查）用户列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+
+	public KemeanPageAdminBO<List<AdminQuestionUserBO>> platformQuestionUserData(
+			AdminInvestQuestionUserPO adminInvestQuestionUserPO) {
+		List<DaikenInvestigateQuestionUser> dbQuestionUser = daikenInvestigateQuestionUserDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "isFinished" },
+				new Object[] { false, adminInvestQuestionUserPO.getResult() }, "id", false,
+				adminInvestQuestionUserPO.getPage(), adminInvestQuestionUserPO.getLimit());
+
+		List<AdminQuestionUserBO> result = Lists.transform(dbQuestionUser,
+				new Function<DaikenInvestigateQuestionUser, AdminQuestionUserBO>() {
+					@Override
+					public AdminQuestionUserBO apply(DaikenInvestigateQuestionUser input) {
+						AdminQuestionUserBO bo = new AdminQuestionUserBO();
+						BeanUtils.copyProperties(input, bo);
+						bo.setIsFinishedStr(BooleanUtils.isTrue(input.getIsFinished()) ? "已完成" : "未完成");
+						DaikenUser dbUser = daikenUserDao.selectById(input.getUserId());
+						BeanUtils.copyProperties(dbUser, bo);
+						return bo;
+					}
+				});
+		return new KemeanPageAdminBO<List<AdminQuestionUserBO>>(new PageInfo<>(dbQuestionUser).getTotal(), result);
+	}
+
+	/**
+	 * 统计平台管理人员待客户上下架商品、调研数
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	public AdminPlatformWorkBO platformWorkCount(AdminDatePO adminChartPO, KemeanAdminUser loginAdminUser, int limit) {
+		AdminPlatformWorkBO bo = new AdminPlatformWorkBO();
+		// 调研数
+		List<AdminChartBO> operateNum = daikenInvestigateDao.selectAdminOperateInvestCount(loginAdminUser.getId(),
+				adminChartPO.getDateStart(), adminChartPO.getDateEnd(), limit);
+		bo.setInvestNum(operateNum);
+
+		// 商品数
+		operateNum = daikenGoodsNewDao.selectAdminOperateGoodsCount(loginAdminUser.getId(), adminChartPO.getDateStart(),
+				adminChartPO.getDateEnd(), limit);
+		bo.setGoodsNum(operateNum);
+		return bo;
+	}
+
+	/**
+	 * 统计销售对应的客户、店铺
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	public KemeanPageAdminBO<List<AdminSalePerformanceBO>> platformSalesPerformanceData(
+			AdminSalePerformancePO adminSalePerformancePO) {
+
+		List<DaikenUserSales> dbSalesUser = daikenUserSalesDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "phone" },
+				new Object[] { false, adminSalePerformancePO.getPhone() }, "id", false,
+				adminSalePerformancePO.getPage(), adminSalePerformancePO.getLimit());
+
+		List<AdminSalePerformanceBO> result = Lists.transform(dbSalesUser,
+				new Function<DaikenUserSales, AdminSalePerformanceBO>() {
+
+					@Override
+					public AdminSalePerformanceBO apply(DaikenUserSales input) {
+						AdminSalePerformanceBO bo = new AdminSalePerformanceBO();
+						BeanUtils.copyProperties(input, bo);
+						bo.setLevelStr(DaikenMapData.salesLevel.get(input.getLevel()));
+						Integer shopCount = daikenUserDao.countByProperties(
+								new String[] { KemeanConstant.DATA_DELETED, "referralCode" },
+								new Object[] { false, input.getReferralCode() });
+						bo.setShopCount(shopCount);
+						return bo;
+					}
+
+				});
+
+		return new KemeanPageAdminBO<List<AdminSalePerformanceBO>>(new PageInfo<>(dbSalesUser).getTotal(), result);
+	}
+
+	/**
+	 * 平台财务流水
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月23日
+	 */
+	public KemeanPageAdminBO<List<AdminFinanceListBO>> platformFinanceData(AdminFinancePO adminFinancePO) {
+		List<KemeanFinanceClear> dbFinance = kemeanFinanceClearDao.shopFinanceOrderList(adminFinancePO.getFinanceNo(),
+				adminFinancePO.getFinanceStatus(), null, adminFinancePO.getDateStart(), adminFinancePO.getDateEnd(),
+				null, adminFinancePO.getPage(), adminFinancePO.getLimit());
+
+		List<AdminFinanceListBO> result = Lists.transform(dbFinance,
+				new Function<KemeanFinanceClear, AdminFinanceListBO>() {
+					@Override
+					public AdminFinanceListBO apply(KemeanFinanceClear input) {
+						AdminFinanceListBO bo = new AdminFinanceListBO();
+						BeanUtils.copyProperties(input, bo);
+						bo.setFinanceStatusStr(KemeanMapData.financeStatus.get(input.getFinanceStatus()));
+						bo.setFinanceTypeStr(DaikenMapData.financeClearType.get(input.getFinanceType()));
+						bo.setPayMethodStr(KemeanMapData.payType.get(input.getPayMethod()));
+						return bo;
+					}
+
+				});
+		return new KemeanPageAdminBO<List<AdminFinanceListBO>>(new PageInfo<>(dbFinance).getTotal(), result);
+	}
+
+	/**
+	 * 平台收入总额报表（平台入帐减支出报表）
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	public AdminIncomeBO platformIncomeData(AdminDatePO adminChartPO) {
+
+		AdminIncomeBO result = new AdminIncomeBO();
+		Double tokenAward = Double.valueOf(commonService.getConfig(DaikenConfigEnum.TOKEN_AWARD).getRecord());
+		// 入账（充值金额+佣金）
+		Double recharge = kemeanFinanceClearDao.selectPlatformInMoney(DaikenFinanceTypeClearEnum.RECHARGE.getType(),
+				KemeanFinanceEnum.FinanceStatusEnum.SUCCESS.getStatus(), adminChartPO.getDateStart(),
+				adminChartPO.getDateStart());
+		// 佣金
+		Double rate = kemeanFinanceClearDao.selectPlatformOutMoney(
+				Arrays.asList(DaikenFinanceTypeClearEnum.CASH_SHOP.getType(),
+						DaikenFinanceTypeClearEnum.CASE_USER.getType()),
+				true, KemeanFinanceEnum.FinanceStatusEnum.SUCCESS.getStatus(), adminChartPO.getDateStart(),
+				adminChartPO.getDateStart());
+
+		// 支出（提现+token）
+		Double shopCash = kemeanFinanceClearDao.selectPlatformOutMoney(
+				Arrays.asList(DaikenFinanceTypeClearEnum.CASH_SHOP.getType(),
+						DaikenFinanceTypeClearEnum.CASE_USER.getType()),
+				false, KemeanFinanceEnum.FinanceStatusEnum.SUCCESS.getStatus(), adminChartPO.getDateStart(),
+				adminChartPO.getDateStart());
+		Integer tokenNumber = investigateOperationDao.selectUserGetTokenNum(adminChartPO.getDateStart(),
+				adminChartPO.getDateEnd());
+		Double tokenMoeny = tokenAward * tokenNumber;
+		result.setInMoeny(recharge + rate);
+		result.setOutMoeny(tokenMoeny + shopCash);
+
+		// 毛利（计算充值）
+		result.setGrossProfit(recharge);
+		// 净利 = 充值- 提现等（赠送token等）
+		Double netIncome = recharge - (tokenMoeny + shopCash);
+		result.setNetIncome(netIncome);
+		return result;
+	}
+
+}

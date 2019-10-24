@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">商品编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_goods_no"
+						placeholder="请输入商品编号" />
+				</div>
+			</div>
+		</div>
+		<!-- <div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-inline">
+				<label class="layui-form-label">SKU编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_sku_no"
+						placeholder="请输入商品的SKU编号" />
+				</div>
+			</div>
+		</div> -->
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/shop/goods/precision_push_data}]]*/;
+    var url_goods_category = /*[[@{/shop/common/goods_category}]]*/;
+    
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+                {
+                    field: 'goodsUid',
+                    title: '商品编号',
+                },
+                {
+                    field: 'goodsTitle',
+                    title: '商品名称'
+                },
+                {
+                    field: 'startDate',
+                    title: '开始时间'
+                },
+                {
+                    field: 'nowClickUserNum',
+                    title: '当前点击人数',
+                },
+                {
+                    field: 'nowBuyUserNum',
+                    title: '当前购买人数',
+                },
+                {
+                    field: 'targetClickUserNum',
+                    title: '目标点击人数',
+                },
+                {
+                    field: 'conversionRate',
+                    title: '当前转化率',
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+    });
+
+    function search() {
+        var table = layui.table;
+        var paramSkuNo = $(".param_sku_no").val();
+        var paramGoodsNo = $(".param_goods_no").val();
+		
+        
+        table.reload("dataTable",
+        {
+            page: {curr: 1},
+            where: {
+            	skuNo: paramSkuNo,
+            	goodsUid: paramGoodsNo
+            }
+        });
+    }
+    
+    </script>
+
+</html>

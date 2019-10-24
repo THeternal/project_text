@@ -1,0 +1,243 @@
+package com.kemean.vo.bo.b.goods;
+
+import java.util.List;
+
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class GoodsInfoBO extends KemeanIdBO {
+
+	/**
+	 * 标题
+	 */
+	private String title;
+
+	/**
+	 * 封面轮播图-json
+	 */
+	private List<String> imgsHead;
+
+	/**
+	 * 描述
+	 */
+	private String descStr;
+
+	/**
+	 * 描述图-json
+	 */
+	private List<String> imgsDesc;
+
+	/**
+	 * 分类id
+	 */
+	private Integer categoryId;
+
+	/**
+	 * 分类名称
+	 */
+	private String categoryName;
+
+	/**
+	 * 售卖类型
+	 */
+	private Integer salesType;
+
+	/**
+	 * 折扣开始时间
+	 */
+	private String discountTimeBegin;
+
+	/**
+	 * 折扣结束时间
+	 */
+	private String discountTimeEnd;
+
+	/**
+	 * 商品规格
+	 */
+	private List<GoodsSkusBO> goodsSkus;
+
+	/**
+	 * 48小时发货
+	 */
+	private Boolean fortyEight;
+
+	/**
+	 * 假一赔十
+	 */
+	private Boolean fakeGoods;
+
+	/**
+	 * 邮费,0-免邮
+	 */
+	private Double postage;
+
+	/**
+	 * 售前红包
+	 */
+	private Double redBefore;
+
+	/**
+	 * 售后红包
+	 */
+	private Double redAfter;
+
+	/**
+	 * 帮代卖
+	 */
+	private Boolean purchasing;
+
+	/**
+	 * 上下架状态,针对全局SKU
+	 */
+	private Boolean goodsStatus;
+
+	/**
+	 * 规格
+	 */
+	private String recordTypeStr;
+
+	public String getRecordTypeStr() {
+		return recordTypeStr;
+	}
+
+	public void setRecordTypeStr(String recordTypeStr) {
+		this.recordTypeStr = recordTypeStr;
+	}
+
+	public Boolean getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(Boolean goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public List<String> getImgsHead() {
+		return imgsHead;
+	}
+
+	public void setImgsHead(List<String> imgsHead) {
+		this.imgsHead = imgsHead;
+	}
+
+	public String getDescStr() {
+		return descStr;
+	}
+
+	public void setDescStr(String descStr) {
+		this.descStr = descStr;
+	}
+
+	public List<String> getImgsDesc() {
+		return imgsDesc;
+	}
+
+	public void setImgsDesc(List<String> imgsDesc) {
+		this.imgsDesc = imgsDesc;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public Integer getSalesType() {
+		return salesType;
+	}
+
+	public void setSalesType(Integer salesType) {
+		this.salesType = salesType;
+	}
+
+	public String getDiscountTimeBegin() {
+		return discountTimeBegin;
+	}
+
+	public void setDiscountTimeBegin(String discountTimeBegin) {
+		this.discountTimeBegin = discountTimeBegin;
+	}
+
+	public String getDiscountTimeEnd() {
+		return discountTimeEnd;
+	}
+
+	public void setDiscountTimeEnd(String discountTimeEnd) {
+		this.discountTimeEnd = discountTimeEnd;
+	}
+
+	public List<GoodsSkusBO> getGoodsSkus() {
+		return goodsSkus;
+	}
+
+	public void setGoodsSkus(List<GoodsSkusBO> goodsSkus) {
+		this.goodsSkus = goodsSkus;
+	}
+
+	public Boolean getFortyEight() {
+		return fortyEight;
+	}
+
+	public void setFortyEight(Boolean fortyEight) {
+		this.fortyEight = fortyEight;
+	}
+
+	public Boolean getFakeGoods() {
+		return fakeGoods;
+	}
+
+	public void setFakeGoods(Boolean fakeGoods) {
+		this.fakeGoods = fakeGoods;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Double getRedBefore() {
+		return redBefore;
+	}
+
+	public void setRedBefore(Double redBefore) {
+		this.redBefore = redBefore;
+	}
+
+	public Double getRedAfter() {
+		return redAfter;
+	}
+
+	public void setRedAfter(Double redAfter) {
+		this.redAfter = redAfter;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+}

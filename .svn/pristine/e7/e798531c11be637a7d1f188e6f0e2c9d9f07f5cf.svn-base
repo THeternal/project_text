@@ -1,0 +1,89 @@
+package com.kemean.vo.bo.c.mall;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class NewGoodsActivityListBO extends NewGoodsListBO {
+
+	/**
+	 * 库存
+	 */
+	private Integer countStock;
+
+	/**
+	 * 销量
+	 */
+	private Integer salesNum;
+
+	/**
+	 * 开始时间
+	 */
+	@JsonFormat(pattern = "MM/dd HH:ss", timezone = "GMT+8")
+	private Date discountTimeBegin;
+
+	/**
+	 * 结束时间
+	 */
+	@JsonFormat(pattern = "MM/dd HH:ss", timezone = "GMT+8")
+	private Date discountTimeEnd;
+
+	/**
+	 * 时间类型
+	 */
+	private Integer timeType;
+
+	/**
+	 * 最低折扣
+	 */
+	private Float minDiscount;
+
+	public Integer getCountStock() {
+		return countStock;
+	}
+
+	public void setCountStock(Integer countStock) {
+		this.countStock = countStock;
+	}
+
+	public Integer getSalesNum() {
+		return salesNum;
+	}
+
+	public void setSalesNum(Integer salesNum) {
+		this.salesNum = salesNum;
+	}
+
+	public Date getDiscountTimeBegin() {
+		return discountTimeBegin;
+	}
+
+	public void setDiscountTimeBegin(Date discountTimeBegin) {
+		this.discountTimeBegin = discountTimeBegin;
+	}
+
+	public Date getDiscountTimeEnd() {
+		return discountTimeEnd;
+	}
+
+	public void setDiscountTimeEnd(Date discountTimeEnd) {
+		this.discountTimeEnd = discountTimeEnd;
+	}
+
+	public Integer getTimeType() {
+		return timeType;
+	}
+
+	public void setTimeType(Integer timeType) {
+		this.timeType = timeType;
+	}
+
+	public Float getMinDiscount() {
+		return minDiscount;
+	}
+
+	public void setMinDiscount(Float minDiscount) {
+		this.minDiscount = minDiscount;
+	}
+
+}

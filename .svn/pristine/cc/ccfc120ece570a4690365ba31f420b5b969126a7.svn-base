@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all" />
+<link rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+<style type="text/css">
+.success {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	flex-direction: column;
+}
+
+.success h2 {
+	color: #009688;
+	font-size: 30px;
+}
+
+.success button {
+	margin-top: 30px;
+	padding: 0 50px;
+}
+</style>
+</head>
+<body>
+	<div class="success">
+		<h2>绑定成功</h2>
+		<button class="layui-btn">关闭</button>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script type="text/javascript" th:inline="javascript">
+	var url_third_login_wx = /*[[@{/shop/open/third_login_wx}]]*/;
+	
+	layui.use(['layer'], function () {
+		var layer = layui.layer;
+	});
+	
+	function getRequest() {
+		var strs;
+		var url = window.location.href; //获取url中"?"符后的字串
+		var theRequest = new Object();
+		/*<![CDATA[*/
+		if (url.indexOf("?") != -1) {
+			url = url.substr(url.indexOf("?"));
+			var str = url.substr(1);
+			strs = str.split("&");
+			for (var i = 0; i < strs.length; i++) {
+				theRequest[strs[i].split("=")[0]] = unescape(strs[i]
+						.split("=")[1]);
+			}
+		}
+		/*]]>*/
+		return theRequest;
+	}
+	var code = getRequest().code;
+	console.log("获取到的code: " + code);
+	
+	$.get(url_third_login_wx, {
+		code : code
+	}, function(result) {
+		console.log(JSON.stringify(result));
+		if (result.success) {
+			// 将接口返回的openid存到本地缓存中
+			localStorage.setItem("openid", result.data);
+		} else {
+			layer.msg(result.info);
+		}
+	}); 
+</script>
+</html>

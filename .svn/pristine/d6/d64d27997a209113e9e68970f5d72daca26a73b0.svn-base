@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+<style type="text/css">
+.param_imgs {
+	width: 200px;
+	height: 300px;
+}
+</style>
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-cogs"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">基本信息</font>
+		</div>
+		<div class="layui-card-body layui-form">
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md10 layui-col-sm10">
+					<label class="layui-form-label">标题<font color="red">*</font>：
+					</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_title"
+							th:value="${pageData.title}"
+							placeholder="请输入标题" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md4 layui-col-sm4">
+					<label class="layui-form-label">所需费用：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							readonly="readonly"
+							th:value="${pageData.totalPrice}"
+							class="layui-input" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm4">
+					<label class="layui-form-label">奖励金额：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_rewardPrice"
+							readonly="readonly"
+							th:value="${pageData.rewardPrice}"
+							placeholder="请输入奖励金额" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm4 ">
+					<label class="layui-form-label">限制人数：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_maxPeopleNum"
+							readonly="readonly"
+							th:value="${pageData.maxPeopleNum}"
+							placeholder="请输入限制人数" />
+					</div>
+				</div>
+
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md4 layui-col-sm4 ">
+					<label class="layui-form-label">上下架<font color="red">*</font>：
+					</label>
+					<div class="layui-input-inline">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.investigateStatus}"
+							class="param_investigateStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm4">
+					<label class="layui-form-label">结束时间<font color="red">*</font>：
+					</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_endTime"
+							th:value="${pageData.endTimeStr}"
+							placeholder="结束时间" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">企业信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">发起人单位<font color="red">*</font>：
+					</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_initiatorUnit"
+							th:value="${pageData.initiatorUnit}"
+							placeholder="请输入发起人单位" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-row">
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">广告说明<font color="red">*</font>：
+					</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_advertisingExplain"
+							th:text="${pageData.advertisingExplain}"
+							placeholder="请输入广告说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图<font color="red">*</font>：
+				</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_ad">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-list-alt"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">调研信息</font>
+		</div>
+		<div class="layui-card-body">
+
+
+			<div class="layui-row">
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">调研说明<font color="red">*</font>：
+					</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_investigateExplain"
+							th:text="${pageData.investigateExplain}"
+							placeholder="请输入调研说明" />
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-row">
+				<label class="layui-form-label">广告图<font color="red">*</font>：
+				</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_invest_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_invest_ad">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="addLike()">
+				<i
+					class="fa fa-pencil-square-o"
+					aria-hidden="true"></i>&nbsp;更新
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_list_data = /*[[@{/shop/invest/}]]*/;
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_like_add = /*[[@{/shop/invest/like_operate}]]*/;
+	var pageData=/*[[${pageData}]]*/;
+	
+		  var myIndex=0;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	var  form=layui.form;
+    	var upload=layui.upload;
+    	 var laydate = layui.laydate;
+    	
+    	  laydate.render({
+    	    elem: '.param_endTime'
+    	    ,type: 'datetime',
+    	    done: function(value){
+    	    	var date =new Date();
+    			if(date>Date.parse(value)){
+    					layer.msg('结束时间不能小于当前时间');
+    			}
+    	    }
+    	  });
+    	  
+    	  //广告
+			var uploadInst = upload.render({
+				elem : '#upload_img_ad',
+				data:{resetName:true},
+				url : url_upload_img,
+				multiple:true,
+				done : function(res) {
+					var imgHtml='<div id="delImgAd'+myIndex+'" class="layui-col-md3 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+myIndex+')"></i></div>'
+					+'<img class="param_imgs_ad" src="'+res.data+'" width="200px" onclick="visitImg(this.src);" /></div>';
+					var imgNum=$("#img_ad .param_imgs_ad").length;
+					if(5>imgNum){
+						$("#img_ad").append(imgHtml);
+						myIndex++;
+						layer.msg("上传成功");
+					}else{
+						layer.msg("最多只能上传三张");
+						return false;
+					}
+					
+					
+				}
+			});
+		
+    	  
+   	  //调研说明
+    	   upload.render({
+				elem : '#upload_img_invest_ad',
+				data:{resetName:true},
+				multiple:true,
+				url : url_upload_img,
+				done : function(res) {
+						var imgHtml='<div id="delImgInvest'+myIndex+'" class="layui-col-md3 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgInvest('+myIndex+')"></i></div>'
+						+'<img class="param_imgs_invest_ad" src="'+res.data+'" width="200px"  onclick="visitImg(this.src);" /></div>';
+						var imgNum=$("#img_invest_ad .param_imgs_invest_ad").length;
+						if(5>imgNum){
+							$("#img_invest_ad").append(imgHtml);
+							myIndex++;
+							layer.msg("上传成功");
+						}else{
+							layer.msg("最多只能上传五张");
+							return false;
+						}
+					}
+			});
+    	  
+    	  
+    	  
+    });
+	 
+    
+	function delImgInvest(i){
+		$("#delImgInvest"+i).remove();
+	}
+	
+	
+	function delImgAd(i){
+		$("#delImgAd"+i).remove();
+	}
+	
+	
+	$(function(){
+		//广告说明--广告图
+		
+		$.each(pageData.advertisingImg, function(i, elt) {
+			var imgHtml='<div id="delImgAd'+i+'" class="layui-col-md3 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+i+')"></i></div>'
+			+'<img class="param_imgs_ad" src="'+elt+'" width="200px" onclick="visitImg(this.src);" /></div>';
+				$("#img_ad").append(imgHtml);
+		})		
+		
+	//调研说明--广告图
+		
+		$.each(pageData.investigateImg, function(i, elt) {
+			var imgHtml='<div id="delImgInvest'+i+'" class="layui-col-md3 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgInvest('+i+')"></i></div>'
+			+'<img class="param_imgs_invest_ad" src="'+elt+'"  width="200px" onclick="visitImg(this.src);" /></div>';
+				$("#img_invest_ad").append(imgHtml);
+		})		
+	});
+	
+	function addLike(){
+		var param_title = $(".param_title").val();
+		
+		if(!param_title){
+			layer.msg('标题不能为空');
+			return false;
+		}
+		
+		var param_rewardPrice=$(".param_rewardPrice").val();
+		
+		if(!param_rewardPrice){
+			layer.msg('奖励信息不能为空');
+			return false;
+		}
+		
+		var param_maxPeopleNum=$(".param_maxPeopleNum").val();
+		if(!param_maxPeopleNum){
+			layer.msg('限制人数不能为空');
+			return false;
+		}
+		
+		var param_endTime = $(".param_endTime").val();
+		if (!param_endTime) {
+			layer.msg('结束时间不能为空');
+			return false;
+		}
+		 
+		var date =new Date();
+		if(date>Date.parse(param_endTime)){
+			
+				layer.msg('结束时间不能小于当前时间');
+				return false;
+		}
+		
+		
+		var param_initiatorUnit = $(".param_initiatorUnit").val();
+		if(!param_initiatorUnit){
+			layer.msg('发起人单位不能为空');
+			return false;
+		}
+		
+		var advertisingImg=new Array();
+		$("#img_ad .param_imgs_ad").each(function(i, element) {
+			advertisingImg.push(element.src);
+		});
+		
+		
+		var param_investigateExplain = $(".param_investigateExplain").val();
+		if(!param_investigateExplain){
+			layer.msg('调研说明不能为空');
+			return false;
+		}
+		
+		var param_advertisingExplain = $(".param_advertisingExplain").val();
+		
+		
+		if(!param_advertisingExplain){
+			layer.msg('广告说明不能为空');
+			return false;
+		}
+		
+		var investigateImg=new Array();
+		$("#img_invest_ad .param_imgs_invest_ad").each(function(i, element) {
+			investigateImg.push(element.src);
+		});
+		
+		
+		var param_investigateStatus=$(".param_investigateStatus").prop("checked");
+		
+		
+		$.ajax({
+			type:"POST",
+			url:url_like_add,
+			contentType: "application/json; charset=utf-8",
+			dataType:"json",
+			data:JSON.stringify({objId:pageData.id,title:param_title,rewardPrice:param_rewardPrice,maxPeopleNum:param_maxPeopleNum, endTime:param_endTime,advertisingExplain:param_advertisingExplain,
+				initiatorUnit:param_initiatorUnit,advertisingImg:advertisingImg,investigateExplain:param_investigateExplain,investigateImg:investigateImg,investigateStatus:param_investigateStatus}),
+			success:function(data){
+				showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+	    	}
+		});
+		
+	}
+	
+</script>
+
+</html>

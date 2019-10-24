@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+<style type="text/css">
+.param_imgs_player {
+	max-width: 150px;
+}
+
+.param_imgs {
+	width: 200px;
+	height: 300px;
+}
+
+.player_card_img {
+	max-width: 300px;
+	max-height: 200px;
+}
+</style>
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-cogs"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">基本信息</font>
+		</div>
+		<div class="layui-card-body layui-form">
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">标题：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_title"
+							placeholder="请输入标题" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm6">
+					<label class="layui-form-label">发起人：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							readonly="readonly"
+							th:value="${userData.nickName}"
+							class="layui-input param_userId" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">奖励信息：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_rewardPrice"
+							placeholder="请输入奖励信息" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3 ">
+					<label class="layui-form-label">限制人数：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_maxPeopleNum"
+							placeholder="请输入限制人数" />
+					</div>
+				</div>
+
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm2 ">
+					<label class="layui-form-label">上下架：</label>
+					<div class="layui-input-inline">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							class="param_investigateStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">结束时间：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_endTime"
+							placeholder="结束时间" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">企业信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">发起人单位：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_initiatorUnit"
+							placeholder="请输入发起人单位" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">广告说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_advertisingExplain"
+							placeholder="请输入广告说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_ad">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-list-alt"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">投票信息</font>
+		</div>
+		<div class="layui-card-body">
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">投票说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_investigateExplain"
+							placeholder="请输入投票说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_vote_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_vote">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div
+		class="layui-card layui-form"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-paper-plane-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">问题区</font>
+		</div>
+		<div class="layui-card-body">
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">问题类型：</label>
+					<div class="layui-input-inline">
+						<select class="param_questionType">
+							<option value="1101">单选题</option>
+							<option value="1201">多选题</option>
+							<option value="1301">简答题</option>
+						</select>
+					</div>
+
+					<button
+						type="button"
+						class="layui-btn layui-btn-sm"
+						onclick="addQuestionList()">
+						<i
+							class="fa fa-plus"
+							aria-hidden="true"></i> &nbsp;添加问题
+					</button>
+				</div>
+			</div>
+
+			<div
+				class="layui-row layui-col-space15"
+				id="question_anwser_div">
+
+				<div class="layui-col-md6 layui-col-sm3">
+					<fieldset class="layui-elem-field">
+						<legend>单选题</legend>
+						<div
+							class="layui-field-box"
+							style="padding: 0px;"
+							id="one_select_list_div"></div>
+					</fieldset>
+				</div>
+				<div class="layui-col-md6 layui-col-sm3">
+					<fieldset class="layui-elem-field">
+						<legend>多选题</legend>
+						<div
+							class="layui-field-box"
+							style="padding: 0px;"
+							id="many_select_list_div"></div>
+					</fieldset>
+				</div>
+				<div class="layui-col-md6 layui-col-sm3">
+					<fieldset class="layui-elem-field">
+						<legend>简答题</legend>
+						<div
+							class="layui-field-box"
+							style="padding: 0px;"
+							id="simple_select_list_div"></div>
+					</fieldset>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="addQuestion()">
+				<i
+					class="fa fa-plus"
+					aria-hidden="true"></i>&nbsp;发布
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_list_data = /*[[@{/shop/invest/}]]*/;
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_question_add = /*[[@{/shop/invest/question_operate}]]*/;
+	
+	var upload;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	var  form=layui.form;
+    	 upload=layui.upload;
+    	 var laydate = layui.laydate;
+    	
+    	  laydate.render({
+    	    elem: '.param_endTime'
+    	    ,type: 'datetime'
+    	  });
+    	  
+    	  //广告
+		  var myIndex=0;
+			var uploadInst = upload.render({
+				elem : '#upload_img_ad',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+					var imgHtml='<div id="delImgAd'+myIndex+'" class="layui-col-md2 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+myIndex+')"></i></div>'
+					+'<img class="param_imgs_ad" src="'+res.data+'" width="200px" onclick="visitImg(this.src);" /></div>';
+					var imgNum=$("#img_ad .param_imgs_ad").length;
+					if(5>imgNum){
+						$("#img_ad").append(imgHtml);
+						myIndex++;
+						layer.msg("上传成功");
+					}else{
+						layer.msg("最多只能上传三张");
+						return false;
+					}
+					
+					
+				}
+			});
+		
+    	  
+   	  	//投票说明
+    	   upload.render({
+				elem : '#upload_img_vote',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+						var imgHtml='<div id="delImgVote'+myIndex+'" class="layui-col-md2 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgVote('+myIndex+')"></i></div>'
+						+'<img class="param_imgs param_imgs_vote" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+						var imgNum=$("#img_vote_ad .param_imgs_vote").length;
+						if(5>imgNum){
+							$("#img_vote_ad").append(imgHtml);
+							myIndex++;
+							layer.msg("上传成功");
+						}else{
+							layer.msg("最多只能上传五张");
+							return false;
+						}
+					}
+			});
+   	  
+   	  	$("#answer_div").hide();
+    });
+	 
+    //删除投票说明照片
+	function delImgVote(i){
+		$("#delImgVote"+i).remove();
+	}
+	
+	 //删除广告说明照片
+	function delImgAd(i){
+		$("#delImgAd"+i).remove();
+	}
+	
+	//删除问题
+	function delQuestion(i){
+		$("#questionDiv"+i).remove();
+	}
+	
+	//删除答案
+	function delAnswer(i){
+		$("#answerDiv"+i).remove();
+	}
+	
+	
+	//添加问题
+	function addQuestionList(){
+		var param_questionType=$(".param_questionType").val();
+		var param_questionText=$(".param_questionType option:selected").text();
+		var is_show_answer_button=true;
+		//简答题
+		if(param_questionType === '1301'){
+			is_show_answer_button=false;
+		}
+		
+		questionDiv(is_show_answer_button,param_questionType,param_questionText);
+	}
+	
+	var div_index=0;
+	//添加问题 div
+	function questionDiv(res,type){
+		var add_answer_button="";
+		//false : 简答题，不需要【添加答案】按钮
+		if(res){
+		  add_answer_button='<button type="button" class="layui-btn layui-btn-sm add_answer" onclick="addAnswer('+div_index+')"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp;答案 </button>';
+		}
+	
+		var questionHtml='<div id="questionDiv'+div_index+'" class="layui-form-item question_div"  style="margin-top: 10px;">'
+						+'<div class="layui-col-md9 layui-col-sm8" style="margin-right: 5px;" ><label class="layui-form-label" >问题：</label>'
+						+'<div class="layui-input-block"> <input type="text" class="layui-input param_question" placeholder="请输入问题描述" role="'+type+'"/> </div> </div>'
+						+add_answer_button
+						+'<button type="button" class="layui-btn layui-btn-sm" onclick="delQuestion('+div_index+')"><i class="fa fa-trash-o" aria-hidden="true"></i> &nbsp;删除 </button></div>'
+						div_index++;
+
+						if(type==="1101"){
+							$("#one_select_list_div").append(questionHtml);
+						}
+						
+						if(type==="1201"){
+							$("#many_select_list_div").append(questionHtml);
+						}
+						
+						if(type==="1301"){
+							$("#simple_select_list_div").append(questionHtml);
+						}
+						return "";
+						
+	}
+	
+	// 添加问题答案
+	var answer_index=0;
+	 function addAnswer(i){
+		 
+		 var param_question= document.getElementById("questionDiv"+i+"").getElementsByClassName("param_question")[0].value;
+		 if(!param_question){
+			 layer.msg("问题描述不能空");
+				return false;
+		 }
+		 
+		 var answerDiv= document.getElementById("answerDiv"+(answer_index-1)+"");
+		 if(answerDiv!=null){
+			var param_id=answerDiv.getElementsByClassName("param_id")[0].value;
+			var param_value=answerDiv.getElementsByClassName("param_value")[0].value;
+			
+			if(!param_id){
+				layer.msg("答案选项不能为空");
+				return false;
+			}
+			
+			if(!param_value){
+				layer.msg("答案不能为空");
+				return false;
+			}
+			 
+		 }
+		 
+		var add_answer_html='<div id="answerDiv'+answer_index+'"><div class="layui-form-item" style="margin-top: 20px;"> <div class="layui-col-md4 layui-col-sm2">'
+							+'<label class="layui-form-label">答案：</label> <div class="layui-input-block">'
+							+'<input type="text" class="layui-input param_id" placeholder="请输入答案选项" /> </div> </div>'
+							+'<div class=" layui-col-md6 layui-col-sm2"  style="margin-right: 10px;"> <div class="layui-input-block">'
+							+'<input type="text" class="layui-input param_value" placeholder="请输入问题的答案" /> </div> </div>'
+							+'<button type="button" class="layui-btn layui-btn-sm" onclick="delAnswer('+answer_index+')">'
+							+'<i class="fa fa-trash-o" aria-hidden="true"></i> &nbsp;删除 </button>  </div> </div>'
+							answer_index++;
+							return $("#questionDiv"+i+"").append(add_answer_html);
+	}
+
+	
+	//添加问卷调查信息
+	function addQuestion(){
+		
+		
+		
+		
+		var param_title = $(".param_title").val();
+		
+		if(!param_title){
+			layer.msg('标题不能为空');
+			return false;
+		}
+		
+		var param_rewardPrice=$(".param_rewardPrice").val();
+		if(!param_rewardPrice){
+			layer.msg('奖励信息不能为空');
+			return false;
+		}
+		
+		var param_maxPeopleNum=$(".param_maxPeopleNum").val();
+		if(!param_maxPeopleNum){
+			layer.msg('限制人数不能为空');
+			return false;
+		}
+		
+		var param_endTime = $(".param_endTime").val();
+		if (!param_endTime) {
+			layer.msg('结束时间不能为空');
+			return false;
+		}
+		 
+		var date =new Date();
+		if(date>Date.parse(param_endTime)){
+			
+				layer.msg('结束时间不能小于当前时间');
+				return false;
+		}
+		
+		
+		var param_initiatorUnit = $(".param_initiatorUnit").val();
+		if(!param_initiatorUnit){
+			layer.msg('发起人单位不能为空');
+			return false;
+		}
+		
+		var advertisingImg=new Array();
+		$("#img_ad .param_imgs_ad").each(function(i, element) {
+			advertisingImg.push(element.src);
+		});
+		
+		
+		var param_investigateExplain = $(".param_investigateExplain").val();
+		if(!param_investigateExplain){
+			layer.msg('广告说明不能为空');
+			return false;
+		}
+		
+		var param_advertisingExplain = $(".param_advertisingExplain").val();
+		
+		
+		var investigateImg=new Array();
+		$("#img_vote_ad .param_imgs_vote").each(function(i, element) {
+			investigateImg.push(element.src);
+		});
+		
+		
+		var param_investigateStatus=$(".param_investigateStatus").prop("checked");
+		
+		
+		//问题信息
+		
+		 /*<![CDATA[*/   
+		  
+		var investQuestionLists = new Array();
+		 
+		$.each($("#question_anwser_div div[class='layui-col-md6 layui-col-sm3']"), function(i, elt) {
+			
+			//问题列表
+			var answer_item=elt.getElementsByClassName("question_div");
+				if(answer_item.length>0){
+					$.each(answer_item, function(i, elt) {
+						var adminQuestionPO = new Object();
+						var param_question=elt.getElementsByClassName("param_question")[0].value;
+						
+						if(!param_question){
+							layer.msg("问题描述不能为空");
+							return false;
+						}
+						
+						var param_type=elt.getElementsByClassName("param_question")[0].getAttribute("role");
+						
+						adminQuestionPO.question=param_question;
+						adminQuestionPO.type=param_type;
+						//答案 集合
+						  var anwser_div_item=elt.getElementsByClassName("layui-form-item");
+						
+						if(param_type!=="1301" && anwser_div_item.length == 0){
+							layer.msg("问题的答案不能为空");
+							return false;
+						}
+						
+						  var idAndValueDB = new Array();
+						 $.each(anwser_div_item, function(i, elt) {
+							  var idAndValuePO = new Object();
+								var param_id=elt.getElementsByClassName("param_id")[0].value;
+								var param_value=elt.getElementsByClassName("param_value")[0].value;
+								idAndValuePO.id=param_id;
+								idAndValuePO.value=param_value;
+								idAndValueDB.push(idAndValuePO);
+						 });
+						 adminQuestionPO.idAndValueDB=idAndValueDB;
+						 investQuestionLists.push(adminQuestionPO);
+						 
+					});
+					
+				}
+				
+		});
+		/*]]>*/
+		
+		$.ajax({
+			type:"POST",
+			url:url_question_add,
+			contentType: "application/json; charset=utf-8",
+			dataType:"json",
+			data:JSON.stringify({title:param_title,rewardPrice:param_rewardPrice,maxPeopleNum:param_maxPeopleNum, endTime:param_endTime,advertisingExplain:param_advertisingExplain,
+				initiatorUnit:param_initiatorUnit,advertisingImg:advertisingImg,investigateExplain:param_investigateExplain,investigateImg:investigateImg,investigateStatus:param_investigateStatus
+				,adminQuestionPOs:investQuestionLists}),
+			success:function(data){
+				showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+	    	}
+		});
+		
+	}
+	
+</script>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md3 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">订单编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_orderNo" />
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<div class="layui-col-md4 layui-col-md-offset1">
+			<label class="layui-form-label">时间：</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_start" />
+			</div>
+			-
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_end" />
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline">
+				<label class="layui-form-label">用户名称：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_name" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/admin/user/user_order_data }]]*/;
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+    		laydate.render({
+    			elem : '.param_date_start',
+    			type : 'date'
+    		});
+    		
+    		laydate.render({
+    			elem : '.param_date_end',
+    			type : 'date'
+    		});
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'orderNo',
+                    title: '订单编号',
+                },{
+	                field: 'financeTypeStr',
+	                title: '订单类型'
+	            }, {
+	                title: '用户名称',
+	                field: 'name'
+	            },{
+                    field: 'money',
+                    title: '金额'
+                },{
+                    field: 'financeData',
+                    title: '下单时间'
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+        
+    });
+
+    function search() {
+        var table = layui.table;
+        var param_orderNo = $(".param_orderNo").val();
+        var param_date_start = $(".param_date_start").val();
+        var param_date_end = $(".param_date_end").val();
+        var param_name = $(".param_name").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	orderNo:param_orderNo,
+                	dateStart:param_date_start,
+                	dateEnd:param_date_end,
+                	name:param_name
+                }
+            });
+    }
+</script>
+
+
+
+<script
+	type="text/html"
+	id="operate">
+	<a th:href="@{/admin/goods/news_info_page?objId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;详情</a>
+</script>
+</html>

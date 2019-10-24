@@ -1,0 +1,25 @@
+package com.kemean.vo.bo.b.child;
+
+public class AccountListBO {
+
+	private String niceName;
+
+	private String phone;
+
+	public String getNiceName() {
+		return niceName;
+	}
+
+	public void setNiceName(String niceName) {
+		this.niceName = niceName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+}

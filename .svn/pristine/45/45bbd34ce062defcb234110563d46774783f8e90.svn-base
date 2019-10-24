@@ -1,0 +1,16 @@
+package com.kemean.service.business;
+
+import org.springframework.stereotype.Service;
+
+
+/**
+ * 【商户端】消息业务层
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+public class BMessageService {
+	
+}

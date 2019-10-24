@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenShopMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenShop">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="shop_user_uid" property="shopUserUid" jdbcType="INTEGER" />
+		<result column="shop_logo" property="shopLogo" jdbcType="VARCHAR" />
+		<result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+		<result column="settled_type" property="settledType" jdbcType="BIT" />
+		<result column="shop_phone" property="shopPhone" jdbcType="VARCHAR" />
+		<result column="presentation" property="presentation" jdbcType="VARCHAR" />
+		<result column="work_status" property="workStatus" jdbcType="BIT" />
+		<result column="shop_type_str" property="shopTypeStr" jdbcType="VARCHAR" />
+		<result column="shop_status" property="shopStatus" jdbcType="SMALLINT" />
+		<result column="platform_recommend" property="platformRecommend"
+			jdbcType="BIT" />
+		<result column="sales_volume" property="salesVolume" jdbcType="INTEGER" />
+		<result column="num_praise" property="numPraise" jdbcType="INTEGER" />
+		<result column="num_trample" property="numTrample" jdbcType="INTEGER" />
+		<result column="num_common" property="numCommon" jdbcType="INTEGER" />
+		<result column="num_collect" property="numCollect" jdbcType="INTEGER" />
+		<result column="degree_of_praise" property="degreeOfPraise"
+			jdbcType="REAL" />
+		<result column="logistics_service" property="logisticsService"
+			jdbcType="REAL" />
+		<result column="business_license_name" property="businessLicenseName"
+			jdbcType="VARCHAR" />
+		<result column="business_license_location" property="businessLicenseLocation"
+			jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="SMALLINT" />
+		<result column="cycle" property="cycle" jdbcType="SMALLINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+	
+	<select id="selectShopCount" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+			DATE_FORMAT(a.`create_time`,'%Y-%m-%d') AS name,
+			COUNT(*) AS y
+		FROM
+			`daiken_shop` a
+		WHERE a.`data_deleted` = FALSE
+		<if test="settledType!=null and settledType!=''">
+			AND a.`settled_type` = #{settledType,jdbcType=BIT}
+		</if>
+		
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+</mapper>

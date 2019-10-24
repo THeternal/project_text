@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<style>
+.layui-form-radio {
+	width: 10px;
+}
+</style>
+<body class="layui-fluid">
+	<div
+		id="recharge_div"
+		class="layui-form "
+		style="padding: 40px; margin: 0 auto; width: 500px; margin-top: 20px; margin-bottom: 40px; background-color: #fff;">
+		<div
+			class="layui-form-item"
+			style="height: 40px; vertical-align: bottom; line-height: 40px;">
+			<label class="layui-form-label">可提现金额</label>
+			<div
+				class="layui-input-block"
+				style="width: 300px;">
+				<span
+					id="shop_balance"
+					style="display: block; float: left; font-size: 35px; width: 230px; color: #5FB878;"
+					th:text="${pageData.balance}"> </span> <span style="display: block; float: left; width: 70px;">
+					<button
+						onclick="allMoney()"
+						class="layui-btn layui-btn-sm">全部提现</button>
+				</span>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">提现金额</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					placeholder="请输入提现金额，可包含两位小数"
+					style="width: 300px;"
+					class="layui-input param_ali_money" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">提现方式</label>
+			<div class="layui-input-block">
+				<span> <input
+					type="radio"
+					name="pay_type"
+					value="1101"
+					lay-filter="pay_type"
+					checked="checked" /> <img src="http://p68iq7sn2.bkt.clouddn.com/upload/201808/20/218773be37a140b58dac0d4063474a18" />
+				</span> <span style="margin-left: 80px;"> <input
+					type="radio"
+					name="pay_type"
+					lay-filter="pay_type"
+					value="1102" /> <img src="http://p68iq7sn2.bkt.clouddn.com/upload/201808/20/446ae49fc86745b395bc38c0aa9ddc57" />
+				</span>
+			</div>
+		</div>
+		<div class="layui-form-item  param_ali">
+			<label class="layui-form-label">支付宝账号</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					placeholder="商户收款的支付宝账号，请务必验证账号准确"
+					style="width: 300px;"
+					lay-filter="pay_type"
+					class="layui-input param_ali_account" />
+			</div>
+		</div>
+		<div class="layui-form-item  param_ali">
+			<label class="layui-form-label">实名名称</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					placeholder="支付宝实名名称，不填则不校验实名信息"
+					style="width: 300px;"
+					class="layui-input param_ali_name" />
+			</div>
+		</div>
+		<div
+			class="layui-form-item param_wx"
+			style="height: 40px; display: none; vertical-align: bottom; line-height: 40px;">
+			<label class="layui-form-label">打款微信</label>
+			<div
+				class="layui-input-block"
+				style="width: 300px;">
+				<span style="display: block; float: left; width: 210px; color: #5FB878; padding-left: 10px;"> 尚未绑定 </span> <span
+					style="display: block; float: left; width: 80px; text-align: right;">
+					<button
+						onclick="bindWx()"
+						class="layui-btn layui-btn-sm">绑定微信</button>
+				</span>
+			</div>
+		</div>
+		<div
+			class="layui-form-item"
+			style="height: 40px; vertical-align: bottom; line-height: 40px;">
+			<label class="layui-form-label">验证码</label>
+			<div
+				class="layui-input-block"
+				style="width: 300px;">
+				<span style="display: block; float: left; width: 200px; color: #5FB878;"> <input
+					type="text"
+					style="width: 190px;"
+					placeholder="6位短信验证码"
+					maxlength="6"
+					class="layui-input param_code" />
+				</span> <span style="display: block; float: left; width: 100px;">
+					<button
+						id="getCodeBtn"
+						onclick="sendCode()"
+						style="width: 100px;"
+						class="layui-btn layui-btn-primary layui-btn-sm">获取验证码</button>
+				</span>
+			</div>
+		</div>
+		<div
+			id="sendCodeMsg"
+			class="layui-form-item layui-hide">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<span style="display: block; width: 300px; padding: 5px; color: red;"> 验证码已发送到手机号：<span
+					th:text="${pageData.phone}"></span>，请注意查收
+				</span>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<span style="display: block; width: 300px; padding: 5px; color: gray;">
+					提示：提现金额将会在7个工作日内提现到提交的支付宝账户或微信账户，如果未到账请联系平台客服人员处理 </span>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<button
+					onclick="withdrawDeposit()"
+					style="width: 300px;"
+					class="layui-btn layui-btn-lg">确认提现</button>
+			</div>
+		</div>
+	</div>
+	<div
+		style="text-align: center; padding-top: 10px; display: none;"
+		id="showWxCode"></div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_withdraw_deposit = /*[[@{/shop/common/withdraw_deposit}]]*/;
+	var url_send_code = /*[[@{/shop/common/withdraw_deposit_send_code}]]*/;
+	var url_login_success_redirect = /*[[@{/shop/open/wx_login_success}]]*/;
+	var randNum = /*[[${pageData.randNum}]]*/;
+	var appId = /*[[${pageData.appId}]]*/;
+	var countdown = 60;
+	
+	layui.use([ 'table', 'form' ], function() {
+		var table = layui.table;
+		var form = layui.form;
+		
+		// 支付类型单选框切换
+		form.on('radio(pay_type)', function(data) {
+			type = data.value;
+			if (data.value == 1101) {
+				// 支付宝
+				$(".param_ali").show();
+				$(".param_wx").hide();
+			} else {
+				// 微信
+				$(".param_ali").hide();
+				$(".param_wx").show();
+			}
+		});
+	});
+
+	// 全部提现数据回显
+	function allMoney() {
+		$(".param_ali_money").val($("#shop_balance").text());
+	}
+	
+	// 发送验证码
+	function sendCode() {
+		$.get(url_send_code, {type:3204}, function(data) {
+			if (data.success) {
+				$("#sendCodeMsg").removeClass("layui-hide");
+				setTime();
+			} else {
+				$("#sendCodeMsg").addClass("layui-hide");
+				layer.msg(data.info);
+			}
+		});
+	}
+	
+	// 60秒倒计时
+	function setTime() {
+		if (countdown == 0) {
+			countdown = 60;
+			$("#getCodeBtn").attr("disabled", false);
+			$("#getCodeBtn").text("重新获取");
+			return false;
+		} else {
+			$("#getCodeBtn").text(countdown + "秒后重新获取");
+			$("#getCodeBtn").attr("disabled", true);
+			countdown --;
+		}
+		setTimeout(function() {
+			setTime();
+		},1000);
+	}
+	
+	// 绑定微信
+	function bindWx() {
+		var redirectUrl = encodeURIComponent(url_login_success_redirect);
+		var obj = new WxLogin({
+			 // true：手机点击确认登录后可以在 iframe 内跳转到 redirect_uri，false：手机点击确认登录后可以在 top window 跳转到 redirect_uri。默认为 false
+			 self_redirect: true,
+			 // 第三方页面显示二维码的容器id
+			 id: "showWxCode", 
+			 // 应用唯一标识，在微信开放平台提交应用审核通过后获得
+			 appid: "wx5c235a55863237c6", 
+			 // 应用授权作用域，拥有多个作用域用逗号（,）分隔，网页应用目前仅填写snsapi_login即可
+			 scope: "snsapi_login", 
+			 // 重定向地址，需要进行UrlEncode
+			 redirect_uri: redirectUrl,
+			 // 用于保持请求和回调的状态，授权请求后原样带回给第三方。该参数可用于防止csrf攻击（跨站请求伪造攻击），建议第三方带上该参数，可设置为简单的随机数加session进行校验
+			 state: randNum,
+			 // 提供"black"、"white"可选，默认为黑色文字描述
+			 style: "black"
+			 // 自定义样式链接，第三方可根据实际需求覆盖默认样式
+			 // href: ""
+		});
+		$("#showWxCode").show();
+		// 弹出扫描登录二维码
+		layer.open({
+			type: 1,
+			title: "微信登录",
+			// skin: 'layui-layer-rim', 
+			area: ['500px', '500px'], 
+			content: $("#showWxCode"),
+			end: function() {
+				$("#showWxCode").hide();
+			}
+		});
+	}
+	
+	// 确认提现
+	function withdrawDeposit() {
+		var balance = $("#shop_balance").text();
+		var paramAliMoney = $(".param_ali_money").val();
+		var paramAliPayType = $("input[name='pay_type']:checked").val();
+		var paramAliAccount = $(".param_ali_account").val();
+		var paramAliName =  $(".param_ali_name").val();
+		var paramCode = $(".param_code").val() + '';
+		var openid = localStorage.getItem("openid");
+		
+		if (!paramAliMoney) {
+			layer.msg("请输入提现的金额");
+			return false;
+		}
+		if (!paramAliPayType) {
+			layer.msg("请选择提现方式");
+			return false;
+		}
+		// 判断是支付宝还是微信，支付宝：1101，微信：1102
+		// 支付宝
+		if (paramAliPayType == 1101) {
+			if (!paramAliAccount) {
+				layer.msg("请输入支付宝账号");
+				return false;
+			}
+		} 
+		// 微信
+		if (paramAliPayType == 1102) {
+			if (!openid) {
+				layer.msg("请绑定微信账号");
+				return false;
+			}
+		}
+		if (!paramCode) {
+			layer.msg("请输入短信验证码");
+			return false;
+		}
+		// 判断支付价格是否大于余额
+		if (paramAliMoney > balance) {
+			layer.msg("提现金额不能大于可提现的余额，请重新输入");
+			return false;
+		}
+		// 验证金额
+		var moneyPattern = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
+		if (!moneyPattern.test(paramAliMoney)) {
+			layer.msg("请输入合法的金额");
+			return false;
+		}
+		if (paramAliMoney == '0.00' || paramAliMoney == '0.0') {
+			layer.msg("请输入合法的金额");
+			return false;
+		} 
+		/*<![CDATA[*/
+		if (paramAliMoney < 0.1) {
+			layer.msg("提现金额至少是0.1元，请重新输入");
+			return false;
+		} 
+		/*]]>*/
+		var load = layer.load(2, {
+			// 0.1透明度的白色背景
+			shade: [0.1,'#fff']   
+		});
+		// 提交
+		$.post(url_withdraw_deposit, {
+			money : paramAliMoney,
+			account : paramAliAccount,
+			name : paramAliName,
+			code : paramCode,
+			openid : openid,
+			type : paramAliPayType
+		}, function(result) {
+			layer.close(load);
+			if (result.success) {
+				// 提现成功后续操作
+				var index = layer.alert(result.info, {
+					skin: 'layui-layer-molv',
+					closeBtn: 0
+				}, function(){
+					layer.close(index);
+					window.parent.cutoverPageFun();
+				});
+			} else {
+				layer.msg(result.info);
+			}
+		});
+	}
+	
+	function hide() {
+		// window.parent.parent.document.getElementById("msgNum");
+		// 获取窗口索引
+		var index = parent.layer.getFrameIndex(window.name); 
+		// 关闭窗口
+	    parent.layer.close(index);
+	}
+</script>
+</html>

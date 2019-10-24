@@ -1,0 +1,17 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.KemeanCollect;
+import com.kemean.dao.su.Idao;
+
+public interface KemeanCollectDao extends Idao<KemeanCollect> {
+
+	/**
+	 * 收藏列表
+	 * 
+	 * @author huwei
+	 * @date 2018年7月2日
+	 */
+	List<KemeanCollect> collectList(Integer userId, List<Integer> type, Integer pageNo, Integer pageSize);
+}

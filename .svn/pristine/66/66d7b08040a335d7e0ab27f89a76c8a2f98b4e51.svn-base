@@ -1,0 +1,64 @@
+package com.kemean.controller.business;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.service.business.BOpenServier;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.com.BBaseUserInfoBO;
+import com.kemean.vo.po.com.PhoneLoginPO;
+import com.kemean.vo.po.com.RegisterPO;
+
+/**
+ * 
+ * 【商户端】用户控制器
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/b/open")
+public class BOpenController {
+
+	@Autowired
+	private BOpenServier bOpenServier;
+	
+	/**
+	 * 手机号注册
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "register", method = RequestMethod.POST)
+	public KemeanResult<String> register(@Valid @RequestBody RegisterPO registerPO) {
+		return bOpenServier.register(registerPO);
+	}
+
+	/**
+	 * 手机号登录
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "phone_login", method = RequestMethod.POST)
+	public KemeanResult<BBaseUserInfoBO> phoneLogin(@Valid @RequestBody PhoneLoginPO phoneLoginPO) {
+		return bOpenServier.phoneLogin(phoneLoginPO);
+	}
+
+	/**
+	 * 忘记密码
+	 * 
+	 * @author huwei
+	 * @date 2018年6月13日
+	 */
+	@RequestMapping(value = "forget_password", method = RequestMethod.POST)
+	public KemeanResult<String> forgetPassword(@Valid @RequestBody RegisterPO registerPO) {
+		return bOpenServier.forgetPassword(registerPO);
+	}
+}

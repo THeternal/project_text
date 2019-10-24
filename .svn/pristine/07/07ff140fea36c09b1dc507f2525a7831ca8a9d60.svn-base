@@ -1,0 +1,31 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenRedShare;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenRedShareDao extends Idao<DaikenRedShare> {
+
+	/**
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	Boolean countGoodsOnecDay(Integer userId, Integer type, Integer typeId, String now);
+
+	/**
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	Boolean countGoodsThreeDay(Integer userId, Integer typeId, String now);
+
+	/**
+	 * 商品红包分享记录
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectRedShareRecord(Integer type, String goodsTitle, Integer shopId, String dateStart,
+			String dateEnd, Integer limit);
+}

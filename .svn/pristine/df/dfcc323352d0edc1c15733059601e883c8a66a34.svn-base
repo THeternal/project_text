@@ -1,0 +1,62 @@
+package com.kemean.vo.bo.admin.shop;
+
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class AdminShopPromotionBO extends KemeanIdBO {
+	private String shopName;
+	private String typeStr;
+	private String discountTimeBegin;
+	private String discountTimeEnd;
+	private Double priceSales;
+	// 门市价
+	private Double priceStore;
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getTypeStr() {
+		return typeStr;
+	}
+
+	public void setTypeStr(String typeStr) {
+		this.typeStr = typeStr;
+	}
+
+	public String getDiscountTimeBegin() {
+		return discountTimeBegin;
+	}
+
+	public void setDiscountTimeBegin(String discountTimeBegin) {
+		this.discountTimeBegin = discountTimeBegin;
+	}
+
+	public Double getPriceStore() {
+		return priceStore;
+	}
+
+	public void setPriceStore(Double priceStore) {
+		this.priceStore = priceStore;
+	}
+
+	public String getDiscountTimeEnd() {
+		return discountTimeEnd;
+	}
+
+	public void setDiscountTimeEnd(String discountTimeEnd) {
+		this.discountTimeEnd = discountTimeEnd;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+}

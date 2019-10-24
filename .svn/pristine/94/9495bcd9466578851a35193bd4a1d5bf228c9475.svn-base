@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-users"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">钱包</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class="layui-col-md3 layui-col-sm3">
+					<button class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-jpy"
+							aria-hidden="true"></i> &nbsp;余额： <span
+							class="layui-badge layui-bg-orange"
+							th:text="${pageData.balancePrice}"></span>
+					</button>
+				</div>
+				<div class="layui-col-md6 layui-col-sm6">
+					<button
+						onclick="openWithdrawDepositPage()"
+						class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-money"
+							aria-hidden="true"></i> &nbsp;提现
+					</button>
+					<button
+						onclick="openRechargePage()"
+						class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-money"
+							aria-hidden="true"></i> &nbsp;充值
+					</button>
+					<button
+						onclick="openRecommendPage()"
+						class="layui-btn layui-btn-lg layui-bg-red">
+						<i
+							class="fa "
+							aria-hidden="true"></i>参加首页弹框活动
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i
+					class="fa fa-line-chart"
+					aria-hidden="true"></i>&nbsp;<font
+					color="#009688"
+					style="font-weight: bold;">数据分析</font>
+			</div>
+			<div class="layui-card-body">
+				<div
+					class="layui-row"
+					style="margin-top: 50px;">
+					<div id="order_number_data"></div>
+				</div>
+				<div
+					class="layui-row"
+					style="margin-top: 50px;">
+					<div id="order_price_data"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i
+					class="fa fa-line-chart"
+					aria-hidden="true"></i>&nbsp;<font
+					color="#009688"
+					style="font-weight: bold;">充值记录</font>
+			</div>
+			<div class="layui-card-body">
+				<div
+					class="layui-row"
+					style="margin-top: 50px;">
+					<table
+						class="layui-hide"
+						id="rechargePageData"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i
+					class="fa fa-line-chart"
+					aria-hidden="true"></i>&nbsp;<font
+					color="#009688"
+					style="font-weight: bold;">提现记录</font>
+			</div>
+			<div class="layui-card-body">
+				<div
+					class="layui-row"
+					style="margin-top: 50px;">
+					<table
+						class="layui-hide"
+						id="withdrawPageData"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var chartData= /*[[${pageData}]]*/;
+	Highcharts.chart('order_number_data', {
+		chart : {
+			type : 'line'
+		},
+		title : {
+			  text: '店铺销量统计'
+		},
+		xAxis : {
+			type:'category' 
+		},
+		yAxis : {
+			title : {
+				text : '数量'
+			}
+		},
+		colors : [ '#009688', '#E63870', '#58E481', '#F68686', '#FFEED0' ],
+		plotOptions : {
+			series : {
+				label : {
+					connectorAllowed : false
+				}
+			}
+		},
+		series : [ {
+				name : '订单数量',
+				data : chartData.orderNum
+			}, {
+				name : '销售产品数量',
+				data : chartData.goodsNum
+			}]
+	});
+	
+	
+	Highcharts.chart('order_price_data', {
+		chart : {
+			type : 'line'
+		},
+		title : {
+			  text: '店铺销售额统计'
+		},
+		xAxis : {
+			type:'category' 
+		},
+		yAxis : {
+			title : {
+				text : '数量'
+			}
+		},
+		colors : [ '#009688', '#E63870', '#58E481', '#F68686', '#FFEED0' ],
+		plotOptions : {
+			series : {
+				label : {
+					connectorAllowed : false
+				}
+			}
+		},
+		series : [ {
+				name : '销售额',
+				data : chartData.orderPrice
+			}, {
+				name : '销售利润',
+				data : chartData.orderProfit
+			}]
+	});
+	
+</script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+var url_recharge_data = /*[[@{/shop/info/finance_data(type=1201)}]]*/;
+    layui.use(['table', 'laydate','layer'], function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#rechargePageData',
+            url: url_recharge_data,
+            cols: [[
+            	{
+                    field: 'financeNo',
+                    title: '流水号'
+                },
+            	
+	            {
+	                field: 'submitMoney',
+	                title: '提交金额'
+	            },
+	            {
+	                field: 'dealMoney',
+	                title: '到账金额'
+	            },
+                {
+                    field: 'financeStatusStr',
+                    title: '财务状态'
+                }
+                , {
+                	field:'createTime',
+                    title: '交易时间'
+                } ]],
+            page: true,
+            id: 'dataTable'
+        }); 
+    });
+   
+</script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/shop/info/finance_data(type=1101)}]]*/;
+    
+    layui.use(['table', 'laydate','layer'], function () {
+        var table = layui.table;
+
+        table.render({
+            elem: '#withdrawPageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'financeNo',
+                    title: '流水号'
+                },
+            	
+	            {
+	                field: 'submitMoney',
+	                title: '提交金额'
+	            },
+	            {
+	                field: 'dealMoney',
+	                title: '打款金额'
+	            },
+                {
+                    field: 'financeStatusStr',
+                    title: '财务状态'
+                }
+                , {
+                	field:'createTime',
+                    title: '交易时间'
+                } ]],
+            page: true,
+            id: 'dataTable'
+        }); 
+    });
+    
+    // 打开充值页面
+    function openRechargePage() {
+    	window.parent.openRechargePage();
+    }
+    
+    // 打开提现页面
+    function openWithdrawDepositPage() {
+    	window.parent.openWithdrawDepositPage();
+    }
+    
+    // 店铺推荐
+    function openRecommendPage(){
+    	window.parent.openRecommendPage();
+    }
+</script>
+
+</html>

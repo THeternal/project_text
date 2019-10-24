@@ -1,0 +1,111 @@
+package com.kemean.vo.mysql;
+
+import java.util.List;
+
+public class FastBirdReturnDB {
+
+	/**
+	 * 注册用户ID
+	 */
+	private String EBusinessID;
+
+	/**
+	 * 快递单号
+	 */
+	private String LogisticCode;
+
+	/**
+	 * 订单编号
+	 */
+	private String OrderCode;
+
+	/**
+	 * 理由
+	 */
+	private String Reason;
+
+	/**
+	 * 快递公司编号
+	 */
+	private String ShipperCode;
+
+	/**
+	 * 状态
+	 */
+	private String State;
+
+	/**
+	 * 相应状态
+	 */
+	private Boolean Success;
+
+	/**
+	 * 物流信息
+	 */
+	private List<TracesDB> Traces;
+
+	public String getEBusinessID() {
+		return EBusinessID;
+	}
+
+	public void setEBusinessID(String eBusinessID) {
+		EBusinessID = eBusinessID;
+	}
+
+	public String getLogisticCode() {
+		return LogisticCode;
+	}
+
+	public void setLogisticCode(String logisticCode) {
+		LogisticCode = logisticCode;
+	}
+
+	public String getOrderCode() {
+		return OrderCode;
+	}
+
+	public void setOrderCode(String orderCode) {
+		OrderCode = orderCode;
+	}
+
+	public String getReason() {
+		return Reason;
+	}
+
+	public void setReason(String reason) {
+		Reason = reason;
+	}
+
+	public String getShipperCode() {
+		return ShipperCode;
+	}
+
+	public void setShipperCode(String shipperCode) {
+		ShipperCode = shipperCode;
+	}
+
+	public String getState() {
+		return State;
+	}
+
+	public void setState(String state) {
+		State = state;
+	}
+
+	public Boolean getSuccess() {
+		return Success;
+	}
+
+	public void setSuccess(Boolean success) {
+		Success = success;
+	}
+
+	public List<TracesDB> getTraces() {
+		return Traces;
+	}
+
+	public void setTraces(List<TracesDB> traces) {
+		Traces = traces;
+	}
+
+}

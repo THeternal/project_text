@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">轮播图：</label>
+				<div class="layui-input-block">
+					<img
+						class="param_img_url_show"
+						width="200px"
+						th:src="${lunboDota.imgUrl}"
+						th:onclick="'javascript:visitImg(this.src);'" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">展示位置：</label>
+				<div class="layui-input-block">
+					<select class="param_locat_type">
+						<option
+							value="1101"
+							th:selected="${lunboDota.locatType} =='1101'">首页商铺跳转</option>
+						<option
+							value="1201"
+							th:selected="${lunboDota.locatType} =='1201'">调研信息跳转</option>
+						<option
+							value="1301"
+							th:selected="${lunboDota.locatType} =='1301'">分享其它图片</option>
+						<option
+							value="1401"
+							th:selected="${lunboDota.locatType} =='1401'">分享店铺图片</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">显示顺序：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_sort_num"
+						placeholder="请输入数值"
+						th:value="${lunboDota.sortNum}" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<button
+						type="button"
+						class="layui-btn"
+						id="uploadimg">
+						<i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+					<input
+						type="hidden"
+						class="layui-input param_img_url"
+						th:value="${lunboDota.imgUrl}" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">跳转编号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_label"
+						placeholder="网页链接/商铺id"
+						th:value="${lunboDota.record}" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="updateLunbo()">修改</button>
+					<button
+						class="layui-btn layui-btn-primary"
+						onclick="history.back();">
+						<i
+							class="fa fa-arrow-left"
+							aria-hidden="true"></i>&nbsp;返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var param_objId = /*[[${lunboDota.id}]]*/;
+	var url_uoload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_update_lunbo = /*[[@{/admin/lunbo/update_lunbo}]]*/;
+	var url_lunbo_page = /*[[@{/admin/lunbo/lunbo_page}]]*/;
+	
+	function updateLunbo(){
+		var table = layui.table;
+		var paramLocatType=$(".param_locat_type").val();
+		var paramSortNum=$(".param_sort_num").val();
+		var paramJumpType=$(".param_jump_type:checked").val();
+		var paramJumpShopType= $(".param_jump_shop_type:checked").val();
+		var paramLabel=$(".param_label").val();
+		var paramImgUrl=$(".param_img_url").val();
+		
+		$.post(url_update_lunbo,{
+				locatType:paramLocatType,
+				sortNum : paramSortNum,
+				imgUrl : paramImgUrl,
+				record : paramLabel,
+				objId : param_objId
+			},function(result){
+				showResultMsgAndJumpByFlag(result.success,result.info,url_lunbo_page);
+	 	});
+	}
+	
+	layui.use([ 'table', 'upload' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		
+		var uploadInst = upload.render({
+			elem : '#uploadimg',
+			data:{resetName:true},
+			url : url_uoload_img,
+			done : function(res) {
+				$(".param_img_url").val(res.data);
+				$(".param_img_url_show").prop("src",res.data);
+				layer.msg('上传成功');
+			}
+		});
+	});
+</script>
+</html>

@@ -1,0 +1,48 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenInvestigate;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenInvestigateMapper extends TkMapper<DaikenInvestigate> {
+
+	/**
+	 * 调研点赞/投票，乐观锁处理
+	 * 
+	 * @author huwei
+	 * @date 2018年7月5日
+	 */
+	Integer updateByHappyLock(@Param("investigateId") Integer investigateId, @Param("dataVersion") Integer dataVersion);
+
+	/**
+	 * 调研日数量统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectDayQuantity(@Param("type") Integer type, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 调研日参数人数统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectDayUserNum(@Param("type") Integer type, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 调研日 用户佣金统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectDayUserMoney(@Param("type") Integer type, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+}

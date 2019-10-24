@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+<style type="text/css">
+.param_imgs_player {
+	max-width: 150px;
+}
+
+.param_imgs {
+	width: 200px;
+	height: 300px;
+}
+
+.player_card_img {
+	max-width: 300px;
+	max-height: 200px;
+}
+</style>
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-cogs"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">基本信息</font>
+		</div>
+		<div class="layui-card-body layui-form">
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">标题：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_title"
+							placeholder="请输入标题" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm6">
+					<label class="layui-form-label">发起人：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							readonly="readonly"
+							th:value="${userData.name}"
+							class="layui-input param_userId" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">奖励信息：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_rewardPrice"
+							placeholder="请输入奖励信息" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3 ">
+					<label class="layui-form-label">限制人数：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_maxPeopleNum"
+							placeholder="请输入限制人数" />
+					</div>
+				</div>
+
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm2 ">
+					<label class="layui-form-label">上下架：</label>
+					<div class="layui-input-inline">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							class="param_investigateStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">结束时间：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_endTime"
+							placeholder="结束时间" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">企业信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">发起人单位：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_initiatorUnit"
+							placeholder="请输入发起人单位" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">广告说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_advertisingExplain"
+							placeholder="请输入广告说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_ad">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-list-alt"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">投票信息</font>
+		</div>
+		<div class="layui-card-body">
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">投票说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_investigateExplain"
+							placeholder="请输入投票说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_vote_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_vote">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div
+		class="layui-card layui-form"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-paper-plane-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">问题区</font>
+		</div>
+		<div class="layui-card-body">
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<button
+						type="button"
+						class="layui-btn layui-btn-sm"
+						onclick="addPlayer()">
+						<i
+							class="fa fa-plus"
+							aria-hidden="true"></i> &nbsp;添加问题
+					</button>
+
+				</div>
+			</div>
+
+
+			<div
+				class="layui-row layui-col-space10"
+				id="player_list_div"></div>
+
+
+		</div>
+	</div>
+
+	<!-- 添加选手 div	 -->
+
+	<div
+		id="player_div"
+		style="margin: 10px 10px 0 0;">
+		<div class="layui-form-item">
+			<label class="layui-form-label">选手名称:</label>
+			<div class="layui-input-block">
+				<input
+					type="text"
+					class="layui-input param_name"
+					placeholder="请输入选手名称" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">选手说明:</label>
+			<div class="layui-input-block">
+				<textarea
+					type="text"
+					class="layui-textarea param_explain_str"
+					placeholder="请输入选手说明"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">选手图片:</label>
+			<div
+				class="layui-input-block"
+				id="player_img"></div>
+			<div
+				class="layui-col-md10 layui-col-sm10"
+				style="margin: 10px 0px;">
+				<div class="layui-input-block">
+					<button
+						type="button"
+						class="layui-btn"
+						id="upload_img_player">
+						<i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="addVote()">
+				<i
+					class="fa fa-plus"
+					aria-hidden="true"></i>&nbsp;发布
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_list_data = /*[[@{/admin/invest/}]]*/;
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_vote_add = /*[[@{/admin/invest/vote_operate}]]*/;
+	var url_vote_player_page = /*[[@{/admin/invest/vote_player_page}]]*/;
+	var userId=/*[[${userData.id}]]*/;
+	
+	var upload;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	var  form=layui.form;
+    	 upload=layui.upload;
+    	 var laydate = layui.laydate;
+    	
+    	  laydate.render({
+    	    elem: '.param_endTime'
+    	    ,type: 'datetime'
+    	  });
+    	  
+    	  //广告
+		  var myIndex=0;
+			var uploadInst = upload.render({
+				elem : '#upload_img_ad',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+					var imgHtml='<div id="delImgAd'+myIndex+'" class="layui-col-md2 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+myIndex+')"></i></div>'
+					+'<img class="param_imgs_ad" src="'+res.data+'" width="200px" onclick="visitImg(this.src);" /></div>';
+					var imgNum=$("#img_ad .param_imgs_ad").length;
+					if(5>imgNum){
+						$("#img_ad").append(imgHtml);
+						myIndex++;
+						layer.msg("上传成功");
+					}else{
+						layer.msg("最多只能上传三张");
+						return false;
+					}
+					
+					
+				}
+			});
+		
+    	  
+   	  	//投票说明
+    	   upload.render({
+				elem : '#upload_img_vote',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+						var imgHtml='<div id="delImgVote'+myIndex+'" class="layui-col-md2 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgVote('+myIndex+')"></i></div>'
+						+'<img class="param_imgs param_imgs_vote" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+						var imgNum=$("#img_vote_ad .param_imgs_vote").length;
+						if(5>imgNum){
+							$("#img_vote_ad").append(imgHtml);
+							myIndex++;
+							layer.msg("上传成功");
+						}else{
+							layer.msg("最多只能上传五张");
+							return false;
+						}
+					}
+			});
+   	  
+   	  
+    			//选手图片
+    	 	   upload.render({
+    					elem : '#upload_img_player',
+    					data:{resetName:true},
+    					url : url_upload_img,
+    					done : function(res) {
+    							var imgHtml='<div id="delImgPlayer'+myIndex+'" class="layui-col-md5 layui-col-sm4 playImg_div"><div style="margin-left: 146px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgPlayer('+myIndex+')"></i></div>'
+    							+'<img class="param_imgs_player param_imgs_player" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+    							var imgNum=$("#player_img .param_imgs_player").length;
+    							if(5>imgNum){
+    								$("#player_img").append(imgHtml);
+    								myIndex++;
+    							}else{
+    								layer.msg("最多只能上传五张");
+    								return false;
+    							}
+    						}
+    				});
+   	  
+    		$("#player_div").hide();
+   	  
+    });
+	 
+    //删除投票说明照片
+	function delImgVote(i){
+		$("#delImgVote"+i).remove();
+	}
+	
+	 //删除广告说明照片
+	function delImgAd(i){
+		$("#delImgAd"+i).remove();
+	}
+	
+	//删除选手照片
+	function delImgPlayer(i){
+		$("#delImgPlayer"+i).remove();
+	}
+	
+	
+	//删除选手
+	function delPlayer(i){
+		$("#playerCard"+i).remove();
+	}
+	
+	
+	//显示选手 div
+	function addPlayerDiv(){
+ 		 return $("#player_div").show();
+	}
+	
+	
+	function playerListDiv(imgs,name,explainStr){
+		var cardIndex=0;
+		var  playerHtml='<div class="layui-col-md2" id="playerCard'+cardIndex+'"><div class="layui-row"><div class="layui-input-inline">'
+			     +'<img role="'+imgs+'" src="'+imgs[0]+'" th:onclick= "'javascript:visitImg(this.src);'" class="player_card_img" /></div></div>'
+				+'<hr /><div class="layui-row"><span role="'+explainStr+'" class="param_explainStr">'+name+'</span></div><hr />'
+				+'<div class="layui-row" style="padding: 5px"> <div class="layui-col-md6"> <div class="layui-input-inline">'
+				+'<button type="button" class="layui-btn layui-btn-sm" onclick="editPlayer('+cardIndex+',\''+name+'\',\''+explainStr+'\',\''+imgs+'\')"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp;编辑 </button> </div> </div>'
+				+'<div class="layui-col-md6"> <div class="layui-input-inline">'
+				+'<button type="button" class="layui-btn layui-btn-sm"  onclick="delPlayer('+cardIndex+')"> <i class="fa fa-trash" aria-hidden="true"></i> &nbsp;删除 </button>'
+				+'</div> </div> </div> </div>';
+				
+				return $("#player_list_div").append(playerHtml);
+				cardIndex++;
+	}
+	
+	
+	
+	
+
+	//添加选手信息
+	function addPlayer(){
+		$("#player_div").removeClass("layui-hide");
+		$(".param_name").val('');
+		$(".param_explain_str").val('');
+		$(".playImg_div").remove();
+		layer.open({
+			type:1,
+			title : "添加选手信息",
+			content :$("#player_div"),
+			skin : "layui-layer-molv",
+			area: ['511px','454px'],
+			btn : [ '添加' ],
+			offset: '100px',
+			btn1 : function(index) {
+				
+			  	var param_name=$(".param_name").val();
+				var param_explain_str=$(".param_explain_str").val();
+				if(!param_name){
+					layer.msg("请输入选手姓名");
+					return false;
+				}
+				if(!param_explain_str){
+					layer.msg("请输入选手说明");
+					return false;
+				}
+				
+				var imgsList=new Array();
+				$("#player_img .param_imgs_player").each(function(i, element) {
+					imgsList.push(element.src);
+				});
+				
+				if(0 == imgsList.length){
+					layer.msg("选手的图片不能为空");
+					return false;
+				}
+				
+				 playerListDiv(imgsList,param_name,param_explain_str); 
+				 
+				 $("#player_div").addClass("layui-hide");
+				 layer.close(index);
+				
+			},
+			closeBtn : 1,
+			anim : 0,
+		});
+		
+	}
+
+	
+
+	function editPlayerDiv(name,explainStr){
+		
+		return '<div id="player_div" style="margin: 10px 10px 0 0;">'
+				+'<div class="layui-form-item"> <label class="layui-form-label">选手名称:</label>'
+				+'<div class="layui-input-block"> <input type="text" class="layui-input param_name_edit" placeholder="请输入选手名称" value="'+name+'"/></div></div>'
+				+'<div class="layui-form-item"> <label class="layui-form-label">选手说明:</label> <div class="layui-input-block">'
+				+'<textarea type="text" class="layui-textarea param_explain_str_edit" placeholder="请输入选手说明">'+explainStr+'</textarea> </div> </div></div>'
+		
+	}
+	
+	
+	//编辑选手信息
+	function editPlayer(i,name,explainStr,imgs){
+		
+		layer.open({
+			type:1,
+			title : "修改选手信息",
+			content :editPlayerDiv(name,explainStr),
+			skin : "layui-layer-molv",
+			area: ['463px','329px'],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function(index) {
+			  	var param_name=$(".param_name_edit").val();
+				var param_explain_str=$(".param_explain_str_edit").val();
+				if(!param_name){
+					layer.msg("请输入选手姓名");
+					return false;
+				}
+				if(!param_explain_str){
+					layer.msg("请输入选手说明");
+					return false;
+				}
+				
+				var imgsList=new Array();
+				
+				$(imgs.split(",")).each(function(i, element) {
+					imgsList.push(element);
+				});
+				
+				
+				 playerListDiv(imgsList,param_name,param_explain_str); 
+				 
+				 $("#player_div").addClass("layui-hide");
+				 layer.close(index);
+				 delPlayer(i);
+			},
+			closeBtn : 1,
+			anim : 0,
+		});
+		
+		
+		
+	}
+	
+	//添加投票信息
+	function addVote(){
+		
+		var param_title = $(".param_title").val();
+		
+		if(!param_title){
+			layer.msg('标题不能为空');
+			return false;
+		}
+		
+		var param_rewardPrice=$(".param_rewardPrice").val();
+		if(!param_rewardPrice){
+			layer.msg('奖励信息不能为空');
+			return false;
+		}
+		
+		var param_maxPeopleNum=$(".param_maxPeopleNum").val();
+		if(!param_maxPeopleNum){
+			layer.msg('限制人数不能为空');
+			return false;
+		}
+		
+		var param_endTime = $(".param_endTime").val();
+		if (!param_endTime) {
+			layer.msg('结束时间不能为空');
+			return false;
+		}
+		 
+		var date =new Date();
+		if(date>Date.parse(param_endTime)){
+			
+				layer.msg('结束时间不能小于当前时间');
+				return false;
+		}
+		
+		
+		var param_initiatorUnit = $(".param_initiatorUnit").val();
+		if(!param_initiatorUnit){
+			layer.msg('发起人单位不能为空');
+			return false;
+		}
+		
+		var advertisingImg=new Array();
+		$("#img_ad .param_imgs_ad").each(function(i, element) {
+			advertisingImg.push(element.src);
+		});
+		
+		
+		var param_investigateExplain = $(".param_investigateExplain").val();
+		if(!param_investigateExplain){
+			layer.msg('广告说明不能为空');
+			return false;
+		}
+		
+		var param_advertisingExplain = $(".param_advertisingExplain").val();
+		
+		
+		var investigateImg=new Array();
+		$("#img_vote_ad .param_imgs_vote").each(function(i, element) {
+			investigateImg.push(element.src);
+		});
+		
+		
+		var param_investigateStatus=$(".param_investigateStatus").prop("checked");
+		
+		
+		//选手信息
+		
+		 /*<![CDATA[*/   
+	  
+		var postVotePlyearLists = new Array();
+		
+		
+		
+		$.each($("#player_list_div"), function(i, elt) {
+			var imgsList = new Array();
+			var postVotePlyearPO = new Object();
+			
+			//图片
+			var param_imgs=elt.getElementsByClassName("player_card_img")[0].getAttribute("role");
+			
+			var imgs=param_imgs.split(",");
+			$.each(imgs, function(i, elt) {
+				imgsList.push(elt);
+			})
+			
+			
+			
+			//选手说明
+			var param_explainStr=elt.getElementsByClassName("param_explainStr")[0].getAttribute("role");
+			
+			//选手姓名
+			var param_name=elt.getElementsByClassName("param_explainStr")[0].innerText;
+				
+			postVotePlyearPO.img=imgsList;
+			postVotePlyearPO.name=param_name;
+			postVotePlyearPO.explainStr=param_explainStr;
+			
+			postVotePlyearLists.push(postVotePlyearPO);
+		});
+		/*]]>*/
+		
+		$.ajax({
+			type:"POST",
+			url:url_vote_add,
+			contentType: "application/json; charset=utf-8",
+			dataType:"json",
+			data:JSON.stringify({userId:userId,title:param_title,rewardPrice:param_rewardPrice,maxPeopleNum:param_maxPeopleNum, endTime:param_endTime,advertisingExplain:param_advertisingExplain,
+				initiatorUnit:param_initiatorUnit,advertisingImg:advertisingImg,investigateExplain:param_investigateExplain,investigateImg:investigateImg,investigateStatus:param_investigateStatus
+				,postVotePlyearLists:postVotePlyearLists}),
+			success:function(data){
+				showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+	    	}
+		});
+		
+	}
+	
+</script>
+
+</html>

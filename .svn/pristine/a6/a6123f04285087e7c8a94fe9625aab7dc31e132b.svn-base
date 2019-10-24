@@ -1,0 +1,5 @@
+package com.kemean.vo.mysql;
+
+public class UserBehavior {
+
+}

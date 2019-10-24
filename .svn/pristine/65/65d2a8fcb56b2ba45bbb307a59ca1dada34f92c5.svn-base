@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #dddddd;">
+		<div class="layui-row">
+			<div class="layui-col-md2 layui-col-sm3 layui-col-md-offset9">
+				<button
+					class="layui-btn layui-btn-primary"
+					onclick="history.back();">
+					<i
+						class="fa fa-arrow-left"
+						aria-hidden="true"></i>&nbsp;返回
+				</button>
+			</div>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">订单基本信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">订单编号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.orderNo}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">商铺：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.shopName}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">用户代研号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.userUid}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">用户手机号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.userPhone}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">订单类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.typeStr}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">商品数量：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.quantity}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">邮费：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.postage}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">收货地址：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.recordReceiving.provinceName}+${pageData.recordReceiving.cityName}+${pageData.recordReceiving.areaName}+${pageData.recordReceiving.address}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">支付价格：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.pricePay}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">优惠价格：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.priceDiscount}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">订单总价：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.priceTotal}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">支付类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.payTypeStr}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">订单状态-商家：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.statusShopStr}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">订单状态-用户：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.statusUserStr}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md4 layui-col-sm5 ">
+					<label class="layui-form-label">第三方交易号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.thirdTradeNo}" />
+					</div>
+				</div>
+				<div class="layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">第三方交易状态：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.thirdTradeStatus}" />
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div class="layui-card">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-location-arrow"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">物流详细信息</font>
+		</div>
+	</div>
+
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #dddddd;">
+		<div class="layui-row">
+			<div class="layui-col-md2 layui-col-sm3 layui-col-md-offset9">
+				<button
+					class="layui-btn layui-btn-primary"
+					onclick="history.back();">
+					<i
+						class="fa fa-arrow-left"
+						aria-hidden="true"></i>&nbsp;返回
+				</button>
+			</div>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+</html>

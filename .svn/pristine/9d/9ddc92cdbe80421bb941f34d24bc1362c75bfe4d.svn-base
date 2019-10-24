@@ -1,0 +1,43 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenOrder;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenOrderMapper extends TkMapper<DaikenOrder> {
+
+	/**
+	 * 商品收入 的销售数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodInSaleNum(@Param("shopId") Integer shopId, @Param("goodsTitles") String goodsTitles,
+			@Param("purchasing") Boolean purchasing, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商品收入 的销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+
+	List<AdminChartBO> selectGoodInSaleMoney(@Param("shopId") Integer shopId, @Param("goodsTitles") String goodsTitles,
+			@Param("purchasing") Boolean purchasing, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 用户消费统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminChartBO> selectUserSaleMoney(@Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+}

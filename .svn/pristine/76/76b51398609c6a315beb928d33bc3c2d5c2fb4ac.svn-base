@@ -1,0 +1,210 @@
+package com.kemean.controller.business;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.business.BMineService;
+import com.kemean.service.common.CommonService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.b.child.AccountListBO;
+import com.kemean.vo.bo.b.goods.GoodsInfoBO;
+import com.kemean.vo.bo.b.goods.GoodsListBO;
+import com.kemean.vo.bo.b.reply.FastReplyListBO;
+import com.kemean.vo.bo.com.MessageBO;
+import com.kemean.vo.po.b.goods.GoodsListPO;
+import com.kemean.vo.po.b.goods.GoodsPO;
+import com.kemean.vo.po.b.goods.OperationGoodsPO;
+import com.kemean.vo.po.b.reply.AddAccountPO;
+import com.kemean.vo.po.b.reply.FastReplyPO;
+import com.kemean.vo.po.com.FeedBackPO;
+import com.kemean.vo.po.com.MessageListPO;
+import com.kemean.vo.po.com.MessageOperatePO;
+
+/**
+ * 
+ * 【商户端】我的控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/b/mine")
+public class BMineController extends DaikenBaseController {
+
+	@Autowired
+	private BMineService bmineService;
+
+	@Autowired
+	private CommonService commonService;
+
+	/**
+	 * 反馈意见
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	@RequestMapping(value = "feedback", method = RequestMethod.POST)
+	public KemeanResult<String> feedBack(@Valid @RequestBody FeedBackPO feedBackPO) {
+		return bmineService.feedBack(feedBackPO, getLoginBusiness());
+	}
+
+	// --------------------------商品管理(goods)--------------------------------
+	/**
+	 * 商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "goods/goods_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<GoodsListBO>>> goodsList(@Valid @RequestBody GoodsListPO goodsListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<GoodsListBO>>>(
+				bmineService.goodsList(goodsListPO, getLoginBusiness()));
+	}
+
+	/**
+	 * 单个商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "goods/goods_info", method = RequestMethod.GET)
+	public KemeanResult<GoodsInfoBO> goodsInfo(@RequestParam Integer objId) {
+		return new KemeanResult<GoodsInfoBO>(bmineService.goodsInfo(objId));
+	}
+
+	/**
+	 * 添加（修改）商品
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "goods/add_update_goods", method = RequestMethod.POST)
+	public KemeanResult<String> addGoods(@Valid @RequestBody GoodsPO goodsPO) {
+		return bmineService.addGoods(goodsPO, getLoginBusiness());
+	}
+
+	/**
+	 * 删除、上下架商品
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "goods/operation_goods", method = RequestMethod.POST)
+	public KemeanResult<String> operationGoods(@Valid @RequestBody OperationGoodsPO operationGoodsPO) {
+		return bmineService.operationGoods(operationGoodsPO);
+	}
+
+	// --------------------------快捷回复设置(reply)--------------------------------
+	/**
+	 * 获取单个快捷回复信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月29日
+	 */
+	@RequestMapping(value = "reply/fast_reply_info", method = RequestMethod.GET)
+	public KemeanResult<FastReplyListBO> fastReplyInfo(@RequestParam Integer objId) {
+		return bmineService.fastReplyInfo(objId);
+	}
+
+	/**
+	 * 获取快捷回复信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "reply/fast_reply_list", method = RequestMethod.GET)
+	public KemeanResult<List<FastReplyListBO>> fastReplyList() {
+		return new KemeanResult<List<FastReplyListBO>>(bmineService.fastReplyList(getLoginBusiness()));
+	}
+
+	/**
+	 * 删除快捷回复信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "reply/del_fast_reply", method = RequestMethod.GET)
+	public KemeanResult<String> delFastReply(@RequestParam Integer objId) {
+		return bmineService.delFastReply(objId);
+	}
+
+	/**
+	 * 添加快捷信息回复
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "reply/add_fast_reply", method = RequestMethod.POST)
+	public KemeanResult<String> addFastReply(@Valid @RequestBody FastReplyPO fastReplyPO) {
+		return bmineService.addFastReply(fastReplyPO, getLoginBusiness());
+	}
+
+	// --------------------------子账号管理(child)--------------------------------
+	/**
+	 * 获取子账号
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "child/account_list", method = RequestMethod.GET)
+	public KemeanResult<List<AccountListBO>> accountList() {
+		return new KemeanResult<List<AccountListBO>>(bmineService.accountList(getLoginBusiness()));
+	}
+
+	/**
+	 * 添加子账号
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "child/add_account", method = RequestMethod.POST)
+	public KemeanResult<String> addAccount(@Valid @RequestBody AddAccountPO addAccountPO) {
+		return bmineService.addAccount(addAccountPO, getLoginBusiness());
+	}
+
+	/**
+	 * 删除子账号
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "child/del_account", method = RequestMethod.GET)
+	public KemeanResult<String> delAccount(@RequestParam String phone) {
+		return bmineService.delAccount(phone);
+	}
+
+	/**
+	 * 消息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	@RequestMapping(value = "message_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<MessageBO>>> messageList(@Valid @RequestBody MessageListPO messageListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<MessageBO>>>(
+				commonService.messageList(messageListPO, getLoginBusiness()));
+	}
+
+	/**
+	 * 消息-删除、已读
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	@RequestMapping(value = "message_del_read", method = RequestMethod.POST)
+	public KemeanResult<String> messageDelRead(@Valid @RequestBody MessageOperatePO messageOperatePO) {
+		return commonService.messageDelRead(messageOperatePO, getLoginBusiness());
+	}
+
+}

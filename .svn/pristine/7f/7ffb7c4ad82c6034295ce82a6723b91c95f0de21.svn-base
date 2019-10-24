@@ -1,0 +1,59 @@
+package com.kemean.vo.po.admin.shop;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+public class AdminShopUpdatePO {
+	@NotNull(message = "objId不能为空")
+	private Integer objId;
+	@NotBlank(message = "商铺logo不能为空")
+	private String shopLogo;
+	@NotBlank(message = "商铺名字不能为空")
+	private String shopName;
+	@NotBlank(message = "商铺联系电话不能为空")
+	private String shopPhone;
+	@NotBlank(message = "商铺介绍不能为空")
+	private String presentation;
+
+	public Integer getObjId() {
+		return objId;
+	}
+
+	public void setObjId(Integer objId) {
+		this.objId = objId;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public String getShopPhone() {
+		return shopPhone;
+	}
+
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
+	}
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+}

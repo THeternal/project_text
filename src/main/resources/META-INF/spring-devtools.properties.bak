@@ -1,0 +1,2 @@
+#该配置用于引用科名三核心jar的情况下使用，如果使用源码启动则可注释掉
+restart.include.companycommonlibs=kemean.*

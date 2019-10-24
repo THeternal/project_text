@@ -1,0 +1,8 @@
+package com.kemean.dao;
+
+import com.kemean.bean.DaikenSalesUser;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenSalesUserDao extends Idao<DaikenSalesUser> {
+
+}

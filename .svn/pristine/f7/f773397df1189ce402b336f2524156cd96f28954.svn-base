@@ -1,0 +1,20 @@
+package com.kemean.dao;
+
+import com.kemean.bean.DaikenRedShare;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenRedShareDao extends Idao<DaikenRedShare> {
+
+	/**
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	Boolean countGoodsOnecDay(Integer userId, Integer type, Integer typeId, String now);
+
+	/**
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	Boolean countGoodsThreeDay(Integer userId, Integer typeId, String now);
+
+}

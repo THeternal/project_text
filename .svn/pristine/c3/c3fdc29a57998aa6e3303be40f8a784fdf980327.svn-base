@@ -1,0 +1,183 @@
+package com.kemean.controller.admin;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminShopService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.shop.AdminShopBO;
+import com.kemean.vo.bo.admin.shop.AdminShopChartBO;
+import com.kemean.vo.bo.admin.shop.AdminShopSettledBO;
+import com.kemean.vo.po.admin.AdminChartPO;
+import com.kemean.vo.po.admin.AdminMonitorPO;
+import com.kemean.vo.po.admin.shop.AdminShopAuditStatusPO;
+import com.kemean.vo.po.admin.shop.AdminShopPO;
+import com.kemean.vo.po.admin.shop.AdminShopSettledPO;
+import com.kemean.vo.po.admin.shop.AdminShopUpdatePO;
+
+/**
+ * 店铺管理
+ * 
+ * @Date 2018年6月21日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("admin/shop")
+public class AdminShopController extends DaikenBaseController {
+
+	@Autowired
+	private AdminShopService adminShopService;
+
+	/**
+	 * 店铺入驻列表（商铺） page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@RequestMapping(value = "settled", method = RequestMethod.GET)
+	public String shopSettledPage() {
+		return KemeanConstant.ADMIN_FOLDER + "shopSettled";
+	}
+
+	/**
+	 * 店铺入驻列表（个人） page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@RequestMapping(value = "settled_persona", method = RequestMethod.GET)
+	public String shopSettledPersonaPage() {
+		return KemeanConstant.ADMIN_FOLDER + "shopPersonalSettled";
+	}
+
+	/**
+	 * 店铺入驻列表data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "settled_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminShopSettledBO>> shopSettledData(@Valid AdminShopSettledPO adminShopSettledPO) {
+		return adminShopService.shopSettledData(adminShopSettledPO);
+	}
+
+	/**
+	 * 店铺入驻详情page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@RequestMapping(value = "settled_info_page", method = RequestMethod.GET)
+	public String shopSettledInfoData(@RequestParam Integer objId) {
+		request.setAttribute("pageData", adminShopService.shopSettledInfoData(objId));
+		return KemeanConstant.ADMIN_FOLDER + "shopSettledInfo";
+	}
+
+	/**
+	 * 店铺入驻审核
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "status_audit", method = RequestMethod.POST)
+	public KemeanResult<String> shopStatusAudit(@Valid AdminShopAuditStatusPO shopAuditStatusPO) {
+		return adminShopService.shopStatusAudit(shopAuditStatusPO);
+	}
+
+	/**
+	 * 店铺信息列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String shopPage() {
+		return KemeanConstant.ADMIN_FOLDER + "shop";
+	}
+
+	/**
+	 * 店铺列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月21日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "page_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminShopBO>> shopData(@Valid AdminShopPO adminShopPO) {
+		return adminShopService.shopData(adminShopPO);
+	}
+
+	/**
+	 * 监听商铺状态/平台推荐
+	 *
+	 * @author huangyujian
+	 * @date 2018年4月8日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "shop_status_operate", method = RequestMethod.GET)
+	public KemeanResult<String> shopStatusOperate(@Valid AdminMonitorPO adminMonitorPO) {
+		return adminShopService.shopStatusOperate(adminMonitorPO);
+	}
+
+	/**
+	 * 商铺详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@RequestMapping(value = "shop_info_page", method = RequestMethod.GET)
+	public String shopInfoPage(Integer objId) {
+		request.setAttribute("pageData", adminShopService.shopInfoData(objId));
+		return KemeanConstant.ADMIN_FOLDER + "shopInfo";
+	}
+
+	/**
+	 * 修改商铺信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月23日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "shop_info_update", method = RequestMethod.POST)
+	public KemeanResult<String> shopInfoUpdate(@Valid AdminShopUpdatePO adminShopUpdatePO) {
+		return adminShopService.shopInfoUpdate(adminShopUpdatePO);
+	}
+
+	/**
+	 * 店铺统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	@RequestMapping(value = "chart_page", method = RequestMethod.GET)
+	public String shopCountChartPage(@Valid AdminChartPO adminChartPO) {
+		request.setAttribute("pageData", adminShopService.shopChart(adminChartPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "shopChart";
+	}
+
+	/**
+	 * 店铺统计搜索
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	@RequestMapping(value = "chart_search", method = RequestMethod.GET)
+	public AdminShopChartBO shopCountChartData(@Valid AdminChartPO adminChartPO) {
+		return adminShopService.shopChart(adminChartPO, 0);
+	}
+
+}

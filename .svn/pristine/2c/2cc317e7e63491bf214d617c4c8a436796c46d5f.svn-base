@@ -1,0 +1,32 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenOrderAfterSale;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenOrderAfterSaleMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenOrderAfterSaleDaoImpl extends DaoSupport<DaikenOrderAfterSale>
+		implements com.kemean.dao.DaikenOrderAfterSaleDao {
+
+	@Autowired
+	private DaikenOrderAfterSaleMapper mapper;
+
+	@Override
+	protected Mapper<DaikenOrderAfterSale> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodsReturnNum(Integer shopId, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodsReturnNum(shopId, dateStart, dateEnd, limit);
+	}
+
+}

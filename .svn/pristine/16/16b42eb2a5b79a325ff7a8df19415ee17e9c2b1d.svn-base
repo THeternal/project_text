@@ -1,0 +1,28 @@
+var host = "http://" + location.host;
+
+var navs = [ {
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/shop/",
+	"icon" : "fa-database",
+	"title" : "店铺管理"
+},{
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/invest/",
+	"icon" : "fa-database",
+	"title" : "调研管理"
+}, {
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/user/",
+	"icon" : "fa-database",
+	"title" : "销售员信息管理"
+},{
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/shop/finance_page/",
+	"icon" : "fa-database",
+	"title" : "店铺财务报表"
+},{
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/shop/withdraw_page/",
+	"icon" : "fa-database",
+	"title" : "调研财务报表"
+}];

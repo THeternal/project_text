@@ -1,0 +1,152 @@
+package com.kemean.controller.consumer;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.consumer.CMallService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.mall.GoodsAppraisalListBO;
+import com.kemean.vo.bo.c.mall.GoodsAppraisalTopListBO;
+import com.kemean.vo.bo.c.mall.NewGoodsInfoBO;
+import com.kemean.vo.bo.c.mall.NewGoodsListBO;
+import com.kemean.vo.bo.c.mall.OldGoodsInfoBO;
+import com.kemean.vo.bo.c.mall.OldGoodsListBO;
+import com.kemean.vo.bo.c.mall.ShopInfoBO;
+import com.kemean.vo.po.KemeanPageApiPO;
+import com.kemean.vo.po.c.mall.GoodsAppraisalListPO;
+import com.kemean.vo.po.c.mall.GoodsAppraisalTopListPO;
+import com.kemean.vo.po.c.mall.GoodsInfoPO;
+import com.kemean.vo.po.c.mall.NewGoodsInfoPO;
+import com.kemean.vo.po.c.mall.NewGoodsListPO;
+import com.kemean.vo.po.c.mall.OldGoodsListPO;
+
+/**
+ * 【客户端】 商城控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/c/mall")
+public class CMallController extends DaikenBaseController {
+
+	@Autowired
+	private CMallService cmallService;
+
+	/**
+	 * 推荐商品（个人中心、商品内页）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	@RequestMapping(value = "recommend_goods", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>> recommendGoods(
+			@Valid @RequestBody KemeanPageApiPO kemeanPageApiPO) {
+		return new KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>>(
+				cmallService.recommendGoods(kemeanPageApiPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 一手商品列表（分类商品、热销商品、店铺商品、帮买商品）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "new_goods_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>> newGoodsList(
+			@Valid @RequestBody NewGoodsListPO goodsListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>>(cmallService.newGoodsList(goodsListPO));
+	}
+
+	/**
+	 * 二手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "old_goods_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<OldGoodsListBO>>> oldGoodsList(
+			@Valid @RequestBody OldGoodsListPO oldGoodsListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<OldGoodsListBO>>>(cmallService.oldGoodsList(oldGoodsListPO));
+	}
+
+	/**
+	 * 获取一手商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "new_goods_info", method = RequestMethod.POST)
+	public KemeanResult<NewGoodsInfoBO> newGoodsInfo(@Valid @RequestBody NewGoodsInfoPO newGoodsInfoPO) {
+		return new KemeanResult<NewGoodsInfoBO>(cmallService.newGoodsInfo(newGoodsInfoPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 获取二手商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "old_goods_info", method = RequestMethod.GET)
+	public KemeanResult<OldGoodsInfoBO> oldGoodsInfo(@RequestParam Integer objId) {
+		return new KemeanResult<OldGoodsInfoBO>(cmallService.oldGoodsInfo(objId, getLoginConsumer()));
+	}
+
+	/**
+	 * 获取商店信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "shop_info", method = RequestMethod.GET)
+	public KemeanResult<ShopInfoBO> shopInfo(@RequestParam Integer shopId) {
+		return new KemeanResult<ShopInfoBO>(cmallService.shopInfo(shopId, getLoginConsumer()));
+	}
+
+	/**
+	 * 获取商店全部商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	@RequestMapping(value = "goods_info", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>> goodsInfo(@Valid @RequestBody GoodsInfoPO goodsInfoPO) {
+		return new KemeanResult<KemeanPageApiBO<List<NewGoodsListBO>>>(cmallService.goodsInfo(goodsInfoPO));
+	}
+
+	/**
+	 * 获取商品评论（赞，一般，踩）
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	@RequestMapping(value = "goods_appraisal_num", method = RequestMethod.POST)
+	public KemeanResult<GoodsAppraisalTopListBO> goodsAppraisalNum(
+			@Valid @RequestBody GoodsAppraisalTopListPO goodsAppraisalTopListPO) {
+		return new KemeanResult<GoodsAppraisalTopListBO>(cmallService.goodsAppraisalNum(goodsAppraisalTopListPO));
+	}
+
+	/**
+	 * 获取商品评论
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "goods_appraisal_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<GoodsAppraisalListBO>>> goodsAppraisalList(
+			@Valid @RequestBody GoodsAppraisalListPO goodsAppraisalListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<GoodsAppraisalListBO>>>(
+				cmallService.goodsAppraisalList(goodsAppraisalListPO));
+	}
+}

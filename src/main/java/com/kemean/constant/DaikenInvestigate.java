@@ -1,0 +1,107 @@
+package com.kemean.constant;
+
+public class DaikenInvestigate {
+
+	/**
+	 * 调研类型
+	 * 
+	 * @Date 2018年6月19日
+	 *
+	 * @company 深圳科名网络有限公司 {@link www.kemean.com}
+	 */
+	public enum DaikenInvestigateTypeEnum {
+
+		/** 全部 **/
+		ALL_INVESTIGATE(1100),
+		/** 点赞 **/
+		POST_LIKE(1101),
+		/** 投票 **/
+		POST_VOTE(1201),
+		/** 调查问卷 **/
+		QUESTIONNAIRE(1301),
+		/** 一手商品（点赞） **/
+		NEW_GOODS_LIKE(1401),
+		/** 二手商品（点赞） **/
+		OLD_GOODS_LIKE(1501);
+		private Integer type;
+
+		private DaikenInvestigateTypeEnum(Integer type) {
+			this.type = type;
+		}
+
+		public Integer getType() {
+			return type;
+		}
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+	}
+
+	/**
+	 * 调研---问卷调查--问题类型
+	 * 
+	 * @Date 2018年6月19日
+	 *
+	 * @company 深圳科名网络有限公司 {@link www.kemean.com}
+	 */
+	public enum DaikenInvestigateQuestionTypeEnum {
+
+		/** 单选 **/
+		ONE_SELECT(1101),
+		/** 多选 **/
+		MANY_SELECT(1201),
+		/** 简答题 **/
+		SIMPLE(1301);
+		private Integer type;
+
+		private DaikenInvestigateQuestionTypeEnum(Integer type) {
+			this.type = type;
+		}
+
+		public Integer getType() {
+			return type;
+		}
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+	}
+
+	/**
+	 * 调研--广告跳转类型
+	 * 
+	 * @Date 2018年6月19日
+	 *
+	 * @company 深圳科名网络有限公司 {@link www.kemean.com}
+	 */
+	public enum DaikenInvestigateJumpTypeEnum {
+
+		/** 不跳转 **/
+		NO_JUMP(1001),
+		/** 小程序 **/
+		SMALL_PROGRAM(1101),
+		/** 店铺详情 **/
+		SHOP_INFO(1201),
+		/** 一手商品详情 **/
+		GOODS_INFO(1301),
+		/** 二手商品详情 **/
+		OLD_GOODS_INFO(1302);
+		private Integer type;
+
+		private DaikenInvestigateJumpTypeEnum(Integer type) {
+			this.type = type;
+		}
+
+		public Integer getType() {
+			return type;
+		}
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+	}
+}

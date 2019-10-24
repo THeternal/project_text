@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+</head>
+<style type="text/css">
+#rich_toolbar {
+	border: 1px solid #eeeeee;
+}
+
+#rich_body {
+	border: 1px solid #eeeeee;
+	height: 800px;
+}
+</style>
+<body>
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row">
+			<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset8">
+				<button
+					class="layui-btn"
+					onclick="update()">修改</button>
+			</div>
+		</div>
+	</blockquote>
+
+	<div class="layui-row">
+		<div class=" layui-col-md4 layui-col-sm5">
+			<label class="layui-form-label">标题：</label>
+
+			<div class="layui-input-block">
+				<input
+					type="text"
+					class="layui-input param_title layui-disabled"
+					disabled="disabled"
+					th:value="${pageData.title}" />
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-file-text-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">公告内容</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div id="rich_toolbar"></div>
+				<div id="rich_body"></div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/wangEditor.min.js}"
+	charset="utf-8"></script>
+
+<script
+	th:src="@{/js/wangEditor_video.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var qn_token=/*[[${qnResult}]]*/
+	var url_uoload_img = /*[[@{/admin/open/upload}]]*/;
+	var pageData=/*[[${pageData}]]*/;
+</script>
+<!-- 创建富文本 -->
+<script
+	type="text/javascript"
+	th:inline="javascript">
+var editor = new Editor('#rich_toolbar', '#rich_body');
+// 自定义菜单配置
+editor.customConfig.menus = [
+    'head',  // 标题
+    'bold',  // 粗体
+    'fontSize',  // 字号
+    'fontName',  // 字体
+    'italic',  // 斜体
+    'underline',  // 下划线
+    'strikeThrough',  // 删除线
+    'foreColor',  // 文字颜色
+    'backColor',  // 背景颜色
+    'link',  // 插入链接
+    'list',  // 列表
+    'justify',  // 对齐方式
+    'quote',  // 引用
+    //'emoticon',  // 表情
+    'image',  // 插入图片
+    'table',  // 表格
+    'video',  // 插入视频
+    //'code',  // 插入代码
+    'undo',  // 撤销
+    //'redo'  // 重复
+];
+//下面两个配置，使用其中一个即可显示“上传图片”的tab。但是两者不要同时使用！！！
+// editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+editor.customConfig.uploadImgServer = url_uoload_img;  // 上传图片到服务器
+editor.customConfig.uploadFileName = 'file';
+editor.customConfig.uploadImgHooks = {
+	customInsert: function (insertImg, result, editor) {
+	// 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+	// insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+	// 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+	
+	 var content= '<div class="layui-form-item"><label class="layui-form-label">图片宽度:</label>'
+			 +'<div class="layui-input-block"><input type="text" class="layui-input param_width" placeholder="请输入图片展示的宽度，默认为400px" /></div></div>';
+	    
+	    // 上传代码返回结果之后，将图片插入到编辑器中
+	 layer.open({
+		title : "图片设置",
+		content : content,
+		skin : "layui-layer-molv",
+		area : [ '500px', '250px' ],
+		btn : [ '确定' ],
+		offset : '100px',
+		btn1 : function() {
+			var imgWidth=400;
+			var param_width=$(".param_width").val();
+			if(param_width){
+				imgWidth=param_width;
+			}
+			insertImg(result.data+'?imageView2/0/w/'+imgWidth);
+			layer.msg("上传成功");
+		},
+		closeBtn : 1,
+		anim : 0
+		});
+	}
+    
+}
+editor.customConfig.customUploadVideo = function(files) {
+	
+    // 上传代码返回结果之后，将视频插入到编辑器中
+	qiniuUpload(files,function(res){
+		editor.cmd.do(
+			      "insertHTML",
+			      '<video src="' +
+			        res +
+			        '" controls="controls" style="min-width:300px;min-height:300px;"></video>'
+			    );
+	})
+    
+}
+editor.create();
+editor.txt.html(pageData.contentHtml);
+</script>
+
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var url_update = /*[[@{/admin/protocol/protocol_update}]]*/;
+	var url_refresh = /*[[@{/admin/protocol/protocol_page}]]*/;
+	layui.use([ 'layer' ], function() {
+
+	});
+	function update() {
+		var paramTitle = $(".param_title").val();
+		if(!paramTitle){
+			layer.msg("标题不能为空");
+			return;
+		}
+		var editHtml=editor.txt.html();
+		if(editHtml==""){
+			layer.msg("资讯的内容不能为空");
+			return false;
+		}
+		var requestObj;
+	      if (window.XMLHttpRequest) {
+	        requestObj = new XMLHttpRequest();
+	      } else {
+	        requestObj = new ActiveXObject;
+	      }
+	      requestObj.open('POST',url_update,true);//后面的true可以省略，代表异步,?后面代表你需要传递的参数
+	      requestObj.setRequestHeader("Content-Type", "application/json");
+	      requestObj.send(JSON.stringify({title:paramTitle,
+				contentHtml:editHtml,
+				id:pageData.id}));//如果是POST方法则需要在send()内传入数据
+				requestObj.onreadystatechange=function(){
+		    if(requestObj.readyState==4){
+		        if(requestObj.status==200){
+		            //respinseText表示返回的字符串形式的响应数据
+		            var data=JSON.parse(requestObj.responseText);
+		            layer.msg(data.info);
+					if (data.success) {
+						window.location = url_refresh+'?type='+pageData.type;
+					}
+		            //执行函数
+		        }else{
+		            //执行函数
+		        }
+		    }
+		}
+		
+	}
+	
+</script>
+</html>

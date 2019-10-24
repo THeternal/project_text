@@ -1,0 +1,150 @@
+package com.kemean.dao.impl;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.DaikenInvestigate;
+import com.kemean.constant.DaikenInvestigate.DaikenInvestigateTypeEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenInvestigateDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenInvestigateMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class DaikenInvestigateDaoImpl extends DaoSupport<DaikenInvestigate> implements DaikenInvestigateDao {
+
+	@Autowired
+	private DaikenInvestigateMapper mapper;
+
+	@Override
+	protected Mapper<DaikenInvestigate> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<DaikenInvestigate> investigateList(Integer investigateStatus, String descStr, Boolean isOver,
+			Integer pageNo, Integer pageSize) {
+		Example example = new Example(DaikenInvestigate.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("investigateStatus", true);
+		criteria.andEqualTo("payStatus", true);
+		if (investigateStatus.equals(DaikenInvestigateTypeEnum.ALL_INVESTIGATE.getType())) {
+			criteria.andIn("type", Arrays.asList(DaikenInvestigateTypeEnum.POST_VOTE.getType(),
+					DaikenInvestigateTypeEnum.POST_LIKE.getType(), DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(),
+					DaikenInvestigateTypeEnum.NEW_GOODS_LIKE.getType(),
+					DaikenInvestigateTypeEnum.OLD_GOODS_LIKE.getType()));
+		}
+
+		if (investigateStatus.equals(DaikenInvestigateTypeEnum.POST_VOTE.getType())) {
+			criteria.andEqualTo("type", DaikenInvestigateTypeEnum.POST_VOTE.getType());
+		}
+
+		if (investigateStatus.equals(DaikenInvestigateTypeEnum.POST_LIKE.getType())) {
+			criteria.andIn("type",
+					Arrays.asList(DaikenInvestigateTypeEnum.POST_LIKE.getType(),
+							DaikenInvestigateTypeEnum.NEW_GOODS_LIKE.getType(),
+							DaikenInvestigateTypeEnum.OLD_GOODS_LIKE.getType()));
+		}
+
+		if (investigateStatus.equals(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType())) {
+			criteria.andEqualTo("type", DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType());
+		}
+
+		if (isOver) {
+			criteria.andLessThanOrEqualTo("endTime", new Date());
+		}
+
+		if (StringUtils.isNotBlank(descStr)) {
+			example.setOrderByClause(descStr + " DESC");
+		} else {
+			example.setOrderByClause(" end_time DESC");
+		}
+
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenInvestigate> investigateReport(Integer type, Boolean isOver, String title, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenInvestigate.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("payStatus", true);
+		if (isOver != null) {
+			if (isOver) {
+				criteria.andLessThanOrEqualTo("endTime", new Date());
+			} else {
+				criteria.andGreaterThanOrEqualTo("endTime", new Date());
+			}
+		}
+
+		if (StringUtils.isNoneBlank(title)) {
+			criteria.andLike("title", "%" + title + "%");
+		}
+		criteria.andEqualTo("type", type);
+		example.setOrderByClause(" end_time DESC");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenInvestigate> investigateList(Integer userId, Integer pageNo, Integer pageSize) {
+		Example example = new Example(DaikenInvestigate.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("userId", userId);
+		criteria.andIn("type", Arrays.asList(DaikenInvestigateTypeEnum.POST_LIKE.getType(),
+				DaikenInvestigateTypeEnum.POST_VOTE.getType()));
+		example.setOrderByClause(" end_time DESC");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public Integer selectInvestResultCount(Integer type, Date data, Boolean isOver) {
+		Example example = new Example(DaikenInvestigate.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		if (isOver) {
+			criteria.andLessThanOrEqualTo("endTime", data);
+		} else {
+			criteria.andGreaterThanOrEqualTo("endTime", data);
+		}
+		criteria.andEqualTo("type", type);
+		return mapper.selectCountByExample(example);
+	}
+
+	@Override
+	public Integer updateByHappyLock(Integer investigateId, Integer dataVersion) {
+		return mapper.updateByHappyLock(investigateId, dataVersion);
+	}
+
+	@Override
+	public List<AdminChartBO> selectDayQuantity(Integer type, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectDayQuantity(type, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectDayUserNum(Integer type, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectDayUserNum(type, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectDayUserMoney(Integer type, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectDayUserMoney(type, dateStart, dateEnd, limit);
+	}
+
+}

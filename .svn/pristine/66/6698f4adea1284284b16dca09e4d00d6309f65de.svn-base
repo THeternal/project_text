@@ -1,0 +1,32 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenRedShareGet;
+import com.kemean.dao.DaikenRedShareGetDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenRedShareGetMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenRedShareGetDaoImpl extends DaoSupport<DaikenRedShareGet> implements DaikenRedShareGetDao {
+
+	@Autowired
+	private DaikenRedShareGetMapper mapper;
+
+	@Override
+	protected Mapper<DaikenRedShareGet> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<AdminChartBO> selectRedShareGetRecord(String goodsTitle, Integer shopId, String dateStart,
+			String dateEnd, Integer limit) {
+		return mapper.selectRedShareGetRecord(goodsTitle, shopId, dateStart, dateEnd, limit);
+	}
+}

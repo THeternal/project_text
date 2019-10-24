@@ -1,0 +1,33 @@
+package com.kemean.constant;
+
+public enum DaikenRedisKeyEnum {
+
+	/** 验证码 p1-验证码类型 p2-邮箱、手机号 **/
+	CODE("code_%s_%s"),
+	/** 消费者 p1-token **/
+	USER_CONSUMER("daiken_consumer_%s"),
+	/** 商户 p1-token **/
+	USER_BUSINESS("daiken_business_%s"),
+	/** uid **/
+	UID("daiken_uid"),
+	/** 地区 p1-pid **/
+	REGION("ul_region_%s"),
+	/** 配置 p1-type **/
+	CONFIG("daiken_config_%s"),
+	/** 轮播图 p1-位置 **/
+	LUNBO("daiken_lunbo_%s");
+	private String key;
+
+	private DaikenRedisKeyEnum(String key) {
+		this.key = key;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+}

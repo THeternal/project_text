@@ -1,0 +1,19 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.mysql.DaikenGoodsOldDB;
+
+public interface DaikenGoodsOldDao extends Idao<DaikenGoodsOld> {
+
+	/**
+	 * 二手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月27日
+	 */
+	List<DaikenGoodsOldDB> oldGoodsList(List<Integer> categoryIds, String descStr, Double maxPriceSales,
+			Double minPriceSales, Boolean isPurchasing, String keyWord);
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">推荐图：</label>
+				<div class="layui-input-block">
+					<img
+						class="param_img_url_show"
+						width="200px"
+						th:onclick="'javascript:visitImg(this.src);'" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<button
+						type="button"
+						class="layui-btn"
+						id="uploadimg">
+						<i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+					<input
+						type="hidden"
+						class="layui-input param_img_url" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">店铺名称：</label>
+				<div class="layui-input-block">
+					<select
+						lay-filter="shop_info"
+						class="shop_info">
+						<option>---------请选择店铺---------</option>
+						<option
+							th:value="${item.id}"
+							th:text="${item.shopName}"
+							th:each=" item : ${shopInfos}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品名称：</label>
+				<div class="layui-input-block">
+					<select class="goods_info">
+						<option
+							th:value="${item.id}"
+							th:text="${item.name}"
+							th:each=" item : ${goodsInfos}"></option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="addRecommendGoods()">新增</button>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<font color="#FF5722">注：目前支持一个商品推荐</font>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var url_uoload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_add_recommend_goods = /*[[@{/admin/goods/add_recommend_goods}]]*/;
+	var url_get_shop_goods_info = /*[[@{/admin/goods/get_shop_goods_info}]]*/;
+	
+	
+	function addRecommendGoods(){
+		var table = layui.table;
+		var paramImgUrl = $(".param_img_url").val();
+		var paramGoodsId = $(".goods_info").val();
+		if(!paramImgUrl){
+			layer.msg("请上传推荐图片");
+			return false;
+		}
+		
+		if(!paramGoodsId){
+			layer.msg("请选择推荐商品");
+			return false;
+		}
+		$.post(url_add_recommend_goods,{
+				imgUrl : paramImgUrl,
+				goodsId : paramGoodsId
+			},
+			function(result){
+				if(result.success){
+					layer.alert("新增推荐商品成功", {icon: 1});
+				}
+	 	});
+	}
+	
+	layui.use([ 'table', 'upload','element' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		var element = layui.element;
+		var form = layui.form;
+		form.on('select(shop_info)',function(data){
+			var value = data.value;
+			$.get(url_get_shop_goods_info, {
+				shopId : value
+			},
+			function(data, textStatus, req) {
+				var goodsInfo = $(".goods_info");
+				goodsInfo.empty();
+				data.data.forEach(function(item) {
+					goodsInfo.append(new Option(item["title"], item["id"]));
+				});
+				form.render('select');
+			})
+		});
+
+		var uploadInst = upload.render({
+			elem : '#uploadimg',
+			url : url_uoload_img,
+			data:{resetName:true},
+			done : function(res) {
+				//上传完毕回调
+				$(".param_img_url").val(res.data);
+				$(".param_img_url_show").prop("src",res.data);
+				$("#img_div").show();
+				layer.msg('上传成功');
+			}
+		});
+	});
+</script>
+
+</html>

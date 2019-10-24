@@ -1,0 +1,99 @@
+var host = "http://" + location.host;
+
+var navs = [
+		{
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/goods/new",
+			"icon" : "fa-database",
+			"title" : "商品管理"
+		},
+		{
+			"children" : [
+					{
+						"children" : [],
+						"href" : ""
+								+ host
+								+ "/daiken/shop/goods/chart/in_page?purchasing=false",
+						"icon" : "fa-database",
+						"title" : "商品收入报表"
+
+					},
+					{
+						"children" : [],
+						"href" : "" + host
+								+ "/daiken/shop/goods/chart/red_share_page",
+						"icon" : "fa-database",
+						"title" : "商品红包报表"
+					},
+
+					{
+						"children" : [],
+						"href" : "" + host
+								+ "/daiken/shop/goods/chart/promotion_page",
+						"icon" : "fa-database",
+						"title" : "促销商品报表"
+					}, {
+						"children" : [],
+						"href" : "" + host + "/daiken/shop/goods/chart/",
+						"icon" : "fa-database",
+						"title" : "总销售报表"
+					} ],
+			"href" : "",
+			"icon" : "fa-database",
+			"title" : "商品统计"
+		}, {
+			"children" : [ {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/result",
+				"icon" : "fa-database",
+				"title" : "结果统计"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/like_report",
+				"icon" : "fa-database",
+				"title" : "点赞报表"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/question_report",
+				"icon" : "fa-database",
+				"title" : "投票报表"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/question_report",
+				"icon" : "fa-database",
+				"title" : "问卷调查报表"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/like_page",
+				"icon" : "fa-database",
+				"title" : "点赞统计"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/vote_page",
+				"icon" : "fa-database",
+				"title" : "投票统计"
+			}, {
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/question_page",
+				"icon" : "fa-database",
+				"title" : "问卷调查统计"
+			} ],
+			"href" : "",
+			"icon" : "fa-database",
+			"title" : "调研统计"
+		}, {
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/info/recharge_page",
+			"icon" : "fa-database",
+			"title" : "充值记录"
+		}, {
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/info/withdraw_page",
+			"icon" : "fa-database",
+			"title" : "提现记录"
+		}, {
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/info/financeWater_page",
+			"icon" : "fa-database",
+			"title" : "流水统计"
+		} ];

@@ -1,0 +1,24 @@
+package com.kemean.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenOrderAfterSale;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenOrderAfterSaleMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenOrderAfterSaleDaoImpl extends DaoSupport<DaikenOrderAfterSale>
+		implements com.kemean.dao.DaikenOrderAfterSaleDao {
+
+	@Autowired
+	private DaikenOrderAfterSaleMapper mapper;
+
+	@Override
+	protected Mapper<DaikenOrderAfterSale> getMapper() {
+		return mapper;
+	}
+
+}

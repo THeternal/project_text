@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+<style type="text/css">
+.param_imgs_player {
+	max-width: 150px;
+}
+
+.param_imgs {
+	width: 200px;
+	height: 300px;
+}
+
+.player_card_img {
+	max-width: 300px;
+	max-height: 200px;
+}
+</style>
+</head>
+<body class="layui-fluid">
+
+	<div
+		class="layui-card layui-form"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-paper-plane-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">问题区</font>
+		</div>
+		<div class="layui-card-body">
+			<div
+				class="layui-row layui-col-space15"
+				id="question_anwser_div">
+			</div>
+		</div>
+	</div>
+
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var pageData=/*[[${pageData}]]*/;
+	
+	var upload;
+	 var table;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	var  form=layui.form;
+    	 upload=layui.upload;
+    	 var laydate = layui.laydate;
+    	 table=layui.table;
+    	
+   	  
+    });
+    
+    
+    $(function(){
+		
+		//问题区
+		$.each(pageData, function(i, elt) {
+			questionDiv(i,elt);		
+		});
+	});
+    
+    
+    function questionDiv(i,elt){
+    	var selected_html="";
+    	var simple_question_html="";
+    	if(elt.recordAnswer!=null){
+    		//问题选项
+    		$.each(elt.recordAnswer, function(i, elt) {
+    			 selected_html +='<input type="text" readonly="readonly" class="layui-input question_id" style="border: 0px;" role="'+elt.id+'" value="'+elt.id+':'+elt.value+'"/>';
+    		});
+    	}
+    	
+    	var question_selected_html='<div class="layui-input-block">'
+    		+selected_html
+    		+'</div>';
+    		
+    		var _question='<span>'+(i+1)+'.问题('+elt.typeStr+')&nbsp;&nbsp;'+elt.question+'<font color="red">'+elt.answer+'</font></span>';
+    		if(elt.type==1301){
+    			_question='<span>'+(i+1)+'.问题('+elt.typeStr+')&nbsp;&nbsp;'+elt.question+'</span>';
+    			 simple_question_html='<div class="layui-input-block"><span style="color: red;">'+elt.answer+'</span></div>'
+    			 question_selected_html='';
+    		}
+    	var question_html='<div class="layui-col-md6 layui-col-sm6">'
+	       	 +_question
+	         +question_selected_html
+	         +simple_question_html
+	         +'</div>';
+	         console.log(question_html);
+    	return  $("#question_anwser_div").append(question_html);
+    
+    }
+	         
+	
+	         
+    
+	
+	
+	
+	
+
+	
+
+	
+	
+</script>
+
+</html>

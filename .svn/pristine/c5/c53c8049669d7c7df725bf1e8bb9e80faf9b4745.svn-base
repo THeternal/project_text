@@ -1,0 +1,228 @@
+package com.kemean.vo.bo.b.order;
+
+import java.util.List;
+
+public class RefundCauseGoodsBO {
+
+	/**
+	 * 商品id
+	 */
+	private Integer goodsId;
+
+	/**
+	 * 商品规格号
+	 */
+	private String skuNo;
+
+	/**
+	 * 商品图片
+	 */
+	private String headImg;
+
+	/**
+	 * 商品标题
+	 */
+	private String title;
+
+	/**
+	 * 退款规格信息
+	 */
+	private String recordType;
+
+	/**
+	 * 商品门市价
+	 */
+	private Double priceStore;
+
+	/**
+	 * 支付价
+	 */
+	private Double priceSales;
+
+	/**
+	 * 邮费
+	 */
+	private Double postage;
+
+	/**
+	 * 申请时间
+	 */
+	private String createTimeStr;
+
+	/**
+	 * 商品状态
+	 */
+	private String goodsStatusStr;
+
+	/**
+	 * 退款数量
+	 */
+	private Integer goodsNum;
+
+	/**
+	 * 商品总计加钱（含邮费）
+	 */
+	private Double goodsSumPrice;
+
+	/**
+	 * 退款原因
+	 */
+	private String refundReason;
+
+	/**
+	 * 退款凭证图片
+	 */
+	private List<String> refundImg;
+
+	/**
+	 * 退款金额
+	 */
+	private Double refundMoney;
+
+	/**
+	 * 退款code
+	 */
+	private Integer refundStatus;
+
+	/**
+	 * 退款状态
+	 */
+	private String refundStatusStr;
+
+	public Integer getRefundStatus() {
+		return refundStatus;
+	}
+
+	public void setRefundStatus(Integer refundStatus) {
+		this.refundStatus = refundStatus;
+	}
+
+	public String getSkuNo() {
+		return skuNo;
+	}
+
+	public void setSkuNo(String skuNo) {
+		this.skuNo = skuNo;
+	}
+
+	public Integer getGoodsNum() {
+		return goodsNum;
+	}
+
+	public void setGoodsNum(Integer goodsNum) {
+		this.goodsNum = goodsNum;
+	}
+
+	public Double getGoodsSumPrice() {
+		return goodsSumPrice;
+	}
+
+	public void setGoodsSumPrice(Double goodsSumPrice) {
+		this.goodsSumPrice = goodsSumPrice;
+	}
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getRecordType() {
+		return recordType;
+	}
+
+	public void setRecordType(String recordType) {
+		this.recordType = recordType;
+	}
+
+	public Double getPriceStore() {
+		return priceStore;
+	}
+
+	public void setPriceStore(Double priceStore) {
+		this.priceStore = priceStore;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public String getCreateTimeStr() {
+		return createTimeStr;
+	}
+
+	public void setCreateTimeStr(String createTimeStr) {
+		this.createTimeStr = createTimeStr;
+	}
+
+	public String getGoodsStatusStr() {
+		return goodsStatusStr;
+	}
+
+	public void setGoodsStatusStr(String goodsStatusStr) {
+		this.goodsStatusStr = goodsStatusStr;
+	}
+
+	public String getRefundReason() {
+		return refundReason;
+	}
+
+	public void setRefundReason(String refundReason) {
+		this.refundReason = refundReason;
+	}
+
+	public List<String> getRefundImg() {
+		return refundImg;
+	}
+
+	public void setRefundImg(List<String> refundImg) {
+		this.refundImg = refundImg;
+	}
+
+	public Double getRefundMoney() {
+		return refundMoney;
+	}
+
+	public void setRefundMoney(Double refundMoney) {
+		this.refundMoney = refundMoney;
+	}
+
+	public String getRefundStatusStr() {
+		return refundStatusStr;
+	}
+
+	public void setRefundStatusStr(String refundStatusStr) {
+		this.refundStatusStr = refundStatusStr;
+	}
+
+}

@@ -1,0 +1,13 @@
+var host = "http://" + location.host;
+
+var navs = [ {
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/shop/",
+	"icon" : "fa-database",
+	"title" : "店铺管理"
+}, {
+	"children" : [],
+	"href" : "" + host + "/daiken/sale/user/",
+	"icon" : "fa-database",
+	"title" : "销售员信息管理"
+} ];

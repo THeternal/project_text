@@ -1,0 +1,166 @@
+package com.kemean.controller.admin;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminInvestigateService;
+import com.kemean.vo.bo.admin.investigate.AdminInvestChartBO;
+import com.kemean.vo.po.admin.investigate.AdminInvestChartPO;
+
+/**
+ * 调研报表
+ * 
+ * @Date 2018年6月28日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+
+@Controller
+@RequestMapping("admin/invest/chart")
+public class AdminInvestigateChartController extends DaikenBaseController {
+
+	@Autowired
+	private AdminInvestigateService adminInvestigateService;
+
+	/**
+	 * 结果查询统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月3日
+	 */
+	@RequestMapping(value = "result", method = RequestMethod.GET)
+	public String investResultChartPage() {
+		request.setAttribute("pageDate", adminInvestigateService.investResultChart(null));
+		return KemeanConstant.ADMIN_FOLDER + "investResultChart";
+	}
+
+	/**
+	 * 结果统计搜索
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年5月12日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "result_search", method = RequestMethod.GET)
+	public AdminInvestChartBO chartSearch(@RequestParam String date) {
+		return adminInvestigateService.investResultChart(date);
+	}
+
+	/**
+	 * 调研活动统计--- 点赞
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "like_page", method = RequestMethod.GET)
+	public String investDayLikeChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investLikeChart";
+	}
+
+	/**
+	 * 调研活动统计--- 投票
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "vote_page", method = RequestMethod.GET)
+	public String investDayVoteChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investVoteChart";
+	}
+
+	/**
+	 * 调研活动统计--- 问卷
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "question_page", method = RequestMethod.GET)
+	public String investDayQuestionChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investQuestionChart";
+	}
+
+	/**
+	 * 调研活动统计数据
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "search", method = RequestMethod.GET)
+	public AdminInvestChartBO chartSearch(@Valid AdminInvestChartPO adminChartsPO) {
+		return adminInvestigateService.investDayChartData(adminChartsPO, 0);
+	}
+
+	/**
+	 * 调研客户/类型 统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "user_page", method = RequestMethod.GET)
+	public String investUserChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investUserCountData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investUserChart";
+	}
+
+	/**
+	 * 调研客户统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "user_search", method = RequestMethod.GET)
+	public AdminInvestChartBO investUserChartData(@Valid AdminInvestChartPO adminChartsPO) {
+		return adminInvestigateService.investUserCountData(adminChartsPO, 15);
+	}
+	
+	/**
+	 * 调研活动统计(平台)--- 点赞
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "platform_like_page", method = RequestMethod.GET)
+	public String investPlatformLikeChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investPlatformLikeChart";
+	}
+
+	/**
+	 * 调研活动统计(平台)--- 投票
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "platform_vote_page", method = RequestMethod.GET)
+	public String investPlatformVoteChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investPlatformVoteChart";
+	}
+
+	/**
+	 * 调研活动统计(平台)--- 问卷
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "platform_question_page", method = RequestMethod.GET)
+	public String investPlatformQuestionChartPage(@Valid AdminInvestChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminInvestigateService.investDayChartData(adminChartsPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "investPlatformQuestionChart";
+	}
+
+
+}

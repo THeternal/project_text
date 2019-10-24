@@ -1,0 +1,43 @@
+package com.kemean.service.common;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
+
+import com.kemean.service.WxLoginService;
+import com.kemean.vo.bo.WxLoginAppletsBO;
+import com.kemean.vo.po.WxLoginAppletsPO;
+
+/**
+ * 统一注入处理第三方服务（支付、登录等）
+ * 
+ * @Date 2018年6月25日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+@PropertySource(value = "classpath:daiken-pay.properties", encoding = "UTF-8")
+public class ThirdService {
+
+	@Autowired
+	private WxLoginService wxLoginService;
+
+	@Value(value = "${wx.small.appid}")
+	private String wxSmallAppid;
+
+	@Value(value = "${wx.small.app-secret}")
+	private String wxSmallAppSecret;
+
+	/**
+	 * 小程序登录
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月25日
+	 */
+	public WxLoginAppletsBO appletsLogin(String jsCode, String encryptedData, String iv) {
+		return wxLoginService
+				.appletsLogin(new WxLoginAppletsPO(wxSmallAppid, wxSmallAppSecret, jsCode, encryptedData, iv));
+	}
+
+}

@@ -1,0 +1,409 @@
+package com.kemean.controller.admin;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.constant.DaikenInvestigate.DaikenInvestigateTypeEnum;
+import com.kemean.constant.DaikenUserEnum.DaikenUserBaseEnum;
+import com.kemean.constant.DaikenConstant;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminCommonService;
+import com.kemean.service.admin.AdminInvestigateService;
+import com.kemean.service.admin.AdminUserService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.investigate.AdminInvestBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestOptionsBO;
+import com.kemean.vo.bo.admin.user.AdminUserBO;
+import com.kemean.vo.bo.c.investigate.InvestigateOrderBO;
+import com.kemean.vo.po.admin.investigate.AdminInvestOptionsPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestigateAddPO;
+import com.kemean.vo.po.admin.investigate.AdminPrecisionConditionPO;
+import com.kemean.vo.po.admin.investigate.AdminPrecisionUserPO;
+
+/**
+ * 调研管理
+ * 
+ * @Date 2018年6月28日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+
+@Controller
+@RequestMapping("admin/invest")
+public class AdminInvestigateController extends DaikenBaseController {
+
+	@Autowired
+	private AdminUserService adminUserService;
+
+	@Autowired
+	private AdminInvestigateService adminInvestigateService;
+
+	@Autowired
+	private AdminCommonService adminCommonService;
+
+	/**
+	 * 调研列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String investListPage() {
+		return KemeanConstant.ADMIN_FOLDER + "invest";
+	}
+
+	/**
+	 * 调研投票列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "vote_page", method = RequestMethod.GET)
+	public String investVotePage() {
+		return KemeanConstant.ADMIN_FOLDER + "investVote";
+	}
+
+	/**
+	 * 调研点赞列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "like_page", method = RequestMethod.GET)
+	public String investLikePage() {
+		return KemeanConstant.ADMIN_FOLDER + "investLike";
+	}
+
+	/**
+	 * 调研问卷调查列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "question_page", method = RequestMethod.GET)
+	public String investQuestionPage() {
+		return KemeanConstant.ADMIN_FOLDER + "investQuestion";
+	}
+
+	/**
+	 * 用户信息列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+
+	@RequestMapping(value = "user", method = RequestMethod.GET)
+	public String investUserPage() {
+		return KemeanConstant.ADMIN_FOLDER + "investUser";
+	}
+
+	/**
+	 * 调研列表 data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+
+	@ResponseBody
+	@RequestMapping(value = "page_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminInvestBO>> investListData(@Valid AdminInvestPO adminInvestPO) {
+		return adminInvestigateService.investListData(adminInvestPO, null, null);
+
+	}
+
+	/**
+	 * 调研--点赞详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "like_info_page", method = RequestMethod.GET)
+	public String investLikeInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData",
+				adminInvestigateService.investInfo(objId, DaikenInvestigateTypeEnum.POST_LIKE.getType()));
+		return KemeanConstant.ADMIN_FOLDER + "investLikeInfo";
+	}
+
+	/**
+	 * 调研--投票详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "vote_info_page", method = RequestMethod.GET)
+	public String investVoteInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData",
+				adminInvestigateService.investInfo(objId, DaikenInvestigateTypeEnum.POST_VOTE.getType()));
+		return KemeanConstant.ADMIN_FOLDER + "investVoteInfo";
+	}
+
+	/**
+	 * 投票--选手列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "vote_player_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminInvestOptionsBO>> invsetVotePlayerData(@RequestParam Integer objId,
+			@RequestParam Integer page, @RequestParam Integer limit) {
+		return adminInvestigateService.invsetVotePlayerData(objId, page, limit);
+	}
+
+	/**
+	 * 修改选手信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "vote_player_edit", method = RequestMethod.POST)
+	public KemeanResult<String> invsetVotePlayerEdit(@Valid AdminInvestOptionsPO adminInvestOptionsPO) {
+		return adminInvestigateService.invsetVotePlayerEdit(adminInvestOptionsPO);
+
+	}
+
+	/**
+	 * 调研--问卷调查详情 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "question_info_page", method = RequestMethod.GET)
+	public String investQuestionInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData",
+				adminInvestigateService.investInfo(objId, DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType()));
+		return KemeanConstant.ADMIN_FOLDER + "investQuestionInfo";
+	}
+
+	/**
+	 * 调研--问卷调查 用户答案
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年8月27日
+	 */
+
+	@RequestMapping(value = "question_join_user_answer_page", method = RequestMethod.GET)
+	public String investQuestionJoinUserAnswerPage(@RequestParam String questionStr) {
+		request.setAttribute("pageData", adminInvestigateService.investQuestionJoinUserAnswerData(questionStr));
+		return KemeanConstant.ADMIN_FOLDER + "investQuestionJoinUserAnswer";
+	}
+
+	/**
+	 * 操作调研上下架状态
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "status_operate", method = RequestMethod.GET)
+	public KemeanResult<String> investStatusOperate(@RequestParam Integer objId, @RequestParam Boolean status) {
+		return adminInvestigateService.investStatusOperate(objId, status, getLoginAdminUser());
+
+	}
+
+	/**
+	 * 删除调研
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "del", method = RequestMethod.GET)
+	public KemeanResult<String> investDel(@RequestParam Integer objId) {
+		return adminInvestigateService.investDel(objId);
+
+	}
+
+	/**
+	 * 发布点赞信息 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+
+	@RequestMapping(value = "like_add_page", method = RequestMethod.GET)
+	public String investLikeAddPage(@RequestParam Integer userId) {
+		request.setAttribute("userData", adminUserService.userInfoData(userId));
+		return KemeanConstant.ADMIN_FOLDER + "investLikeAdd";
+	}
+
+	/**
+	 * 发布/修改点赞信息 data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "like_operate", method = RequestMethod.POST)
+	public KemeanResult<InvestigateOrderBO> investLikeOperate(
+			@Valid @RequestBody AdminInvestigateAddPO adminInvestigateAddPO) {
+		return adminInvestigateService.investLikeOperate(adminInvestigateAddPO, null, DaikenConstant.back_ground_issue);
+
+	}
+
+	/**
+	 * 发布/修改问卷信息 data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "question_operate", method = RequestMethod.POST)
+	public KemeanResult<String> investQuestionOperate(@Valid @RequestBody AdminInvestigateAddPO adminInvestigateAddPO) {
+		return adminInvestigateService.investQuestionOperate(adminInvestigateAddPO, null,
+				DaikenConstant.back_ground_issue);
+
+	}
+
+	/**
+	 * 发布/修改投票信息 data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "vote_operate", method = RequestMethod.POST)
+	public KemeanResult<InvestigateOrderBO> investVoteOperate(
+			@Valid @RequestBody AdminInvestigateAddPO adminInvestigateAddPO) {
+		return adminInvestigateService.investVoteOperate(adminInvestigateAddPO, null, DaikenConstant.back_ground_issue);
+
+	}
+
+	/**
+	 * 发布投票信息 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+
+	@RequestMapping(value = "vote_add_page", method = RequestMethod.GET)
+	public String investVoteAddPage(@RequestParam Integer userId) {
+		request.setAttribute("userData", adminUserService.userInfoData(userId));
+		return KemeanConstant.ADMIN_FOLDER + "investVoteAdd";
+	}
+
+	/**
+	 * 发布问卷调查信息 page
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	@RequestMapping(value = "question_add_page", method = RequestMethod.GET)
+	public String investQuestionnaireAddPage(@RequestParam Integer userId) {
+		request.setAttribute("userData", adminUserService.userInfoData(userId));
+		return KemeanConstant.ADMIN_FOLDER + "investQuestionAdd";
+	}
+
+	/**
+	 * 精准投放page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	@RequestMapping(value = "precision_put_page", method = RequestMethod.GET)
+	public String precisionPutPage(@RequestParam Integer investId) {
+		request.setAttribute("investId", investId);
+		request.setAttribute("userInterestData",
+				adminCommonService.userBaseType(DaikenUserBaseEnum.INTEREST.getType(), 0));
+		request.setAttribute("userJobData", adminCommonService.userBaseType(DaikenUserBaseEnum.JOB.getType(), 0));
+		return KemeanConstant.ADMIN_FOLDER + "investPutUser";
+	}
+
+	/**
+	 * 精准投放 条件匹配条件
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "precision_put_user_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminUserBO>> precisionPutUserData(
+			@Valid AdminPrecisionConditionPO adminPrecisionConditionPO) {
+		return adminInvestigateService.precisionPutUserData(adminPrecisionConditionPO);
+	}
+
+	/**
+	 * 保存推送的用户
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "precision_operate", method = RequestMethod.POST)
+	public KemeanResult<String> precisionOperate(@Valid @RequestBody AdminPrecisionUserPO adminPrecisionUserPO) {
+		return adminInvestigateService.precisionOperate(adminPrecisionUserPO);
+	}
+
+	/**
+	 * 调研投诉信息查询page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	@RequestMapping(value = "complaint_page", method = RequestMethod.GET)
+	public String investComplaint() {
+		return KemeanConstant.ADMIN_FOLDER + "investComplaint";
+	}
+
+	/**
+	 * 点赞调研参与人数列表page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	@RequestMapping(value = "like_join_user_page", method = RequestMethod.GET)
+	public String investLikeJoinUserPage(@RequestParam Integer investId) {
+		request.setAttribute("investData", adminInvestigateService.investIdAndName(investId));
+		return KemeanConstant.ADMIN_FOLDER + "investLikeJoinUser";
+	}
+
+	/**
+	 * 投票调研参与人数列表page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	@RequestMapping(value = "vote_join_user_page", method = RequestMethod.GET)
+	public String investVoteJoinUserPage(@RequestParam Integer investId) {
+		request.setAttribute("investData", adminInvestigateService.investIdAndName(investId));
+		return KemeanConstant.ADMIN_FOLDER + "investVoteJoinUser";
+	}
+
+	/**
+	 * 问卷调查调研参与人数列表page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	@RequestMapping(value = "question_join_user_page", method = RequestMethod.GET)
+	public String investQuestionJoinUserPage(@RequestParam Integer investId) {
+		request.setAttribute("investData", adminInvestigateService.investIdAndName(investId));
+		return KemeanConstant.ADMIN_FOLDER + "investQuestionJoinUser";
+	}
+
+	/**
+	 * 调研参与人数列表data,
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月24日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "join_user_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminUserBO>> investJoinUserData(@Valid AdminInvestPO adminInvestPO) {
+		return adminInvestigateService.investJoinUserData(adminInvestPO, null);
+	}
+
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+<style type="text/css">
+.createTimeStyle {
+	color: red
+}
+</style>
+</head>
+
+<body
+	class="layui-fluid"
+	id="contentDiv">
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var pageData=/*[[${pageData}]]*/;
+	
+	layui.use([ 'form'], function() {
+	});
+	
+	
+	$(function(){
+		
+		$.each(pageData, function(i, elt) {
+			var recordDiv='<div class="layui-row" style="margin-top: 8px;"><div class=" layui-col-md4 layui-col-sm2">'
+			+'<label class="createTimeStyle">'+elt.createTimeStr+'</label></div>'
+			+'<div class=" layui-col-md8 layui-col-sm10"> <span>'+
+				elt.goodsTitle+'</span><span class="createTimeStyle">('+elt.categoryName+')</span> </div> </div>';
+				$("#contentDiv").append(recordDiv)
+		})
+	})
+
+	
+	
+
+
+</script>
+
+
+</html>

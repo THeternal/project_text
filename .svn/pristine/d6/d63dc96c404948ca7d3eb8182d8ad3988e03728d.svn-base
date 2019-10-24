@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="Content-Type"
+	content="text/html; charset=UTF-8" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1" />
+<title>商家登录</title>
+<script type="text/javascript">
+if (window != top){
+	top.location.href = location.href;
+}
+</script>
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}" />
+<style type="text/css">
+body {
+	background-size: cover;
+	font-family: 'Open Sans', sans-serif;
+	background-attachment: fixed;
+	background-position: center;
+}
+
+.login_body {
+	background: rgba(0, 0, 0, 0.43);
+	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+	height: 330px;
+	margin-top: 150px;
+}
+
+.login_body span {
+	text-align: center;
+	width: 100px;
+	float: left;
+	background: #fed14e;
+	padding: 11.2px 10px;
+	position: relative;
+	color: #005377;
+	font-size: 16px;
+	letter-spacing: 1px;
+	font-weight: bold;
+	margin-left: 70px;
+}
+
+.login_body .input_txt {
+	width: 260px;
+	padding: 10px 10px 10px 15px;
+	border: none;
+	outline: none;
+	font-size: 17px;
+	letter-spacing: 1px;
+	margin-bottom: 35px;
+	float: left;
+}
+
+.login_body span:after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	right: -11px;
+	border-top: 6px solid rgba(0, 0, 0, 0);
+	border-left: 11px solid #fed14e;
+	border-bottom: 6px solid rgba(0, 0, 0, 0);
+	top: 14px;
+}
+
+.login_body .login_btn {
+	float: right;
+	margin-right: 75px;
+}
+</style>
+</head>
+<body th:background="@{http://ospkkikur.bkt.clouddn.com//upload/c3b8af87-1b93-42ab-93d0-02f7316edc21}">
+	<div>
+		<div
+			class="layui-row login_body"
+			style="width: 550px; margin: 0 auto; margin-top: 150px;">
+			<div
+				class="layui-row"
+				style="color: #FFF; padding: 30px 0px; text-align: center;">
+				<h2>代研商家管理后台</h2>
+			</div>
+			<div class="layui-row">
+				<span>账&nbsp;号:</span> <input
+					type="text"
+					class="input_txt param_loginName"
+					placeholder="请输入登录账号" />
+			</div>
+			<div class="layui-row">
+				<span>密&nbsp;码:</span> <input
+					type="password"
+					name="loginPassword"
+					class="input_txt param_loginPassword"
+					placeholder="请输入登录密码" />
+			</div>
+			<div class="layui-row layui-col-space20">
+				<div class="layui-col-md2 layui-col-sm2 layui-col-md-offset1">
+					<a
+						th:href="@{/shop/open/forget_password}"
+						class="layui-btn">忘记密码</a>
+				</div>
+				<div class="layui-col-md2 layui-col-sm2">
+					<a
+						th:href="@{/shop/open/settled}"
+						class="layui-btn">入驻</a>
+				</div>
+				<div class="layui-col-md2 layui-col-sm2 layui-col-md-offset5">
+					<button
+						class="layui-btn login_btn"
+						onclick="login_check()">
+						登&nbsp;录 <i
+							class="fa fa-sign-in"
+							aria-hidden="true"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	type="text/javascript"
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_login_check = /*[[@{/shop/open/login_check}]]*/;
+	var url_home = /*[[@{/shop/info/home}]]*/;
+	
+	function login_check(){
+		var paramLoginName=$(".param_loginName").val();
+		if(!paramLoginName){
+			layer.msg("请输入登录帐号");
+			return false;
+		}
+		var paramLoginPassword=$(".param_loginPassword").val();
+		if(!paramLoginPassword){
+			layer.msg("请输入登录密码");
+			return false;
+		}
+		var load = layer.load(1);
+		
+		$.post(url_login_check, {
+			loginNo:paramLoginName,
+			loginPwd:md5(paramLoginPassword)
+		}, function(data, textStatus, req) {
+			layer.msg(data.info);
+			if(data.success){
+				location.href=url_home;
+			} 
+			layer.close(load);
+		});
+	}
+	
+    
+	
+	layui.use([ 'layer' ], function() {});
+	
+	$(document).keyup(function (e) {
+	    if (e.keyCode == 13) {
+	    	login_check();
+	    }
+	});  
+</script>
+</html>

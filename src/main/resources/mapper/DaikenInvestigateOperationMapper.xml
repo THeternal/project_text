@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenInvestigateOperationMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenInvestigateOperation">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="investigate_id" property="investigateId"
+			jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="operation" property="operation" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+
+	<select id="selectUserGetTokenNum" resultType="java.lang.Integer">
+		SELECT 
+			 SUM(number)
+			FROM
+			  (SELECT 
+			    COUNT(*) AS number
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE a.`type`  IN ('1101','1201') 
+			    AND a.`data_deleted` = FALSE 
+			    <if test="dateStart!=null and dateStart!=''">
+			  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			   </if>
+			    <if test="dateEnd!=null and dateEnd!=''">
+				  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			   </if>
+			  UNION
+			  ALL 
+				  SELECT 
+				    COUNT(*) AS number
+				  FROM
+				    (SELECT 
+				      COUNT(*) 
+				    FROM
+				      `daiken_investigate_operation` a 
+				    WHERE a.`data_deleted` = FALSE 
+				      AND a.`type` IN ('1301') 
+				      <if test="dateStart!=null and dateStart!=''">
+					  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+				   </if>
+				    <if test="dateEnd!=null and dateEnd!=''">
+					  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+				   </if>
+				    GROUP BY a.`user_id`) b
+		) c 
+		
+	</select>
+	
+	<select id="selectJoinUserNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT 
+			NAME,
+			 SUM(number) as y
+			FROM
+			  (SELECT 
+			  DATE_FORMAT(a.`create_time`, '%Y-%m-%d') AS NAME,
+			    COUNT(*) AS number
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE a.`type` IN ('1101','1201') 
+			    AND a.`data_deleted` = FALSE 
+			     <if test="investId!=null and investId.size()>0 ">
+			     	AND a.`investigate_id` IN
+			     	<foreach collection="investId" index="index" item = "item" open="(" separator="," close=")">
+			#{item}
+			</foreach>
+			   </if>
+			    <if test="dateStart!=null and dateStart!=''">
+			  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			   </if>
+			    <if test="dateEnd!=null and dateEnd!=''">
+				  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			   </if>
+			   GROUP BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d') 
+			  UNION
+			  ALL 
+				  SELECT 
+				   NAME,
+				    COUNT(*) AS number
+				  FROM
+				    (SELECT 
+				    DATE_FORMAT(a.`create_time`, '%Y-%m-%d') AS NAME,
+				      COUNT(*) 
+				    FROM
+				      `daiken_investigate_operation` a 
+				    WHERE a.`data_deleted` = FALSE 
+				      AND a.`type` IN ('1301') 
+				       <if test="investId!=null and investId.size()>0 ">
+			     	AND a.`investigate_id` IN
+			     	<foreach collection="investId" index="index" item = "item" open="(" separator="," close=")">
+						#{item}
+					</foreach>
+			  		 </if>
+				      <if test="dateStart!=null and dateStart!=''">
+					  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+				   </if>
+				    <if test="dateEnd!=null and dateEnd!=''">
+					  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+				   </if>
+				    GROUP BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d'),a.`user_id`
+				    ) b
+					 GROUP BY NAME
+			   ) c GROUP BY NAME 
+			   <if test="limit>0">
+				LIMIT #{limit,jdbcType=INTEGER}
+			</if>
+	</select>
+	
+	
+	<select id="selectPostAndLikeJoinUserNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT 
+			  DATE_FORMAT(a.`create_time`, '%Y-%m-%d') AS NAME,
+			    COUNT(*) AS y
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE
+			     a.`data_deleted` = FALSE 
+			    <if test="type!=null and type!=''">
+					AND a.`type`= #{type,jdbcType=INTEGER}
+				</if>
+			    <if test="dateStart!=null and dateStart!=''">
+			  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			   </if>
+			    <if test="dateEnd!=null and dateEnd!=''">
+				  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			   </if>
+			   GROUP BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d') 
+			   ORDER BY NAME
+			  <if test="limit>0">
+				LIMIT #{limit,jdbcType=INTEGER}
+			</if>
+	</select>
+	
+	
+	<select id="selectQuestionJoinUserNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT 
+			  DATE_FORMAT(a.`create_time`, '%Y-%m-%d') AS NAME,
+			    COUNT(*) AS y
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE
+			     a.`data_deleted` = FALSE 
+			    <if test="type!=null and type!=''">
+					AND a.`type`= #{type,jdbcType=INTEGER}
+				</if>
+			    <if test="dateStart!=null and dateStart!=''">
+			  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			   </if>
+			    <if test="dateEnd!=null and dateEnd!=''">
+				  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			   </if>
+			   GROUP BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d'),a.`user_id`
+			    ORDER BY NAME
+			  <if test="limit>0">
+				LIMIT #{limit,jdbcType=INTEGER}
+			</if>
+	</select>
+	
+	
+	<select id="selectJoinUserId" resultType="java.util.List">
+		SELECT 
+			  a.user_id
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE
+			     a.`data_deleted` = FALSE 
+			    <if test="type!=null and type!=''">
+					AND a.`type`= #{type,jdbcType=INTEGER}
+				</if>
+				<if test="investigateId!=null and investigateId.size()>0">
+				AND a.`investigate_id` IN
+				<foreach collection="investigateId" index="index" item = "item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+				</if>
+			   GROUP BY a.`user_id`
+				LIMIT #{pageNo,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+	</select>
+	
+	
+	
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenOrderGoodsMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenOrderGoods">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="goods_id" property="goodsId" jdbcType="SMALLINT" />
+		<result column="sku_no" property="skuNo" jdbcType="VARCHAR" />
+		<result column="quantity" property="quantity" jdbcType="SMALLINT" />
+		<result column="goods_record" property="goodsRecord" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+</mapper>

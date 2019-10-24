@@ -1,0 +1,87 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.mysql.DaikenGoodsNewDB;
+
+public interface DaikenGoodsNewDao extends Idao<DaikenGoodsNew> {
+
+	/**
+	 * 一手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月25日
+	 */
+	List<DaikenGoodsNewDB> newGoodsList(String descStr, Double minPriceSales, Double maxPriceSales,
+			List<Integer> categoryIds, Boolean purchasing, String keyWord);
+
+	/**
+	 * 商品活动
+	 * 
+	 * @author huwei
+	 * @date 2018年6月27日
+	 */
+	List<DaikenGoodsNew> goodsActivity(List<Integer> salesTypes, String descStr, Double minPriceSales,
+			Double maxPriceSales, Integer pageNo, Integer pageSize, List<Integer> categoryIds);
+
+	/**
+	 * 推荐商品（个人中心、商品内页）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月29日
+	 */
+	List<DaikenGoodsNew> recommendGoods(Integer pageNo, Integer pageSize);
+
+	/**
+	 * 商家端商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	List<DaikenGoodsNew> goodsList(List<Integer> salesTypes, String title, Integer shopId, Integer pageNo,
+			Integer pageSize);
+
+	/**
+	 * 获取商店全部商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	List<DaikenGoodsNew> goodsInfo(List<Integer> categoryIds, String title, Integer shopId, Integer pageNo,
+			Integer pageSize);
+
+	/**
+	 * 搜索
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	List<DaikenGoodsNew> search(String searchInfo);
+
+	/**
+	 * 商铺商品总售前红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedBefore(Integer shopId, String dateStart, String dateEnd, Integer limit);
+
+	/**
+	 * 商铺商品总售后红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedAfter(Integer shopId, String dateStart, String dateEnd, Integer limit);
+
+	/**
+	 * 商铺商品总代卖佣金统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsPurchasing(Integer shopId, String dateStart, String dateEnd, Integer limit);
+}

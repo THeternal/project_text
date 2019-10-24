@@ -1,0 +1,148 @@
+package com.kemean.controller.common;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.common.CommonService;
+import com.kemean.service.common.UserService;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.common.ComLunboBO;
+import com.kemean.vo.bo.com.CBaseUserInfoBO;
+import com.kemean.vo.bo.com.ComRegionBO;
+import com.kemean.vo.bo.com.GetBaseCategoryBBO;
+import com.kemean.vo.bo.com.GetBaseCategoryBO;
+import com.kemean.vo.bo.com.GetBaseTypeBO;
+import com.kemean.vo.bo.com.UserHobbiesinterestsBO;
+import com.kemean.vo.po.api.WxAppletsLoginPO;
+import com.kemean.vo.po.com.BaseCategoryPO;
+import com.kemean.vo.po.com.SendCodePO;
+
+/**
+ * 
+ * 【公共端】公共控制器
+ * 
+ * @Date 2018年6月12日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/common")
+public class CommonController extends DaikenBaseController {
+
+	@Autowired
+	private CommonService commonService;
+
+	@Autowired
+	private UserService userService;
+
+	/**
+	 * 小程序登录
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "mini_apps_login", method = RequestMethod.POST)
+	public KemeanResult<CBaseUserInfoBO> miniAppsLogin(@Valid @RequestBody WxAppletsLoginPO wxAppletsLoginPO) {
+		return userService.miniAppsLogin(wxAppletsLoginPO);
+	}
+
+	/**
+	 * 发送验证码
+	 * 
+	 * @author huwei
+	 * @date 2018年6月13日
+	 */
+	@RequestMapping(value = "send_code", method = RequestMethod.POST)
+	public KemeanResult<String> sendCode(@Valid @RequestBody SendCodePO sendCodePO) {
+		return userService.sendCode(sendCodePO);
+	}
+
+	/**
+	 * 获取商品分类(小程序)
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	@RequestMapping(value = "get_base_category", method = RequestMethod.POST)
+	public KemeanResult<List<GetBaseCategoryBO>> getBaseCategory(@Valid @RequestBody BaseCategoryPO baseCategoryPO) {
+		return new KemeanResult<List<GetBaseCategoryBO>>(commonService.getBaseCategory(baseCategoryPO));
+	}
+
+	/**
+	 * 获取商品分类(商户端)
+	 * 
+	 * @author huwei
+	 * @date 2018年6月28
+	 */
+	@RequestMapping(value = "get_base_category_b", method = RequestMethod.POST)
+	public KemeanResult<List<GetBaseCategoryBBO>> getBaseCategoryB(@Valid @RequestBody BaseCategoryPO baseCategoryPO) {
+		return new KemeanResult<List<GetBaseCategoryBBO>>(commonService.getBaseCategoryB(baseCategoryPO));
+	}
+
+	/**
+	 * 获取规格分类
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	@RequestMapping(value = "get_base_type", method = RequestMethod.GET)
+	public KemeanResult<List<GetBaseTypeBO>> getBaseType(@RequestParam Integer objId) {
+		return new KemeanResult<List<GetBaseTypeBO>>(commonService.getBaseType(objId));
+	}
+
+	/**
+	 * 获取用户的兴趣爱好
+	 * 
+	 * @author huwei
+	 * @date 2018年7月2日
+	 */
+	@RequestMapping(value = "get_user_base", method = RequestMethod.GET)
+	public KemeanResult<List<UserHobbiesinterestsBO>> getUserHobbiesinterests(@RequestParam Integer type) {
+		return new KemeanResult<List<UserHobbiesinterestsBO>>(commonService.getUserHobbiesinterests(type));
+	}
+
+	/**
+	 * 获取用户职业
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	@RequestMapping(value = "get_user_occupation", method = RequestMethod.GET)
+	public KemeanResult<List<UserHobbiesinterestsBO>> getUserOccupation(@RequestParam Integer pid) {
+		return new KemeanResult<List<UserHobbiesinterestsBO>>(commonService.getUserOccupation(pid));
+	}
+
+	/**
+	 * 全国地区联动
+	 * 
+	 * @author huangyujian
+	 * @date 2018年3月8日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "region", method = RequestMethod.GET)
+	public KemeanResult<List<ComRegionBO>> region(@RequestParam Integer pid) {
+		return new KemeanResult<List<ComRegionBO>>(commonService.region(pid));
+	}
+
+	/**
+	 * 轮播图
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	@RequestMapping(value = "lunbo", method = RequestMethod.GET)
+	public KemeanResult<List<ComLunboBO>> lunbo(@RequestParam Integer locatType) {
+		return new KemeanResult<List<ComLunboBO>>(commonService.lunbo(locatType));
+	}
+
+}

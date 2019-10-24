@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<title>代研精准投放</title>
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row layui-form"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4">
+			<label class="layui-form-label">职业：</label>
+			<div class="layui-input-block">
+				<select
+					class="param_job"
+					lay-filter="jobFilter">
+					<option value="">请选择</option>
+					<option
+						th:each="item: ${userJobData}"
+						th:value="${item.id}"
+						th:text="${item.name}"></option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<label class="layui-form-label">性别：</label>
+			<div class="layui-input-block">
+				<select class="param_userSex">
+					<option value="">全部</option>
+					<option value="1">男</option>
+					<option value="0">女</option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-row layui-form">
+		<div class="layui-col-md10 layui-col-sm8">
+			<div class="layui-input-block param_user_job"></div>
+		</div>
+	</div>
+	<div class="layui-row layui-form">
+		<div class="layui-col-md10 layui-col-sm8">
+			<div class="layui-inline">
+				<label class="layui-form-label">爱好：</label>
+				<div class="layui-input-block param_interest"></div>
+			</div>
+		</div>
+		<button
+			class="layui-btn"
+			onclick="search()">
+			<i class="layui-icon">&#xe615;</i> 搜索
+		</button>
+		<button
+			class="layui-btn"
+			onclick="check()">
+			<i
+				class="fa fa-check-square-o"
+				aria-hidden="true"></i>&nbsp;发送
+		</button>
+		<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+	</div>
+
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"
+			lay-filter="checkIds"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var investId=/*[[${investId}]]*/;
+	var userInterestData=/*[[${userInterestData}]]*/;
+	var userJobData=/*[[${userJobData}]]*/;
+	var url_page_data = /*[[@{/admin/invest/precision_put_user_data}]]*/;
+	var url_user_base=/*[[@{/admin/common/user_base_data}]]*/;
+	var url_precision_operate = /*[[@{/admin/invest/precision_operate}]]*/;
+	var ids="";
+	var table;
+	layui.use([ 'table', 'laydate','form' ], function() {
+		 table = layui.table;
+		var laydate = layui.laydate;
+		var  form = layui.form;
+		
+		form.on('select(jobFilter)', function(data){
+			
+			$.get(url_user_base,{type:1101,pid:data.value}, function(data, textStatus, req) {
+				$.each(data, function(i, elt) {
+					var job_html='<input type="checkbox" value="'+elt.objId+'" title="'+elt.name+'" />';
+					$(".param_user_job").append(job_html);
+					form.render('checkbox');
+				});
+			})
+		});     
+		
+		table.on('checkbox(checkIds)', function(obj){
+			 ids=getCheckedIds();
+		});
+		
+		
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [ {type:'checkbox'}, {
+				field : 'uid',
+				title : '代研号'
+			},{
+				field : 'nickName',
+				title : '昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'userTypeStr',
+				title : '用户类型',
+			},{
+				title : '用户状态',
+				templet : '#switch_user_status',
+			},{
+				field : 'createTime',
+				title : '注册时间',
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	
+	 $(function(){
+		 $.each(userInterestData, function(i, elt) {
+				var interest_html='<input type="checkbox" value="'+elt.id+'" title="'+elt.name+'" />';
+				$(".param_interest").append(interest_html);
+			});
+	 });
+	 
+	 
+	 
+	//获取选择行的数据
+		function getCheckedIds(){
+			var ids=new Array();
+			var checkStatus = table.checkStatus('dataTable'); 
+			var set = checkStatus.data;
+		    $(set).each(function(i,e) {
+		       ids.push(e.objId);
+		    });
+		    return ids;
+		}
+	
+	
+		function check(){
+			if(ids==""){
+				layer.msg('至少选择一条数据');
+				return false;
+			}
+			
+			var AdminPrecisionUserPO  = new Object();
+			
+			var matchCondition = new Object();
+			
+			var profession=new Array();
+			$.each($(".param_user_job").find("input:checked"), function(i, elt) {
+				profession.push(elt.value)
+			});
+			
+			var param_userSex=$(".param_userSex").val();
+		
+			var sexMan=new Array();
+			if(!param_userSex){
+				sexMan.push(1);
+				sexMan.push(0);
+			}else{
+				sexMan.push(param_userSex);
+			}
+			
+			var interests=new Array();
+			$.each($(".param_interest").find("input:checked"), function(i, elt) {
+				interests.push(elt.value);
+			});
+			
+			matchCondition.interests=interests;
+			matchCondition.profession=profession;
+			matchCondition.sexMan=sexMan;
+			
+			layer.alert('是否推送给所选择的用户?',{
+				 icon: 8,
+				title : "确定推送的用户",
+				skin: 'layui-layer-molv',
+				area : [ '287px', '165px' ],
+				btn : [ '是','否' ],
+				offset: '100px',
+				yes : function() {
+					
+					$.ajax({
+						type:"POST",
+						url:url_precision_operate,
+						contentType: "application/json; charset=utf-8",
+						dataType:"json",
+						data:JSON.stringify({matchCondition:matchCondition,investId:investId,userIds:ids}),
+						success:function(data){
+							showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+				    	}
+					});
+				},
+				
+				closeBtn : 1,
+				anim : 0
+			})	
+		}
+	 
+	 
+	function search(){
+		var table = layui.table;
+		
+		var param_user_job=$(".param_user_job").find("input:checked");
+		
+		var userJobId="";
+		var res=true;
+		$.each(param_user_job, function(i, elt) {
+			if(!res){
+				userJobId+=",";
+			}
+			userJobId+=elt.value;
+			res=false;
+		});
+		
+		var param_userSex=$(".param_userSex").val();
+		var param_interest=$(".param_interest").find("input:checked");
+		
+		
+		var interestId="";
+		var flag=true;
+		$.each(param_interest, function(i, elt) {
+			if(!flag){
+				interestId+=",";
+			}
+			interestId+=elt.value;
+			flag=false;
+		});
+		
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					userJobId:userJobId,
+					userSex:param_userSex,
+					interestId:interestId
+				}
+			});
+	}
+	
+	
+
+</script>
+
+<script
+	type="text/html"
+	id="switch_user_status">
+{{# if(d.userStatus == 1101){ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" checked="checked" ></input>
+{{# }else{ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" ></input>
+{{# } }}
+</script>
+
+</html>

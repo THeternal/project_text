@@ -1,0 +1,31 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenShop;
+import com.kemean.dao.DaikenShopDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenShopMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenShopDaoImpl extends DaoSupport<DaikenShop> implements DaikenShopDao {
+
+	@Autowired
+	private DaikenShopMapper mapper;
+
+	@Override
+	protected Mapper<DaikenShop> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<AdminChartBO> selectShopCount(Boolean settledType, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectShopCount(settledType, dateStart, dateEnd, limit);
+	}
+}

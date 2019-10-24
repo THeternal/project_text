@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenInvestigateMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenInvestigate">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="token" property="token" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="SMALLINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="reward_price" property="rewardPrice" jdbcType="DOUBLE" />
+		<result column="max_people_num" property="maxPeopleNum"
+			jdbcType="INTEGER" />
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="initiator_unit" property="initiatorUnit"
+			jdbcType="VARCHAR" />
+		<result column="advertising_explain" property="advertisingExplain"
+			jdbcType="VARCHAR" />
+		<result column="advertising_img" property="advertisingImg"
+			jdbcType="VARCHAR" />
+		<result column="investigate_explain" property="investigateExplain"
+			jdbcType="VARCHAR" />
+		<result column="investigate_img" property="investigateImg"
+			jdbcType="VARCHAR" />
+		<result column="sales_num" property="salesNum" jdbcType="INTEGER" />
+		<result column="num_good" property="numGood" jdbcType="SMALLINT" />
+		<result column="num_bad" property="numBad" jdbcType="SMALLINT" />
+		<result column="num_common" property="numCommon" jdbcType="SMALLINT" />
+		<result column="num_visit" property="numVisit" jdbcType="INTEGER" />
+		<result column="data_version" property="dataVersion" jdbcType="INTEGER" />
+		<result column="investigate_status" property="investigateStatus"
+			jdbcType="BIT" />
+		<result column="pay_status" property="payStatus" jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+
+
+	<update id="updateByHappyLock">
+		UPDATE
+		`daiken_investigate` a
+		SET
+		a.`data_version` = a.`data_version` + 1
+		WHERE a.`data_version` = #{dataVersion,jdbcType=INTEGER}
+		AND a.`id` = #{investigateId,jdbcType=INTEGER}
+	</update>
+
+
+	<select id="selectDayQuantity" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			COUNT(*) AS y
+		FROM
+			`daiken_investigate` a
+			
+		WHERE a.`data_deleted` = FALSE
+			AND a.`type`= #{type,jdbcType=INTEGER}
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		AND a.`pay_status`= 1
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	<select id="selectDayUserNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			COUNT(*) AS y
+		FROM
+			`daiken_investigate` a,
+			`daiken_investigate_operation` b
+		WHERE a.`data_deleted` = FALSE
+			AND b.`data_deleted`= FALSE
+  			AND a.`id`= b.`investigate_id`
+			AND a.`type`= #{type,jdbcType=INTEGER}
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		AND a.`pay_status`= 1
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	
+	
+	
+	<select id="selectDayUserMoney" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			sum(a.`reward_price` * a.max_people_num) as y
+		FROM
+			`daiken_investigate` a 
+		WHERE a.`data_deleted` = FALSE
+			AND a.`type`= #{type,jdbcType=INTEGER}
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		AND a.`pay_status`= 1
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+
+
+</mapper>

@@ -1,0 +1,72 @@
+package com.kemean.service.consumer;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kemean.bean.DaikenOrder;
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanOrderEnum;
+import com.kemean.constant.KemeanPayTypeEnum;
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.service.PayWxService;
+import com.kemean.util.DaikenUtil;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.po.PaySignWxPO;
+
+@Service
+public class PayService {
+
+	/** 回调地址 **/
+	private static final String NOTIFY_URL = "/api/c/pay/pay_callback_wx";
+
+	// TODO 需要更改 /** 应用ID **/
+	private static final String APP_ID = "wxf980f7a002905929";
+	// TODO 需要更改/** 商户号 **/
+	private static final String MCH_ID = "1501926651";
+	// TODO 需要更改/** 商户平台设置的密钥key **/
+	private static final String KEY = "dushiyun13360901517sg13360901517";
+
+	@Autowired
+	private DaikenOrderDao daikenOrderDao;
+
+	@Autowired
+	private PayWxService wxPayService;
+
+	/**
+	 * 微信支付签名
+	 * 
+	 * @author huangyujian
+	 * @date 2018年4月4日
+	 */
+	public KemeanResult<Map<String, String>> paySignWx(String orderNo, DaikenUser loginConsumer,
+			HttpServletRequest request) {
+		DaikenOrder dbOrder = daikenOrderDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "orderNo" }, new Object[] { false, orderNo });
+		if (!KemeanOrderEnum.OrderStatusUser.NEW_WIAT_PAY.getStatus().equals(dbOrder.getStatusUser())) {
+			return new KemeanResult<>(false, "订单信息错误");
+		}
+		if (!dbOrder.getIdUser().equals(loginConsumer.getId())) {
+			return new KemeanResult<>(false, "用户信息错误");
+		}
+		Date now = new Date();
+		dbOrder.setPayType(KemeanPayTypeEnum.WX_PAY.getType());
+		dbOrder.setPayReqTime(now);
+		dbOrder.setUpdateTime(now);
+		daikenOrderDao.updateByPrimaryKeySelective(dbOrder);
+		PaySignWxPO wxPo = new PaySignWxPO();
+		wxPo.setBody("代研订单");
+		wxPo.setNotifyUrl(DaikenUtil.getServiceVisitPath(request) + NOTIFY_URL);
+		wxPo.setAppId(APP_ID);
+		wxPo.setMchId(MCH_ID);
+		wxPo.setKey(KEY);
+		wxPo.setOrderNo(orderNo);
+		wxPo.setPayPrice(dbOrder.getPricePay());
+		return new KemeanResult<Map<String, String>>(wxPayService.unifiedorder(wxPo, false));
+	}
+}

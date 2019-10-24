@@ -1,0 +1,9 @@
+package com.kemean.constant;
+
+public class DaikenAdminResultTips {
+
+	public class Lunbo {
+		public static final String LUNBO_ADD_SUCCESS = "轮播图添加成功";
+		public static final String LUNBO_UPDATE_SUCCESS = "轮播图修改成功";
+	}
+}

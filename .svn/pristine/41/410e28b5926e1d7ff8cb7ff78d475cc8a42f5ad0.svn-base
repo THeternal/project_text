@@ -1,0 +1,32 @@
+package com.kemean.vo.mysql;
+
+import com.kemean.bean.DaikenGoodsNew;
+
+public class DaikenGoodsNewDB extends DaikenGoodsNew {
+	/**
+	 * 帮卖店铺id
+	 */
+	private Integer userShopId;
+
+	/**
+	 * 帮卖商品信息
+	 */
+	private String recordGoods;
+
+	public String getRecordGoods() {
+		return recordGoods;
+	}
+
+	public void setRecordGoods(String recordGoods) {
+		this.recordGoods = recordGoods;
+	}
+
+	public Integer getUserShopId() {
+		return userShopId;
+	}
+
+	public void setUserShopId(Integer userShopId) {
+		this.userShopId = userShopId;
+	}
+
+}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+<style type="text/css">
+.param_imgs_player {
+	max-width: 150px;
+}
+
+.param_imgs {
+	width: 200px;
+	height: 300px;
+}
+
+.player_card_img {
+	max-width: 300px;
+	max-height: 200px;
+}
+</style>
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="editQuestion()">
+				<i
+					class="fa fa-pencil-square-o"
+					aria-hidden="true"></i>&nbsp;更新
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-cogs"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">基本信息</font>
+		</div>
+		<div class="layui-card-body layui-form">
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">标题：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_title"
+							th:value="${pageData.title}"
+							placeholder="请输入标题" />
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm6">
+					<label class="layui-form-label">发起人：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							readonly="readonly"
+							th:value="${pageData.nickName}"
+							class="layui-input layui-word-aux param_userId" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">奖励信息：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_rewardPrice"
+							th:value="${pageData.rewardPrice}"
+							placeholder="请输入奖励信息" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm3 ">
+					<label class="layui-form-label">限制人数：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_maxPeopleNum"
+							th:value="${pageData.maxPeopleNum}"
+							placeholder="请输入限制人数" />
+					</div>
+				</div>
+
+			</div>
+			<div class="layui-form-item">
+
+				<div class=" layui-col-md3 layui-col-sm2 ">
+					<label class="layui-form-label">上下架：</label>
+					<div class="layui-input-inline">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.investigateStatus}"
+							class="param_investigateStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm3">
+					<label class="layui-form-label">结束时间：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_endTime"
+							th:value="${pageData.endTimeStr}"
+							placeholder="结束时间" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">企业信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">发起人单位：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_initiatorUnit"
+							th:value="${pageData.initiatorUnit}"
+							placeholder="请输入发起人单位" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">广告说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_advertisingExplain"
+							th:text="${pageData.advertisingExplain}"
+							placeholder="请输入广告说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_ad">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-list-alt"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">投票信息</font>
+		</div>
+		<div class="layui-card-body">
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md6 layui-col-sm3">
+					<label class="layui-form-label">投票说明：</label>
+					<div class="layui-input-block">
+						<textarea
+							type="text"
+							class="layui-textarea param_investigateExplain"
+							th:text="${pageData.investigateExplain}"
+							placeholder="请输入投票说明" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">广告图：</label>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					id="img_vote_ad"></div>
+				<div
+					class="layui-col-md10 layui-col-sm10"
+					style="margin: 10px 0px;">
+					<div class="layui-input-block">
+						<button
+							type="button"
+							class="layui-btn"
+							id="upload_img_vote">
+							<i class="layui-icon">&#xe67c;</i>上传图片
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div
+		class="layui-card layui-form"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-paper-plane-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">问题区</font>
+		</div>
+		<div class="layui-card-body">
+			<div
+				class="layui-row layui-col-space15"
+				id="question_anwser_div"></div>
+		</div>
+	</div>
+
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="editQuestion()">
+				<i
+					class="fa fa-pencil-square-o"
+					aria-hidden="true"></i>&nbsp;更新
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_list_data = /*[[@{/shop/invest/}]]*/;
+	var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_question_update = /*[[@{/shop/invest/question_operate}]]*/;
+	var pageData=/*[[${pageData}]]*/;
+	
+	var upload;
+	 var table;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	var  form=layui.form;
+    	 upload=layui.upload;
+    	 var laydate = layui.laydate;
+    	 table=layui.table;
+    	
+    	  laydate.render({
+    	    elem: '.param_endTime'
+    	    ,type: 'datetime'
+    	  });
+    	  
+    	  //广告
+		  var myIndex=0;
+			var uploadInst = upload.render({
+				elem : '#upload_img_ad',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+					var imgHtml='<div id="delImgAd'+myIndex+'" class="layui-col-md2 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+myIndex+')"></i></div>'
+					+'<img class="param_imgs_ad" src="'+res.data+'" width="200px" onclick="visitImg(this.src);" /></div>';
+					var imgNum=$("#img_ad .param_imgs_ad").length;
+					if(5>imgNum){
+						$("#img_ad").append(imgHtml);
+						myIndex++;
+						layer.msg("上传成功");
+					}else{
+						layer.msg("最多只能上传三张");
+						return false;
+					}
+					
+					
+				}
+			});
+		
+    	  
+   	  	//投票说明
+    	   upload.render({
+				elem : '#upload_img_vote',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+						var imgHtml='<div id="delImgVote'+myIndex+'" class="layui-col-md2 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgVote('+myIndex+')"></i></div>'
+						+'<img class="param_imgs param_imgs_vote" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+						var imgNum=$("#img_vote_ad .param_imgs_vote").length;
+						if(5>imgNum){
+							$("#img_vote_ad").append(imgHtml);
+							myIndex++;
+							layer.msg("上传成功");
+						}else{
+							layer.msg("最多只能上传五张");
+							return false;
+						}
+					}
+			});
+   	  
+   	  
+    			//选手图片
+    	 	   upload.render({
+    					elem : '#upload_img_player',
+    					data:{resetName:true},
+    					url : url_upload_img,
+    					done : function(res) {
+    							var imgHtml='<div id="delImgPlayer'+myIndex+'" class="layui-col-md5 layui-col-sm4 playImg_div"><div style="margin-left: 146px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgPlayer('+myIndex+')"></i></div>'
+    							+'<img class="param_imgs_player param_imgs_player" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+    							var imgNum=$("#player_img .param_imgs_player").length;
+    							if(5>imgNum){
+    								$("#player_img").append(imgHtml);
+    								myIndex++;
+    							}else{
+    								layer.msg("最多只能上传五张");
+    								return false;
+    							}
+    						}
+    				});
+   	  
+    });
+    
+    
+    $(function(){
+		//企业说明--广告图
+		
+		$.each(pageData.advertisingImg, function(i, elt) {
+			var imgHtml='<div id="delImgAd'+i+'" class="layui-col-md2 layui-col-sm3"><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgAd('+i+')"></i></div>'
+			+'<img class="param_imgs_ad" src="'+elt+'" width="200px" onclick="visitImg(this.src);" /></div>';
+				$("#img_ad").append(imgHtml);
+		})		
+		
+	//调研说明--广告图
+		
+		$.each(pageData.investigateImg, function(i, elt) {
+			var imgHtml='<div id="delImgVote'+i+'" class="layui-col-md2 layui-col-sm3" ><div style="margin-left: 197px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgVote('+i+')"></i></div>'
+			+'<img class="param_imgs param_imgs_vote" src="'+elt+'" onclick="visitImg(this.src);" /></div>';
+				$("#img_vote_ad").append(imgHtml);
+		});
+		
+		//问题区
+		$.each(pageData.investQuestionBO, function(i, elt) {
+			questionDiv(i,elt);		
+		});
+	});
+    
+    
+    function questionDiv(i,elt){
+    	var answer_list_html="";
+    	if(elt.recordAnswer!=null){
+    		
+    		$.each(elt.recordAnswer, function(i, elt) {
+    			 answer_list_html +='<input type="text" readonly="readonly" class="layui-input" style="border: 0px;" value="'+elt.id+':'+elt.value+'"/>';
+    	    		
+    		});
+    	}
+    	
+    	var answer_html='<div class="layui-input-block">'
+    		+answer_list_html
+    		+'</div>';
+    		
+    	var question_html='<div class="layui-col-md6 layui-col-sm3">'
+	         +'<label class="layui-form-label" style="padding:0 -1px 0 0 ">'+(i+1)+'.问题('+elt.typeStr+')</label>'
+	         +'<div class="layui-input-block"><input type="text" readonly="readonly" class="layui-input" style="border: 0px;" value="'+elt.question+'" /> </div>'
+	         +answer_html
+	         +'</div>'
+	         
+    	 $("#question_anwser_div").append(question_html);
+    	return "";
+    }
+    
+    
+	 
+    //删除投票说明照片
+	function delImgVote(i){
+		$("#delImgVote"+i).remove();
+	}
+	
+	 //删除广告说明照片
+	function delImgAd(i){
+		$("#delImgAd"+i).remove();
+	}
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+	function uploadPlayer(){
+		 upload.render({
+				elem : '#uploadPlayer',
+				data:{resetName:true},
+				url : url_upload_img,
+				done : function(res) {
+					
+						var imgHtml='<div id="delImgPlayer'+myIndex+'" class="layui-col-md5 layui-col-sm4 playImg_div"><div style="margin-left: 146px;"><i class="fa fa-times" aria-hidden="true" onclick="delImgPlayer('+myIndex+')"></i></div>'
+						+'<img class="param_imgs_player param_imgs_player" src="'+res.data+'" onclick="visitImg(this.src);" /></div>';
+						var imgNum=$("#player_img .param_imgs_player").length;
+						if(5>imgNum){
+							$("#player_img").append(imgHtml);
+							myIndex++;
+						}else{
+							layer.msg("最多只能上传五张");
+							return false;
+						}
+						console.log("上传成功");
+					}
+					
+			});
+		 console.log("是否上传");
+	}
+	
+	
+	
+	function resetPlayer(objId,name,explainStr,votes,popularity){
+		layer.open({
+			title : "修改选手信息",
+			content :resetPlayerDiv(name,explainStr,votes,popularity),
+			skin : "layui-layer-molv",
+			area : [ '387px', '395px' ],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function() {
+				var param_name=$(".param_name").val();
+				var param_explainStr=$(".param_explainStr").val();
+				var param_votes=$(".param_votes").val();
+				var param_popularity=$(".param_popularity").val();
+				
+				if(!param_name){
+					layer.msg("请输入选手名称");
+					return false;
+				}
+				if(!param_explainStr){
+					layer.msg("请输入选手说明");
+					return false;
+				}
+				if(!param_votes){
+					layer.msg("请输入选手获得的票数");
+					return false;
+				}
+				if(!param_popularity){
+					layer.msg("请输入选手的人气数");
+					return false;
+				}
+				
+				$.post(url_page_palyer_edit, 
+						{name:param_name,
+						explainStr:param_explainStr,
+						votes:param_votes,
+						popularity:param_popularity,
+						objId:objId}, function(data, textStatus, req) {
+							layer.msg(data.info);
+							table.reload("dataTable");
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	
+	//添加投票信息
+	function editQuestion(){
+		
+		var param_title = $(".param_title").val();
+		
+		if(!param_title){
+			layer.msg('标题不能为空');
+			return false;
+		}
+		
+		var param_rewardPrice=$(".param_rewardPrice").val();
+		if(!param_rewardPrice){
+			layer.msg('奖励信息不能为空');
+			return false;
+		}
+		
+		var param_maxPeopleNum=$(".param_maxPeopleNum").val();
+		if(!param_maxPeopleNum){
+			layer.msg('限制人数不能为空');
+			return false;
+		}
+		
+		var param_endTime = $(".param_endTime").val();
+		if (!param_endTime) {
+			layer.msg('结束时间不能为空');
+			return false;
+		}
+		 
+		var date =new Date();
+		if(date>Date.parse(param_endTime)){
+			
+				layer.msg('结束时间不能小于当前时间');
+				return false;
+		}
+		
+		
+		var param_initiatorUnit = $(".param_initiatorUnit").val();
+		if(!param_initiatorUnit){
+			layer.msg('发起人单位不能为空');
+			return false;
+		}
+		
+		var advertisingImg=new Array();
+		$("#img_ad .param_imgs_ad").each(function(i, element) {
+			advertisingImg.push(element.src);
+		});
+		
+		
+		var param_investigateExplain = $(".param_investigateExplain").val();
+		if(!param_investigateExplain){
+			layer.msg('广告说明不能为空');
+			return false;
+		}
+		
+		var param_advertisingExplain = $(".param_advertisingExplain").val();
+		
+		
+		var investigateImg=new Array();
+		$("#img_vote_ad .param_imgs_vote").each(function(i, element) {
+			investigateImg.push(element.src);
+		});
+		
+		
+		var param_investigateStatus=$(".param_investigateStatus").prop("checked");
+		
+		
+		
+		$.ajax({
+			type:"POST",
+			url:url_question_update,
+			contentType: "application/json; charset=utf-8",
+			dataType:"json",
+			data:JSON.stringify({objId:pageData.id,title:param_title,rewardPrice:param_rewardPrice,maxPeopleNum:param_maxPeopleNum, endTime:param_endTime,advertisingExplain:param_advertisingExplain,
+				initiatorUnit:param_initiatorUnit,advertisingImg:advertisingImg,investigateExplain:param_investigateExplain,investigateImg:investigateImg,investigateStatus:param_investigateStatus
+				}),
+			success:function(data){
+				showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+	    	}
+		});
+		
+	}
+	
+</script>
+
+
+<script
+	type="text/html"
+	id="operate">
+		<button class="layui-btn layui-btn-sm" onclick="resetPlayer({{d.objId}},{{d.name}},{{d.explainStr}},
+					{{d.votes}},{{d.popularity}})"><i
+				class="fa fa-edit"
+				aria-hidden="true"></i>&nbsp;修改</button> 
+</script>
+</html>

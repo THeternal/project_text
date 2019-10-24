@@ -1,0 +1,26 @@
+package com.kemean.vo.po.admin.investigate;
+
+import com.kemean.vo.po.KemeanPageAdminPO;
+
+public class AdminInvestPO extends KemeanPageAdminPO {
+
+	private Integer type;
+	private String title;
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+}

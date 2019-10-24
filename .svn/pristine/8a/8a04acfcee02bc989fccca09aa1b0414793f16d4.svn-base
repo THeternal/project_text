@@ -1,0 +1,557 @@
+package com.kemean.service.admin;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageInfo;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.kemean.bean.DaikenInvestigate;
+import com.kemean.bean.DaikenInvestigateOptions;
+import com.kemean.bean.DaikenInvestigateQuestion;
+import com.kemean.bean.DaikenOrder;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.KemeanConfig;
+import com.kemean.constant.DaikenConfigEnum;
+import com.kemean.constant.DaikenConstant;
+import com.kemean.constant.DaikenInvestigate.DaikenInvestigateTypeEnum;
+import com.kemean.constant.DaikenMapData;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanDateFormatEnum;
+import com.kemean.constant.KemeanOrderEnum;
+import com.kemean.constant.KemeanPayTypeEnum;
+import com.kemean.constant.KemeanTips;
+import com.kemean.dao.DaikenInvestigateDao;
+import com.kemean.dao.DaikenInvestigateOptionsDao;
+import com.kemean.dao.DaikenInvestigateQuestionDao;
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.service.common.CommonService;
+import com.kemean.service.consumer.CInvestigateService;
+import com.kemean.util.DaikenUtil;
+import com.kemean.util.KemeanUtilAid;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestChartBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestOptionsBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestQuestionBO;
+import com.kemean.vo.bo.admin.investigate.AdminInvestReportBO;
+import com.kemean.vo.mysql.IdAndValueDB;
+import com.kemean.vo.po.admin.investigate.AdminInvestChartPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestOptionsPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestReportPO;
+import com.kemean.vo.po.admin.investigate.AdminInvestigateAddPO;
+import com.kemean.vo.po.admin.investigate.AdminQuestionPO;
+import com.kemean.vo.po.c.investigate.PostLikePO;
+import com.kemean.vo.po.c.investigate.PostVotePO;
+
+@Service
+public class AdminInvestigateService {
+
+	@Autowired
+	private CInvestigateService cInvestigateService;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenInvestigateDao daikenInvestigateDao;
+
+	@Autowired
+	private DaikenInvestigateOptionsDao daikenInvestigateOptionsDao;
+
+	@Autowired
+	private DaikenInvestigateQuestionDao daikenInvestigateQuestionDao;
+
+	@Autowired
+	private DaikenOrderDao daikenOrderDao;
+
+	@Autowired
+	private CommonService commonService;
+
+	/**
+	 * 调研列表data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	public KemeanPageAdminBO<List<AdminInvestBO>> investListData(AdminInvestPO adminInvestPO) {
+
+		List<Integer> typeList = new ArrayList<>();
+		if (adminInvestPO.getType() == null) {
+			typeList = Arrays.asList(DaikenInvestigateTypeEnum.POST_LIKE.getType(),
+					DaikenInvestigateTypeEnum.POST_VOTE.getType(), DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType());
+
+		} else {
+			typeList.add(adminInvestPO.getType());
+		}
+
+		List<DaikenInvestigate> dbInvestList = daikenInvestigateDao.selectByPropertiesAndIn(
+				new String[] { "initiatorUnit", KemeanConstant.DATA_DELETED },
+				new Object[] { adminInvestPO.getInitiatorUnit(), false }, "type", typeList, "id", false,
+				adminInvestPO.getPage(), adminInvestPO.getLimit());
+
+		List<AdminInvestBO> result = Lists.transform(dbInvestList, new Function<DaikenInvestigate, AdminInvestBO>() {
+
+			@Override
+			public AdminInvestBO apply(DaikenInvestigate input) {
+				AdminInvestBO bo = new AdminInvestBO();
+				BeanUtils.copyProperties(input, bo);
+				bo.setTypeStr(DaikenMapData.investType.get(input.getType()));
+				return bo;
+			}
+		});
+		return new KemeanPageAdminBO<List<AdminInvestBO>>(new PageInfo<>(dbInvestList).getTotal(), result);
+	}
+
+	/**
+	 * 监听调研上下架状态
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	@Transactional
+	public KemeanResult<String> investStatusOperate(Integer objId, Boolean status) {
+		DaikenInvestigate dbInvest = daikenInvestigateDao.selectById(objId);
+		dbInvest.setInvestigateStatus(status);
+		dbInvest.setUpdateTime(new Date());
+		daikenInvestigateDao.updateByPrimaryKeySelective(dbInvest);
+		return new KemeanResult<>(true, KemeanTips.Operate.OPERATE_SUCCESS);
+	}
+
+	/**
+	 * 发布/修改 点赞
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	public KemeanResult<String> investLikeOperate(AdminInvestigateAddPO adminInvestigateAddPO) {
+		PostLikePO postLikePO = new PostLikePO();
+		BeanUtils.copyProperties(adminInvestigateAddPO, postLikePO);
+		DaikenUser dbUser = daikenUserDao.selectById(adminInvestigateAddPO.getUserId());
+		cInvestigateService.postLike(postLikePO, dbUser, DaikenConstant.back_ground_issue);
+		return new KemeanResult<>(true, KemeanTips.Operate.OPERATE_SUCCESS);
+	}
+
+	/**
+	 * 发布/修改 投票
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+
+	public KemeanResult<String> investVoteOperate(AdminInvestigateAddPO adminInvestigateAddPO) {
+
+		PostVotePO postVotePO = new PostVotePO();
+		BeanUtils.copyProperties(adminInvestigateAddPO, postVotePO);
+		DaikenUser dbUser = daikenUserDao.selectById(adminInvestigateAddPO.getUserId());
+		cInvestigateService.postVote(postVotePO, dbUser, DaikenConstant.back_ground_issue);
+		return new KemeanResult<>(true, KemeanTips.Operate.OPERATE_SUCCESS);
+	}
+
+	/**
+	 * 发布/修改问题
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月4日
+	 */
+	@Transactional
+	public KemeanResult<String> investQuestionOperate(AdminInvestigateAddPO adminInvestigateAddPO) {
+		DaikenUser dbUser = daikenUserDao.selectById(adminInvestigateAddPO.getUserId());
+		Date now = new Date();
+		DaikenInvestigate investigate = null;
+		boolean flag = false;
+		if (adminInvestigateAddPO.getObjId() == null) {
+			flag = true;
+		}
+
+		if (flag) {
+			investigate = new DaikenInvestigate();
+			investigate.setType(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType());
+			// 默认为下架状态
+			investigate.setInvestigateStatus(false);
+			investigate.setPayStatus(false);
+		} else {
+			investigate = daikenInvestigateDao.selectById(adminInvestigateAddPO.getObjId());
+		}
+		BeanUtils.copyProperties(adminInvestigateAddPO, investigate);
+		if (CollectionUtils.isNotEmpty(adminInvestigateAddPO.getAdvertisingImg())) {
+			investigate.setAdvertisingImg(
+					DaikenUtil.parseJSONArrayByList(adminInvestigateAddPO.getAdvertisingImg()).toString());
+		}
+		if (CollectionUtils.isNotEmpty(adminInvestigateAddPO.getInvestigateImg())) {
+			investigate.setInvestigateImg(
+					DaikenUtil.parseJSONArrayByList(adminInvestigateAddPO.getInvestigateImg()).toString());
+		}
+		investigate.setUserId(dbUser.getId());
+		investigate.setUserUId(dbUser.getUid());
+		investigate.setCreateTime(now);
+		investigate.setUpdateTime(now);
+		if (!flag) {
+			daikenInvestigateDao.updateByPrimaryKeySelective(investigate);
+		}
+		if (flag) {
+			daikenInvestigateDao.saveSelective(investigate);
+		}
+
+		// 添加问题
+		List<AdminQuestionPO> adminQuestionPOList = adminInvestigateAddPO.getAdminQuestionPOs();
+		if (CollectionUtils.isNotEmpty(adminQuestionPOList)) {
+
+			for (AdminQuestionPO adminQuestion : adminQuestionPOList) {
+				DaikenInvestigateQuestion investigateQuestion = new DaikenInvestigateQuestion();
+				investigateQuestion.setInvestigateId(investigate.getId());
+				investigateQuestion.setQuestion(adminQuestion.getQuestion());
+				if (!adminQuestion.getIdAndValueDB().isEmpty()) {
+					investigateQuestion.setRecordAnswer(JSONArray.toJSONString(adminQuestion.getIdAndValueDB()));
+				} else {
+					investigateQuestion.setRecordAnswer("");
+				}
+				investigateQuestion.setType(adminQuestion.getType());
+				investigateQuestion.setDataDeleted(false);
+				investigateQuestion.setCreateTime(now);
+				investigateQuestion.setUpdateTime(now);
+				daikenInvestigateQuestionDao.saveSelective(investigateQuestion);
+			}
+		}
+
+		DaikenOrder dbOrder = daikenOrderDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idInvestigate" },
+				new Object[] { false, investigate.getId() });
+		if (dbOrder == null) {
+			KemeanConfig config = commonService.getConfig(DaikenConfigEnum.INVESTIGATE_CHARGE);
+			Integer investigateCharge = Integer.valueOf(config.getRecord());
+			Double pricePay = adminInvestigateAddPO.getMaxPeopleNum() * adminInvestigateAddPO.getRewardPrice()
+					+ investigateCharge;
+			// 生成订单
+			String orderNo = DaikenUtil.getOrderNo(now);
+			DaikenOrder newOrder = createInvestigateOrder(orderNo, dbUser.getId(), investigate.getId(),
+					dbUser.getPhone(), pricePay, now);
+			daikenOrderDao.saveSelective(newOrder);
+		}
+		return new KemeanResult<>(true, KemeanTips.Operate.OPERATE_SUCCESS);
+	}
+
+	/**
+	 * 删除调研信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+
+	@Transactional
+	public KemeanResult<String> investDel(Integer objId) {
+		DaikenInvestigate dbInvest = daikenInvestigateDao.selectById(objId);
+		dbInvest.setDataDeleted(true);
+		daikenInvestigateDao.updateByPrimaryKeySelective(dbInvest);
+
+		daikenInvestigateOptionsDao.updateEntityByProperties(new String[] { KemeanConstant.DATA_DELETED, "updateTime" },
+				new Object[] { true, new Date() }, "investigateId", objId);
+
+		daikenInvestigateQuestionDao.updateEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "updateTime" }, new Object[] { true, new Date() },
+				"investigateId", objId);
+
+		return new KemeanResult<>(true, KemeanTips.Operate.DELETE_SUCCESS);
+	}
+
+	/**
+	 * 点赞/投票/问卷 详情
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+	public AdminInvestBO investLikeInfo(Integer objId, Integer type) {
+		AdminInvestBO bo = new AdminInvestBO();
+		DaikenInvestigate dbInvest = daikenInvestigateDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "id", "type" }, new Object[] { false, objId, type });
+
+		BeanUtils.copyProperties(dbInvest, bo);
+
+		if (StringUtils.isNoneBlank(dbInvest.getAdvertisingImg())) {
+			bo.setAdvertisingImg(JSONArray.parseArray(dbInvest.getAdvertisingImg(), String.class));
+		}
+
+		if (StringUtils.isNoneBlank(dbInvest.getInvestigateImg())) {
+			bo.setInvestigateImg(JSONArray.parseArray(dbInvest.getInvestigateImg(), String.class));
+		}
+		bo.setTypeStr(DaikenMapData.investType.get(bo.getType()));
+		bo.setNickName(daikenUserDao.selectById(dbInvest.getUserId()).getNickName());
+		bo.setEndTimeStr(KemeanUtilAid.formatDate(dbInvest.getEndTime(), KemeanDateFormatEnum.NORMAL));
+
+		List<DaikenInvestigateQuestion> dbQuestion = daikenInvestigateQuestionDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "investigateId" },
+				new Object[] { false, dbInvest.getId() });
+
+		if (!dbQuestion.isEmpty()) {
+			List<AdminInvestQuestionBO> questionList = new ArrayList<>(dbQuestion.size());
+			for (DaikenInvestigateQuestion daikenInvestigateQuestion : dbQuestion) {
+				AdminInvestQuestionBO questionBO = new AdminInvestQuestionBO();
+				BeanUtils.copyProperties(daikenInvestigateQuestion, questionBO);
+				if (StringUtils.isNoneBlank(daikenInvestigateQuestion.getRecordAnswer())) {
+					questionBO.setRecordAnswer(
+							JSONArray.parseArray(daikenInvestigateQuestion.getRecordAnswer(), IdAndValueDB.class));
+
+				}
+				questionBO.setTypeStr(DaikenMapData.investQuestionType.get(daikenInvestigateQuestion.getType()));
+				questionList.add(questionBO);
+			}
+			bo.setInvestQuestionBO(questionList);
+		}
+		return bo;
+	}
+
+	/**
+	 * 投票 选手列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+
+	public KemeanPageAdminBO<List<AdminInvestOptionsBO>> invsetVotePlayerData(Integer objId, Integer page,
+			Integer limit) {
+		List<DaikenInvestigateOptions> dbInvestOptions = daikenInvestigateOptionsDao.selectByProperties(
+				new String[] { "investigateId", KemeanConstant.DATA_DELETED }, new Object[] { objId, false }, "id",
+				false, page, limit);
+
+		List<AdminInvestOptionsBO> result = Lists.transform(dbInvestOptions,
+				new Function<DaikenInvestigateOptions, AdminInvestOptionsBO>() {
+
+					@Override
+					public AdminInvestOptionsBO apply(DaikenInvestigateOptions input) {
+						AdminInvestOptionsBO bo = new AdminInvestOptionsBO();
+						BeanUtils.copyProperties(input, bo);
+						if (StringUtils.isNoneBlank(input.getImg())) {
+							bo.setImg(JSONArray.parseArray(input.getImg(), String.class).get(0));
+						}
+						return bo;
+					}
+				});
+		return new KemeanPageAdminBO<List<AdminInvestOptionsBO>>(new PageInfo<>(dbInvestOptions).getTotal(), result);
+	}
+
+	/**
+	 * 修改选手信息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月2日
+	 */
+
+	@Transactional
+	public KemeanResult<String> invsetVotePlayerEdit(AdminInvestOptionsPO adminInvestOptionsPO) {
+		DaikenInvestigateOptions dbInvestOptions = daikenInvestigateOptionsDao
+				.selectById(adminInvestOptionsPO.getObjId());
+		BeanUtils.copyProperties(adminInvestOptionsPO, dbInvestOptions);
+		dbInvestOptions.setUpdateTime(new Date());
+		daikenInvestigateOptionsDao.updateByPrimaryKeySelective(dbInvestOptions);
+		return new KemeanResult<>(true, KemeanTips.Operate.UPDATE_SUCCESS);
+	}
+
+	/**
+	 * （点赞、投票）报表data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月3日
+	 */
+	public KemeanPageAdminBO<List<AdminInvestReportBO>> investReportData(AdminInvestReportPO adminInvestReportPO) {
+
+		List<DaikenInvestigate> dbInvest = daikenInvestigateDao.investigateReport(adminInvestReportPO.getType(),
+				adminInvestReportPO.getResult(), adminInvestReportPO.getTitle(), adminInvestReportPO.getPage(),
+				adminInvestReportPO.getLimit());
+
+		List<AdminInvestReportBO> result = Lists.transform(dbInvest,
+				new Function<DaikenInvestigate, AdminInvestReportBO>() {
+
+					@Override
+					public AdminInvestReportBO apply(DaikenInvestigate input) {
+						AdminInvestReportBO bo = new AdminInvestReportBO();
+						DaikenOrder dbOrder = daikenOrderDao.selectUniqueEntityByProperties(
+								new String[] { KemeanConstant.DATA_DELETED, "idInvestigate" },
+								new Object[] { false, input.getId() });
+						BeanUtils.copyProperties(input, bo);
+
+						bo.setPayPrice(dbOrder.getPricePay());
+						bo.setRewardPrice(input.getRewardPrice());
+						bo.setResult(BooleanUtils.isTrue(input.getEndTime().getTime() <= new Date().getTime()) ? "完成"
+								: "未完成");
+						KemeanConfig config = commonService.getConfig(DaikenConfigEnum.INVESTIGATE_CHARGE);
+						bo.setPlatformPrice(Double.valueOf(config.getRecord()));
+						return bo;
+					}
+				});
+		return new KemeanPageAdminBO<List<AdminInvestReportBO>>(new PageInfo<>(dbInvest).getTotal(), result);
+	}
+
+	/**
+	 * 查询结果统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月3日
+	 */
+	public AdminInvestChartBO investResultChart(String date) {
+		AdminInvestChartBO bo = new AdminInvestChartBO();
+		Date endTime = null;
+		if (StringUtils.isBlank(date)) {
+			endTime = new Date();
+		} else {
+			endTime = KemeanUtilAid.parseDate(date, KemeanDateFormatEnum.NORMAL);
+		}
+		// 点赞
+		Integer likeComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.POST_LIKE.getType(), 8, endTime, true);
+
+		Integer likeNoComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.POST_LIKE.getType(), 8, endTime, false);
+		bo.setLikeComplete(likeComplete);
+		bo.setLikeNoComplete(likeNoComplete);
+
+		// 投票
+		Integer voteComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.POST_VOTE.getType(), 8, endTime, true);
+
+		Integer voteNoComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.POST_VOTE.getType(), 8, endTime, false);
+		bo.setVoteComplete(voteComplete);
+		bo.setVoteNoComplete(voteNoComplete);
+
+		// 问卷调查
+		Integer questionnaireComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(), 8, endTime, true);
+
+		Integer questionnaireNoComplete = daikenInvestigateDao
+				.selectInvestResultCount(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(), 8, endTime, false);
+
+		bo.setQuestionnaireComplete(questionnaireComplete);
+		bo.setQuestionnaireNoComplete(questionnaireNoComplete);
+		return bo;
+	}
+
+	/**
+	 * 调研 点赞活动统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年5月12日
+	 */
+	public AdminInvestChartBO investDayChartData(AdminInvestChartPO adminChartsPO, int defaultDataNum) {
+		AdminInvestChartBO bo = new AdminInvestChartBO();
+		// 数量
+		Integer userUid = null;
+		if (adminChartsPO.getUserUid() != null) {
+			userUid = adminChartsPO.getUserUid();
+		}
+		List<AdminChartBO> dbChart = daikenInvestigateDao.selectDayQuantity(adminChartsPO.getType(), userUid,
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd(), defaultDataNum);
+		bo.setQuantityChart(dbChart);
+		// 平台佣金
+		KemeanConfig config = commonService.getConfig(DaikenConfigEnum.INVESTIGATE_CHARGE);
+		Double investigateCharge = Double.parseDouble(config.getRecord());
+		List<AdminChartBO> platformMoneyChart = new ArrayList<>(dbChart.size());
+		for (AdminChartBO adminChartBO : dbChart) {
+			platformMoneyChart.add(new AdminChartBO(investigateCharge * adminChartBO.getY(), adminChartBO.getName()));
+		}
+
+		// 参与人数
+		dbChart = daikenInvestigateDao.selectDayUserNum(adminChartsPO.getType(), userUid, adminChartsPO.getDateStart(),
+				adminChartsPO.getDateEnd(), defaultDataNum);
+		bo.setUserNumChart(dbChart);
+
+		// 用户佣金
+		dbChart = daikenInvestigateDao.selectDayUserMoney(adminChartsPO.getType(), userUid,
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd(), defaultDataNum);
+
+		List<AdminChartBO> playMoneyChart = new ArrayList<>(dbChart.size());
+		// 所需费用=平台佣金+用户佣金
+		for (AdminChartBO item : dbChart) {
+			for (AdminChartBO chartbo : platformMoneyChart) {
+				playMoneyChart.add(new AdminChartBO(chartbo.getY() + item.getY(), item.getName()));
+			}
+		}
+		bo.setUserMoneyChart(dbChart);
+		bo.setPayMoneyChart(playMoneyChart);
+		bo.setPlatformMoneyChart(platformMoneyChart);
+
+		return bo;
+	}
+
+	/**
+	 * 调研客户统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	public AdminInvestChartBO investUserCountData(AdminInvestChartPO adminChartsPO, int defaultDataNum) {
+		AdminInvestChartBO bo = new AdminInvestChartBO();
+		// 点赞--用户
+		Integer dbNum = daikenInvestigateDao.selectUserNum(DaikenInvestigateTypeEnum.POST_LIKE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd(), defaultDataNum);
+		bo.setLikeUserNum(dbNum);
+		// 点赞 类型数量
+		dbNum = daikenInvestigateDao.selectInvestTypeNum(DaikenInvestigateTypeEnum.POST_LIKE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd());
+		bo.setLikeNum(dbNum);
+		// 投票--用户
+		dbNum = daikenInvestigateDao.selectUserNum(DaikenInvestigateTypeEnum.POST_VOTE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd(), defaultDataNum);
+		bo.setVoteUserNum(dbNum);
+		// 点赞 类型数量
+		dbNum = daikenInvestigateDao.selectInvestTypeNum(DaikenInvestigateTypeEnum.POST_VOTE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd());
+		bo.setVoteNum(dbNum);
+		// 问卷 -用户
+		dbNum = daikenInvestigateDao.selectUserNum(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd(), defaultDataNum);
+		bo.setQuestionUserNum(dbNum);
+		// 问卷类型数量
+		dbNum = daikenInvestigateDao.selectInvestTypeNum(DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(),
+				adminChartsPO.getDateStart(), adminChartsPO.getDateEnd());
+		bo.setQuestionNum(dbNum);
+		return bo;
+
+	}
+
+	/**
+	 * 创建一个新订单
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	private DaikenOrder createInvestigateOrder(String orderNo, Integer userId, Integer investigateId, String userPhone,
+			Double pricePay, Date now) {
+		DaikenOrder newOrder = new DaikenOrder();
+		newOrder.setOrderNo(orderNo);
+		newOrder.setIdUser(userId);
+		newOrder.setIdInvestigate(investigateId);
+		newOrder.setIdPurchasing(0);
+		newOrder.setStatusShop(KemeanOrderEnum.OrderStatusBusiness.WAIT_PAY.getStatus());
+		newOrder.setStatusUser(KemeanOrderEnum.OrderStatusUser.NEW_WIAT_PAY.getStatus());
+		newOrder.setUserPhone(userPhone);
+		newOrder.setQuantity(1);
+		newOrder.setPricePay(pricePay);
+		newOrder.setPriceDiscount(0.0);
+		newOrder.setPriceTotal(pricePay);
+		newOrder.setPostage(0.0);
+		newOrder.setShopName("");
+		newOrder.setIsNewGoods(false);
+		newOrder.setPayType(KemeanPayTypeEnum.NO_SET.getType());
+		newOrder.setRecordReceiving("该订单为调研订单，没有收货地址");
+		newOrder.setRecordLogistics("该订单为调研订单，没有快递公司信息");
+		newOrder.setCreateYearMonth(KemeanUtilAid.formatDate(now, KemeanDateFormatEnum.YEAR_MONTH));
+		newOrder.setCreateTime(now);
+		newOrder.setUpdateTime(now);
+		return newOrder;
+	}
+
+}

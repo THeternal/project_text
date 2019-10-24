@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm3 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label
+					class="layui-form-label"
+					style="width: 120px;">平台财务流水号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_financeNo" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md3 layui-col-sm3  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">交易方：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_shopName"
+						style="width: 220px" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">财务状态：</label>
+				<div class="layui-input-inline">
+					<select class="param_financeStatus">
+						<option value="">全部</option>
+						<option value="1100">待处理</option>
+						<option value="1101">交易成功</option>
+						<option value="1102">交易失败</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm5">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/admin/finance/finance_list_data}]]*/;
+    var url_transaction = /*[[@{/admin/finance/transaction}]]*/;
+    
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+        laydate.render({
+            elem: '.param_beginTime',
+            type: 'datetime'
+        });
+
+        laydate.render({
+            elem: '.param_endTime',
+            type: 'datetime'
+        });
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'financeNo',
+                    title: '流水号',
+                    align: 'center'
+                },
+            	{
+	                field: 'tellerName',
+	                title: '交易方',
+	                align: 'center'
+	            },
+	            {
+	                field: 'applyMoney',
+	                title: '提交金额',
+	                width: 110,
+	                align: 'center'
+	            },
+	            {
+	                field: 'rate',
+	                title: '佣金率',
+	                width: 110,
+	                align: 'center'
+	            },
+	            {
+	                field: 'payMoney',
+	                title: '打款金额',
+	                width: 110,
+	                align: 'center'
+	            },
+                {
+                    field: 'payMethodStr',
+                    title: '打款方式',
+                    align: 'center'
+                },{
+                	field:'financeTypeStr',
+                    title: '财务类型',
+                    align: 'center',
+                }, {
+                    field: 'financeStateStr',
+                    title: '财务状态',
+                    align: 'center'
+                }
+                , {
+                	field:'createTimeStr',
+                    title: '交易时间',
+                    align: 'center'
+                },{
+    				toolbar : "#operate",
+    				width: 300,
+    				title : '操作'
+    			} ]],
+            page: true,
+            id: 'dataTable'
+        });
+    });
+
+    function search() {
+        var table = layui.table;
+        var param_financeNo = $(".param_financeNo").val();
+        var param_shopName = $(".param_shopName").val();
+        var param_financeStatus = $(".param_financeStatus").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	financeNo: param_financeNo,
+                	shopName:param_shopName,
+                	financeStatus:param_financeStatus
+                }
+            });
+    }
+    
+    function payDiv(tellerName,applyMoney,payMoney,payAccountLast,payNameLast,rateLast){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">提现方:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input" value="'+tellerName+'"  readonly="readonly"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">提现金额:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input"  value="'+applyMoney+'" readonly="readonly"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">平台佣金率(%):</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_rate" placeholder="平台抽成比例" value="'+rateLast*100+'" onchange="countPrice('+applyMoney+',this)"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">打款金额:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input" id="payMoney" placeholder="结算打款" readonly="readonly" value="'+payMoney+'"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">支付宝账号:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_account"  value="'+payAccountLast+'" placeholder="请输入商户收款支付宝账号，务必验证支付宝账号准确"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">确认账号:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_account_sure"  placeholder="请确认商户收款支付宝账号"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">实名名称:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_real_name" value="'+payNameLast+'" placeholder="支付宝实名名称，不填则不校验实名信息"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">财务密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password" placeholder="请输入财务密码确认交易" /></div></div>';
+	}
+    
+    function pay(objId,tellerName,applyMoney,payAccountLast,payNameLast,rateLast){
+    	var payMoney=(applyMoney-applyMoney*rateLast).toFixed(2);
+		layer.open({
+			title : "确认打款",
+			content :payDiv(tellerName,applyMoney,payMoney,payAccountLast,payNameLast,rateLast),
+			skin : "layui-layer-molv",
+			area : [ '550px', '580px' ],
+			btn : [ '确定' ],
+			offset: '100px',
+			btn1 : function() {
+				var paramRate=$(".param_rate").val();
+				if(!paramRate){
+					layer.msg("请输入佣金率");
+					return false;
+				}
+				var paramAccount=$(".param_account").val();
+				if(!paramAccount){
+					layer.msg("请输入支付宝账号");
+					return false;
+				}
+				var paramAccountSure=$(".param_account_sure").val();
+				if(!paramAccountSure){
+					layer.msg("请确认支付宝账号");
+					return false;
+				}
+				if(paramAccountSure != paramAccount){
+					layer.msg("支付宝账号不一致");
+					return false;
+				}
+				var paramPassword=$(".param_password").val();
+				var paramRealName=$(".param_real_name").val();
+				if(!paramPassword){
+					layer.msg("请输入财务密码");
+					return false;
+				}
+				var load = layer.load(1);
+				var table = layui.table;
+				$.post(url_transaction, {
+					objId:objId,
+					rate:paramRate,
+					password:md5(paramPassword),
+					aliPay:true,
+					realName:paramRealName,
+					payAccount:paramAccount}, function(data, textStatus, req) {
+						layer.close(load);
+						layer.msg(data.info);
+						if (data.success) {
+							table.reload("dataTable");
+						}
+				}); 
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+    /*<![CDATA[*/ 
+    function countPrice(applyMoney,obj){
+    	if(obj.value>100||obj.value<0){
+    		layer.msg("佣金率非法");
+    		return;
+    	}
+    	var money=(applyMoney-applyMoney*obj.value/100).toFixed(2);
+    	$("#payMoney").val(money);
+    }
+    /*]]>*/
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+	{{# if(d.financeState != 1101){ }}
+		<button class="layui-btn layui-btn-sm" onclick="pay({{d.id}},'{{d.tellerName}}',{{d.applyMoney}},'{{d.payAccountLast}}','{{d.payNameLast}}',{{d.rateLast}})"><i class="fa fa-jpy" aria-hidden="true"></i>&nbsp;支付宝打款</button> 
+	{{# }}}
+
+	{{# if(d.financeState == 1101){ }}
+		<button class="layui-btn layui-btn-sm layui-disabled"><i class="fa fa-jpy" aria-hidden="true"></i>&nbsp;支付宝打款</button> 
+	{{# }}}
+	<a class="layui-btn layui-btn-sm" th:href="@{/admin/finance/finance_order_detail?financeNo={{d.financeNo}}}"> <i class="fa fa-info" aria-hidden="true"></i>&nbsp;交易订单</a>
+</script>
+
+</html>

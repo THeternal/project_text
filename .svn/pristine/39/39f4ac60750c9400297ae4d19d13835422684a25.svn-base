@@ -1,0 +1,92 @@
+package com.kemean.bean;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_order_after_sale")
+public class DaikenOrderAfterSale extends KemeanAbstractBaseBean {
+
+	/**
+	 * 订单编号
+	 */
+	@Column(name = "order_no")
+	private String orderNo;
+
+	/**
+	 * 商品状态（true-收到货物，false-没有收到）
+	 */
+	@Column(name = "goods_status")
+	private Boolean goodsStatus;
+
+	/**
+	 * 退款件数
+	 */
+	@Column(name = "goods_num")
+	private Integer goodsNum;
+
+	/**
+	 * 退款原因
+	 */
+	@Column(name = "refund_reason")
+	private String refundReason;
+
+	/**
+	 * 退款凭证图片
+	 */
+	@Column(name = "refund_img")
+	private String refundImg;
+
+	/**
+	 * 退款金额
+	 */
+	@Column(name = "refund_money")
+	private Double refundMoney;
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public Boolean getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(Boolean goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+	public Integer getGoodsNum() {
+		return goodsNum;
+	}
+
+	public void setGoodsNum(Integer goodsNum) {
+		this.goodsNum = goodsNum;
+	}
+
+	public String getRefundReason() {
+		return refundReason;
+	}
+
+	public void setRefundReason(String refundReason) {
+		this.refundReason = refundReason;
+	}
+
+	public String getRefundImg() {
+		return refundImg;
+	}
+
+	public void setRefundImg(String refundImg) {
+		this.refundImg = refundImg;
+	}
+
+	public Double getRefundMoney() {
+		return refundMoney;
+	}
+
+	public void setRefundMoney(Double refundMoney) {
+		this.refundMoney = refundMoney;
+	}
+
+}

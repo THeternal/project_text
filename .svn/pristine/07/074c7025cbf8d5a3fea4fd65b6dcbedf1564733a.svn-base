@@ -1,0 +1,89 @@
+package com.kemean.dao.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.KemeanFinanceOrder;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanFinanceOrderDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.KemeanFinanceOrderMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class KemeanFinanceOrderDaoImpl extends DaoSupport<KemeanFinanceOrder> implements KemeanFinanceOrderDao {
+	@Autowired
+	private KemeanFinanceOrderMapper mapper;
+
+	@Override
+	protected Mapper<KemeanFinanceOrder> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<KemeanFinanceOrder> wallet(Integer userId, Date plusDay, Integer pageNo, Integer pageSize) {
+		Example example = new Example(KemeanFinanceOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("userId", userId);
+		criteria.andGreaterThanOrEqualTo("createTime", plusDay);
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<KemeanFinanceOrder> financeOrderList(Date plusDay, Integer shopId, Integer pageNo, Integer pageSize) {
+		Example example = new Example(KemeanFinanceOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("businessId", shopId);
+		criteria.andGreaterThanOrEqualTo("createTime", plusDay);
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public Double freezeMoney(Integer shopId, Date cycleDate) {
+		Double freezeMoney = 0.0;
+		Example example = new Example(KemeanFinanceOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIsNull("financeNo");
+		criteria.andEqualTo("businessId", shopId);
+		criteria.andGreaterThanOrEqualTo("createTime", cycleDate);
+		List<KemeanFinanceOrder> dbFinanceOrders = mapper.selectByExample(example);
+		if (CollectionUtils.isNotEmpty(dbFinanceOrders)) {
+			for (KemeanFinanceOrder dbFinanceOrder : dbFinanceOrders) {
+				freezeMoney += dbFinanceOrder.getMoney();
+			}
+		}
+		return freezeMoney;
+	}
+
+	@Override
+	public Double waitMoney(Integer shopId, Date cycleDate) {
+		Double waitMoney = 0.0;
+		Example example = new Example(KemeanFinanceOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIsNull("financeNo");
+		criteria.andEqualTo("businessId", shopId);
+		criteria.andLessThan("createTime", cycleDate);
+		List<KemeanFinanceOrder> dbFinanceOrders = mapper.selectByExample(example);
+		if (CollectionUtils.isNotEmpty(dbFinanceOrders)) {
+			for (KemeanFinanceOrder dbFinanceOrder : dbFinanceOrders) {
+				waitMoney += dbFinanceOrder.getMoney();
+			}
+		}
+		return waitMoney;
+	}
+
+}

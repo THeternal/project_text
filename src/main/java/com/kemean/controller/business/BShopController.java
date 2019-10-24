@@ -1,0 +1,87 @@
+package com.kemean.controller.business;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.business.BShopService;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.b.shop.SettledInfoBO;
+import com.kemean.vo.bo.b.shop.ShopInfoBO;
+import com.kemean.vo.po.b.shop.SubmitSettledInfoPO;
+import com.kemean.vo.po.b.shop.SubmitShopInfoPO;
+
+/**
+ * 【商户端】商铺控制器
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/b/shop")
+public class BShopController extends DaikenBaseController {
+	@Autowired
+	private BShopService bshopService;
+
+	/**
+	 * 获取商铺信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "shop_info", method = RequestMethod.GET)
+	public KemeanResult<ShopInfoBO> shopInfo() {
+		return new KemeanResult<ShopInfoBO>(bshopService.shopInfo(getLoginBusiness()));
+	}
+
+	/**
+	 * 提交商铺信息（含修改）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "submit_shop_info", method = RequestMethod.POST)
+	public KemeanResult<String> submitShopInfo(@Valid @RequestBody SubmitShopInfoPO submitShopInfoPO) {
+		return bshopService.submitShopInfo(submitShopInfoPO, getLoginBusiness());
+	}
+
+	/**
+	 * 获取入驻信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "settled_info", method = RequestMethod.GET)
+	public KemeanResult<SettledInfoBO> settledInfo() {
+		return new KemeanResult<SettledInfoBO>(bshopService.settledInfo(getLoginBusiness()));
+	}
+
+	/**
+	 * 提交入驻信息（含修改）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "submit_settled_info", method = RequestMethod.POST)
+	public KemeanResult<String> submitSettledInfo(@Valid @RequestBody SubmitSettledInfoPO submitSettledInfoPO) {
+		return bshopService.submitSettledInfo(submitSettledInfoPO, getLoginBusiness());
+	}
+
+	/**
+	 * 修改营业状态
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "update_work_status", method = RequestMethod.GET)
+	public KemeanResult<String> updateWorkStatus(@RequestParam Boolean workStatus) {
+		return bshopService.updateWorkStatus(workStatus, getLoginBusiness());
+	}
+}

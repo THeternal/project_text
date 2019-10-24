@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenOrderAfterSaleMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenOrderAfterSale">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="goods_status" property="goodsStatus" jdbcType="BIT" />
+		<result column="goods_num" property="goodsNum" jdbcType="SMALLINT" />
+		<result column="refund_reason" property="refundReason"
+			jdbcType="VARCHAR" />
+		<result column="refund_money" property="refundMoney" jdbcType="DOUBLE" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+		<result column="refund_img" property="refundImg" jdbcType="VARBINARY" />
+	</resultMap>
+	
+	<select id="selectGoodsReturnNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+		(SELECT
+		  DATE_FORMAT(b.`create_time`,'%Y-%m-%d') AS name,
+		  SUM(b.`goods_num`) AS y
+		FROM
+		`daiken_order` a,
+		`daiken_order_after_sale` b
+		WHERE a.`data_deleted` = FALSE
+			AND b.`data_deleted` = FALSE
+			AND a.`order_no`= b.`order_no`
+		    <if test="shopName!=null and shopName!=''">
+			AND a.`shop_name` = #{shopName,jdbcType=VARCHAR}
+		</if>
+		<if test="dateStart!=null and dateStart!=''">
+			AND b.`create_time` &gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND b.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(b.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+</mapper>

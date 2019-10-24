@@ -1,0 +1,40 @@
+package com.kemean.constant;
+
+/**
+ * 消息类型
+ * 
+ * @Date 2018年6月19日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+public enum DaikenSmsTypeEnum {
+
+	/** 小程序提现 **/
+	C_WITHDRAW(3104),
+	/** 小程序修改手机号 **/
+	C_UPDATE_PHONE(3105),
+	/** 小程序提现 **/
+	/** 商家端注册 **/
+	REGISTERED_B(3201),
+	/** 商家端登陆 **/
+	LOGIN_B(3202),
+	/** 商家端忘记密码 **/
+	FORGET_B(3203),
+	/** 商家端提现 **/
+	B_WITHDRAW(3204);
+
+	private Integer type;
+
+	private DaikenSmsTypeEnum(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+}

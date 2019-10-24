@@ -1,0 +1,200 @@
+package com.kemean.service.admin;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageInfo;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.DaikenUserBase;
+import com.kemean.constant.DaikenMapData;
+import com.kemean.constant.DaikenUserEnum;
+import com.kemean.constant.DaikenUserEnum.DaikenUserTypeEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanTips;
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.dao.DaikenUserBaseDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.bo.admin.user.AdminUserBO;
+import com.kemean.vo.bo.admin.user.AdminUserChartBO;
+import com.kemean.vo.bo.admin.user.AdminUserInfoBO;
+import com.kemean.vo.po.admin.investigate.AdminInvestChartPO;
+import com.kemean.vo.po.admin.user.AdminUserListPO;
+import com.kemean.vo.po.admin.user.AdminUserStatusPO;
+
+@Service
+public class AdminUserService {
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenUserBaseDao daikenUserBaseDao;
+
+	@Autowired
+	private DaikenOrderDao daikenOrderDao;
+
+	/**
+	 * 用户信息列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	public KemeanPageAdminBO<List<AdminUserBO>> userPageData(AdminUserListPO adminUserListPO) {
+		List<DaikenUser> dbUser = daikenUserDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "phone", "userType", "uid" }, new Object[] { false,
+						adminUserListPO.getPhone(), adminUserListPO.getUserType(), adminUserListPO.getUid() },
+				"id", false, adminUserListPO.getPage(), adminUserListPO.getLimit());
+
+		List<AdminUserBO> result = Lists.transform(dbUser, new Function<DaikenUser, AdminUserBO>() {
+
+			@Override
+			public AdminUserBO apply(DaikenUser input) {
+				AdminUserBO bo = new AdminUserBO();
+				BeanUtils.copyProperties(input, bo);
+				bo.setUserTypeStr(DaikenMapData.userType.get(input.getUserType()));
+				return bo;
+			}
+		});
+		return new KemeanPageAdminBO<List<AdminUserBO>>(new PageInfo<>(dbUser).getTotal(), result);
+	}
+
+	/**
+	 * 操作用户 状态 正常 /禁用
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	@Transactional
+	public KemeanResult<String> userStatusOperate(AdminUserStatusPO adminUserStatusPO) {
+		DaikenUser dbUser = daikenUserDao.selectById(adminUserStatusPO.getObjId());
+
+		if (adminUserStatusPO.getStatus()) {
+			dbUser.setUserStatus(DaikenUserEnum.DaikenUserStatusEnum.NORMAL.getStatus());
+			dbUser.setCause("");
+		} else {
+			dbUser.setUserStatus(DaikenUserEnum.DaikenUserStatusEnum.DISABLED.getStatus());
+			dbUser.setCause(adminUserStatusPO.getCause());
+		}
+
+		dbUser.setUpdateTime(new Date());
+		daikenUserDao.updateByPrimaryKeySelective(dbUser);
+		return new KemeanResult<>(true, KemeanTips.Operate.OPERATE_SUCCESS);
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年4月16日
+	 */
+	// TODO 删除缓存用户
+	public void userResetPassword(Integer objId, String password) {
+		DaikenUser dbUser = daikenUserDao.selectById(objId);
+		dbUser.setUpdateTime(new Date());
+		dbUser.setPassword(password);
+		daikenUserDao.updateByPrimaryKeySelective(dbUser);
+	}
+
+	/**
+	 * 用户详情
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月28日
+	 */
+	public AdminUserInfoBO userInfoData(Integer objId) {
+		AdminUserInfoBO bo = new AdminUserInfoBO();
+		DaikenUser dbUser = daikenUserDao.selectById(objId);
+		BeanUtils.copyProperties(dbUser, bo);
+		bo.setUserTypeStr(DaikenMapData.userType.get(dbUser.getUserType()));
+		DaikenUserBase dbUserBase = daikenUserBaseDao.selectById(dbUser.getId());
+
+		if (dbUserBase != null) {
+			bo.setProfessionStr(dbUserBase.getContent());
+		}
+
+		if (StringUtils.isNoneBlank(dbUser.getHobbiesInterests())) {
+			List<Integer> parseHobbies = JSONArray.parseArray(dbUser.getHobbiesInterests(), Integer.class);
+			List<String> hobbiesList = new ArrayList<>(parseHobbies.size());
+			for (Integer item : parseHobbies) {
+				hobbiesList.add(daikenUserBaseDao.selectById(item).getContent());
+			}
+			bo.setHobbiesInterests(hobbiesList);
+		}
+
+		return bo;
+	}
+
+	/**
+	 * 用户统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	public AdminUserChartBO userChart() {
+		AdminUserChartBO bo = new AdminUserChartBO();
+		// 消费者统计
+		Integer consumerCount = daikenUserDao.countByProperties(
+				new String[] { "userType", KemeanConstant.DATA_DELETED },
+				new Object[] { DaikenUserTypeEnum.CONSUMER.getType(), false });
+		// 商家统计
+		Integer shopCount = daikenUserDao.countByProperties(new String[] { "userType", KemeanConstant.DATA_DELETED },
+				new Object[] { DaikenUserTypeEnum.BUSINESS.getType(), false });
+		// 平台总用户
+		bo.setPlatformSumUser(consumerCount + shopCount);
+		// TODO 缺失客服、运营、销售者数量
+		// 性别男
+		Integer userSexManCount = daikenUserDao.countByProperties(
+				new String[] { "sexMan", KemeanConstant.DATA_DELETED }, new Object[] { true, false });
+		// 性别女
+		Integer userSexGirlCount = daikenUserDao.countByProperties(
+				new String[] { "sexMan", KemeanConstant.DATA_DELETED }, new Object[] { false, false });
+
+		// 年龄(未满18岁)
+		Integer notAdult = daikenUserDao.selectCountAge(0, 17);
+		// 年龄(18岁~23岁)
+		Integer eighteenBetweenTwentyThree = daikenUserDao.selectCountAge(18, 23);
+		// 年龄(24岁~30岁)
+		Integer twentyFourBetweenThirty = daikenUserDao.selectCountAge(24, 30);
+		// 年龄(31岁~37岁)
+		Integer thirtyOneBetweenThirtySeven = daikenUserDao.selectCountAge(31, 37);
+		// 年龄(38岁~45岁)
+		Integer thirtyEightBetweenFortyFive = daikenUserDao.selectCountAge(38, 45);
+		bo.setNotAdult(notAdult);
+		bo.setEighteenBetweenTwentyThree(eighteenBetweenTwentyThree);
+		bo.setThirtyEightBetweenFortyFive(thirtyEightBetweenFortyFive);
+		bo.setTwentyFourBetweenThirty(twentyFourBetweenThirty);
+		bo.setThirtyOneBetweenThirtySeven(thirtyOneBetweenThirtySeven);
+		bo.setUserGirlDate(userSexGirlCount);
+		bo.setUserManDate(userSexManCount);
+		bo.setOperationNumData(0);
+		bo.setServiceNumData(0);
+		bo.setSalesNumData(0);
+		bo.setConsumerNum(consumerCount);
+		bo.setShopNumData(shopCount);
+		return bo;
+	}
+
+	/**
+	 * 用户消费统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	public List<AdminChartBO> userConsumChart(AdminInvestChartPO adminChartsPO, int index) {
+		return daikenOrderDao.selectUserSaleMoney(adminChartsPO.getDateStart(), adminChartsPO.getDateStart(), index);
+
+	}
+}

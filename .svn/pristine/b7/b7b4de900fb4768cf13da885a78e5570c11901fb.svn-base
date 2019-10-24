@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenGoodsNewMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenGoodsNew">
+		<id column="shop_id" property="shopId" jdbcType="INTEGER" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="category_id" property="categoryId" jdbcType="INTEGER" />
+		<result column="category_name" property="categoryName"
+			jdbcType="VARCHAR" />
+		<result column="record_type" property="recordType" jdbcType="VARCHAR" />
+		<result column="imgs_head" property="imgsHead" jdbcType="VARCHAR" />
+		<result column="desc_str" property="descStr" jdbcType="VARCHAR" />
+		<result column="imgs_desc" property="imgsDesc" jdbcType="VARCHAR" />
+		<result column="sales_type" property="salesType" jdbcType="INTEGER" />
+		<result column="discount_time" property="discountTime"
+			jdbcType="VARCHAR" />
+		<result column="forty_eight" property="fortyEight" jdbcType="TINYINT" />
+		<result column="fake_goods" property="fakeGoods" jdbcType="TINYINT" />
+		<result column="postage" property="postage" jdbcType="DOUBLE" />
+		<result column="recommend" property="recommend" jdbcType="BIT" />
+		<result column="red_before" property="redBefore" jdbcType="DOUBLE" />
+		<result column="red_after" property="redAfter" jdbcType="DOUBLE" />
+		<result column="purchasing" property="purchasing" jdbcType="BIT" />
+		<result column="price_purchasing" property="pricePurchasing"
+			jdbcType="DOUBLE" />
+		<result column="sales_num" property="salesNum" jdbcType="INTEGER" />
+		<result column="num_praise" property="numPraise" jdbcType="INTEGER" />
+		<result column="num_trample" property="numTrample" jdbcType="INTEGER" />
+		<result column="num_common" property="numCommon" jdbcType="INTEGER" />
+		<result column="date_version" property="dateVersion" jdbcType="INTEGER" />
+		<result column="goods_status" property="goodsStatus" jdbcType="BIT" />
+		<result column="min_price_sales" property="minPriceSales"
+			jdbcType="DOUBLE" />
+		<result column="min_price_store" property="minPriceStore"
+			jdbcType="DOUBLE" />
+		<result column="min_discount" property="minDiscount" jdbcType="REAL" />
+		<result column="num_share" property="numShare" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+	
+	<resultMap id="newGoodsMap" type="com.kemean.vo.mysql.DaikenGoodsNewDB" extends="BaseResultMap">
+		<id column="user_shop_id" property="userShopId" jdbcType="INTEGER" />
+		<id column="record_goods" property="recordGoods" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="selectGoodsRedBefore" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			 	SUM(a.`red_before`) AS y
+		FROM
+			`daiken_goods_new` a
+			
+		WHERE a.`data_deleted` = FALSE
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	<select id="selectGoodsRedAfter" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			 	SUM(a.`red_after`) AS y
+		FROM
+			`daiken_goods_new` a
+			
+		WHERE a.`data_deleted` = FALSE
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	<select id="selectGoodsPurchasing" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d')  AS name,
+			 	SUM(a.`price_purchasing`) AS y
+		FROM
+			`daiken_goods_new` a
+			
+		WHERE a.`data_deleted` = FALSE
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+	</select>
+	
+	<select id="newGoodsList" resultMap="newGoodsMap">
+		SELECT 
+  			a.*,
+  			b.`record_goods` ,
+  			b.`user_shop_id` as user_shop_id
+		     FROM
+  		`daiken_goods_new` a 
+  		LEFT JOIN `daiken_goods_purchasing` b 
+    	ON a.`id` = b.`goods_id`
+			WHERE a.`data_deleted` = FALSE
+		AND a.`min_price_sales` > #{minPriceSales,jdbcType=REAL} 
+		AND #{maxPriceSales,jdbcType=REAL} > a.`min_price_sales` 
+		AND a.`goods_status` = true
+		<if test = "purchasing">
+			AND a.`purchasing` = true
+		</if>
+		AND a.`category_id` in
+		<foreach collection="categoryIds" index="index" item = "item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		<if test = "keyWord != null and keyWord != ''">
+			AND a.`title` like 	CONCAT('%',#{keyWord,jdbcType=VARCHAR},'%')
+		</if>
+		<if test = "descStr != null and descStr != ''">
+			order by #{descStr,jdbcType=REAL} DESC
+		</if>
+	</select>
+</mapper>

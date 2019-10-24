@@ -1,0 +1,20 @@
+package com.kemean.constant;
+
+public class DaikenConstant {
+
+	/** 前台发布 **/
+	public static final Integer front_desk_issue = 1101;
+
+	/** 后台发布 **/
+	public static final Integer back_ground_issue = 1101;
+
+	/** 限时折扣未开始 **/
+	public static final Integer not_begin = 1101;
+
+	/** 限时折扣进行中 **/
+	public static final Integer underway = 1102;
+
+	/** 限时折扣已结束 **/
+	public static final Integer over = 1103;
+
+}

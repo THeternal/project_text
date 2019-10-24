@@ -1,0 +1,78 @@
+package com.kemean.bean;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_order_goods")
+public class DaikenOrderGoods extends KemeanAbstractBaseBean {
+
+	/**
+	 * 订单编号
+	 */
+	@Column(name = "order_no")
+	private String orderNo;
+
+	/**
+	 * 商品id
+	 */
+	@Column(name = "goods_id")
+	private Integer goodsId;
+
+	/**
+	 * SKU编号
+	 */
+	@Column(name = "sku_no")
+	private String skuNo;
+
+	/**
+	 * 商品购买量
+	 */
+	@Column(name = "quantity")
+	private Integer quantity;
+
+	/**
+	 * 商品信息-json
+	 */
+	@Column(name = "goods_record")
+	private String goodsRecord;
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getSkuNo() {
+		return skuNo;
+	}
+
+	public void setSkuNo(String skuNo) {
+		this.skuNo = skuNo;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public String getGoodsRecord() {
+		return goodsRecord;
+	}
+
+	public void setGoodsRecord(String goodsRecord) {
+		this.goodsRecord = goodsRecord;
+	}
+
+}

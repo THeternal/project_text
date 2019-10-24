@@ -1,0 +1,52 @@
+package com.kemean.vo.po.c.goodscar;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+public class AddGoodsCarPO {
+
+	@NotBlank(message = "商品skuNo不能为空")
+	private String skuNo;
+
+	@NotNull(message = "收藏数量不能为空")
+	private Integer addQuantity;
+
+	@NotNull(message = "区分一手、二手")
+	private Boolean isNewGoods;
+
+	private Integer idPurchasing;
+
+	public Boolean getIsNewGoods() {
+		return isNewGoods;
+	}
+
+	public void setIsNewGoods(Boolean isNewGoods) {
+		this.isNewGoods = isNewGoods;
+	}
+
+	public Integer getIdPurchasing() {
+		return idPurchasing;
+	}
+
+	public void setIdPurchasing(Integer idPurchasing) {
+		this.idPurchasing = idPurchasing;
+	}
+
+	public Integer getAddQuantity() {
+		return addQuantity;
+	}
+
+	public void setAddQuantity(Integer addQuantity) {
+		this.addQuantity = addQuantity;
+	}
+
+	public String getSkuNo() {
+		return skuNo;
+	}
+
+	public void setSkuNo(String skuNo) {
+		this.skuNo = skuNo;
+	}
+
+}

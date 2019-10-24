@@ -1,0 +1,16 @@
+package com.kemean.vo.po.admin.investigate;
+
+import com.kemean.vo.po.admin.AdminDatePO;
+
+public class AdminInvestUserFinancePO extends AdminDatePO {
+	private Integer userUid;
+
+	public Integer getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(Integer userUid) {
+		this.userUid = userUid;
+	}
+
+}

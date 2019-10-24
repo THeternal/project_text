@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta
+	name="renderer"
+	content="webkit" />
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta
+	name="format-detection"
+	content="telephone=no" />
+<title>代研总管理后台</title>
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}" />
+<link
+	rel="stylesheet"
+	th:href="@{/css/home.css}" />
+<link
+	rel="stylesheet"
+	th:href="@{/im/im.css}" />
+
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-layout layui-layout-admin"
+		style="border-bottom: solid 5px #009688;">
+		<div class="layui-header header header-demo">
+			<div class="layui-main">
+				<div class="admin-login-box">
+					<img
+						alt="LOGO"
+						src="http://p68iq7sn2.bkt.clouddn.com/upload/201806/21/ad7e8db8775f48aa85cadb6903aa5967?imageView2/0/w/50"
+						style="height: 50px; margin: 5px 16px;" /><span style="font-size: 22px;">代研总管理后台</span>
+				</div>
+				<ul class="layui-nav admin-header-item">
+					<li
+						class="layui-nav-item layui-form"
+						th:if="${loginUser.role==1301}">
+						<div class="layui-input-block">
+							<input
+								type="checkbox"
+								lay-skin="switch"
+								lay-filter="offline"
+								lay-text="上线|下线"
+								checked="checked" />
+						</div>
+					</li>
+					<li
+						class="layui-nav-item"
+						th:if="${loginUser.role==1301}">
+						<button
+							class="layui-btn layui-btn-sm"
+							onclick="RCS.showCommon();">
+							<i
+								class="fa fa-qq"
+								aria-hidden="true"></i>
+						</button>
+					</li>
+
+					<li class="layui-nav-item"><a
+						th:href="@{/shop/open/login}"
+						target="_blank"><i class="fa fa-shopping-cart"></i>&nbsp;商家登录</a></li>
+					<li class="layui-nav-item"><a
+						th:href="@{/sale/open/login}"
+						target="_blank"><i class="fa fa-child"></i>&nbsp;销售登录</a></li>
+
+					<li class="layui-nav-item"><a
+						href="javascript:;"
+						class="admin-header-user"> <img
+							th:src="${loginUser.headImg}"
+							class="user_headImg" /> &nbsp;&nbsp; <span th:text="${loginUser.name}"></span>
+					</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a
+									href="javascript:;"
+									th:onclick="'javascript:update_info();'"> <i
+									class="fa fa-user-circle"
+									aria-hidden="true"></i> 修改信息
+								</a>
+							</dd>
+							<dd>
+								<a
+									href="javascript:;"
+									onclick="signOut()"> <i
+									class="fa fa-sign-out"
+									aria-hidden="true"></i> 退出
+								</a>
+							</dd>
+						</dl></li>
+				</ul>
+			</div>
+		</div>
+		<div
+			class="layui-side layui-bg-black"
+			id="admin-side">
+			<div
+				class="layui-side-scroll"
+				id="admin-navbar-side"
+				lay-filter="side"></div>
+		</div>
+
+		<!--
+            	描述：主面板
+            -->
+		<div
+			class="layui-body"
+			style="bottom: 0; border-left: solid 2px #009688;"
+			id="admin-body">
+			<div
+				class="layui-tab admin-nav-card layui-tab-brief"
+				lay-filter="admin-tab">
+				<ul class="layui-tab-title">
+					<li class="tab_chart layui-this"><i class="layui-icon">&#xe62c;</i> <cite>统计</cite></li>
+					<li class="tab_message"><i
+						class="fa fa-commenting-o"
+						aria-hidden="true"></i> <cite>通知</cite></li>
+				</ul>
+
+
+				<div
+					class="layui-tab-content"
+					style="min-height: 150px; padding: 5px 0 0 0;">
+					<div
+						class="layui-tab-item layui-show"
+						id="chart_tab_div">
+						<iframe th:src="@{/admin/common/chart}"></iframe>
+					</div>
+					<div class="layui-tab-item">
+						<iframe th:src="@{/admin/common/message}"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div
+			class="layui-footer footer footer-demo"
+			id="admin-footer">
+			<div class="layui-main">
+				<p>2018 &copy; 代研</p>
+			</div>
+		</div>
+	</div>
+
+	<div
+		id="update_info_div"
+		class="layui-hide">
+		<div
+			class="layui-form-item"
+			style="margin: 10px 50px 10px 0;">
+			<label class="layui-form-label">头像：</label>
+			<div class="layui-input-inline">
+				<img
+					th:src="${loginUser.headImg}"
+					class="param_headImg"
+					width="150px" />
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button
+					type="button"
+					class="layui-btn layui-sm-btn"
+					id="uploadimg">
+					<i class="layui-icon">&#xe67c;</i>上传图片
+				</button>
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">名称:</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_name"
+					placeholder="请输入名称(必选)"
+					th:value="${loginUser.name}" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">密码:</label>
+			<div class="layui-input-inline">
+				<input
+					type="password"
+					class="layui-input param_password"
+					placeholder="请输入密码(可选)" />
+			</div>
+		</div>
+	</div>
+</body>
+<script
+	type="text/javascript"
+	th:src="@{/layui/layui.js}"></script>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.ronghub.com/RongIMLib-2.3.0.min.js"></script>
+<script src="https://cdn.ronghub.com/RongEmoji-2.2.6.min.js"></script>
+<script src="https://unpkg.com/qiniu-js@2.4.0/dist/qiniu.min.js"></script>
+
+<script th:src="@{/im/libs/utils.js}"></script>
+<script th:src="@{/im/libs/qiniu-upload.js}"></script>
+
+<script th:src="@{/im/template.js}"></script>
+<script th:src="@{/im/emoji.js}"></script>
+<script th:src="@{/im/im.js}"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+		
+			var loginUser=/*[[${loginUser}]]*/;
+			var endpointUrl = /*[[@{/web_socket_endpoint}]]*/;
+			var sign_out_url = /*[[@{/admin/open/sign_out}]]*/;
+			var login_url = /*[[@{/admin/open/login}]]*/;
+			var this_tab_url=/*[[@{/admin/common/chart}]]*/;
+			var online_operate_url = /*[[@{/admin/common/online_operate}]]*/;
+			var url_upload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+			var menu_data = /*[[${menuData}]]*/;
+			var navs=JSON.parse(menu_data);
+			var servicePath = /*[[@{/js/}]]*/;
+			
+			layui.use(['layer','form','upload','element'], function(){
+				var upload = layui.upload;
+				var  form=layui.form;
+				 //监听【是否上下线】操作
+		 		 form.on('switch(offline)', function(obj){
+		 		 	$.get(online_operate_url, {userUid:loginUser.uid,status:obj.elem.checked}, function(data) {
+		 		 		layer.msg(data.info);
+		 		 	});
+		 		 });
+				 
+		 		 upload.render({
+					elem : '#uploadimg',
+					url : url_upload_img,
+					data:{resetName:true},
+					done : function(res) {
+						//上传完毕回调
+						$(".param_headImg").prop("src",res.data);
+						layer.msg('上传成功');
+					}
+				});
+			}); 
+			
+		
+			function signOut() {
+				$.get(sign_out_url, function(data, textStatus, req) {
+					window.location=login_url;
+				})
+			}
+		</script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+			var update_url = /*[[@{/admin/kemean/account/update_info}]]*/;
+			
+			function update_info(name) {
+				$("#update_info_div").removeClass("layui-hide");
+				layer.open({
+					type:1,
+					title : "修改个人信息",
+					content : $("#update_info_div"),
+					skin : "layui-layer-molv",
+					offset: 'auto',
+					btn : [ "确定修改"],
+					btn1 : function(index) {
+						var paramName = $(".param_name").val();
+						var param_headImg = $(".param_headImg").prop("src");
+						var paramPassword = $(".param_password").val();
+						if(paramPassword){
+							paramPassword=md5(paramPassword);
+						}
+						$.post(update_url, {
+							password : paramPassword,
+							name : paramName,
+							headImg:param_headImg
+						}, function(result) {
+							if(result.success){
+							$(".user_headImg").attr("src", param_headImg);
+							}
+							layer.msg(result.info);
+					        layer.close(index);
+					        $("#update_info_div").addClass("layui-hide");
+						});
+					},
+					cancel:function(){
+						$(".param_headImg").attr("src", loginUser.headImg);
+						 $("#update_info_div").addClass("layui-hide");
+					},
+					
+					closeBtn : 1,
+					anim : 0,
+					
+				});
+				
+			};
+			
+			
+		</script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+		//企业入驻
+		var url_settled_shop = /*[[@{/admin/shop/settled}]]*/;
+		function openSettledShop(){
+			var tab = layui.tab({
+				elem : '.admin-nav-card',
+				contextMenu : true
+			});
+			var myTab={'href':url_settled_shop,'icon':'fa-gamepad','title':'企业入驻'};
+			tab.tabAdd(myTab);
+			
+			
+		}
+		
+		//个人入驻
+		var url_settled_persona_shop = /*[[@{/admin/shop/settled_persona}]]*/;
+		function openSettledPersonaShop(){
+			var tab = layui.tab({
+				elem : '.admin-nav-card',
+				id:'123456',
+				contextMenu : true
+			});
+			var myTab={'href':url_settled_persona_shop,'icon':'fa-gamepad','title':'个人入驻'};
+			
+			tab.tabAdd(myTab);
+		}
+		
+		
+		 function testFun(id){
+			
+			var element = layui.element;
+			var this_tab_html=$("li.layui-this")[0];
+			var layui_id= this_tab_html.getAttribute("lay-id");
+			element.tabDelete("admin-tab", layui_id);
+			
+			$(".tab_chart")[0];
+			
+			$(".tab_chart").addClass("layui-this");
+			element.tabChange("admin-tab", 'layid'); //切换到 lay-id="yyy" 的这一项
+			
+			$("#chart_tab_div").addClass("layui-show");
+		}
+		</script>
+<script>
+    /*	
+        具体使用时：
+        1：切换到自己的 key 和 token
+        2：移除 im.js 里的 sendTextMessage(instance); 这行代码
+        3：自行二次开发
+        4：参考
+        - 用户数据处理 http://support.rongcloud.cn/kb/NjQ5
+        - 消息状态 http://support.rongcloud.cn/kb/NjMz
+        - 集成指南 https://rongcloud.github.io/websdk-demo/integrate/guide.html
+        - 其他 demo https://github.com/rongcloud/websdk-demo
+        */
+    $(function () {	  
+        var appKey = "e5t4ouvpe6m7a";
+        var token = loginUser.record;
+       
+        RCS.init({
+            appKey: appKey, 
+            token: token,
+            //插入功能的元素
+            target: document.body,
+            //本人用户信息
+            user: {
+                portrait: loginUser.headImg,
+                name: loginUser.name,
+            },
+            
+            //七牛文件上传
+            fileUpload: function (file, type, callback) {
+                $fileUpload(file, type, function (data) {
+                    data.type = type;
+                    callback(data);
+                });
+            },
+            //会话列表加入头像昵称
+            getUserInfo: function (list, callback) {
+                //获取用户信息
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    xmlhttp = new ActiveXObject;
+                }
+                xmlhttp.open("POST", "https://dev.kemean.net/daiken/api/common/get_user_info", true);
+                xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xmlhttp.send(JSON.stringify({
+                    uids: list
+                }));
+                xmlhttp.onreadystatechange = () => {
+                    if (xmlhttp.readyState == 4) {
+                        if (xmlhttp.status == 200) {
+                            var data = JSON.parse(xmlhttp.response);
+                            if (data.success) {
+                                callback(data.data);
+                            } else {
+                                callback([]);
+                            }
+                        } else {
+                            // callback([]);
+                            console.error("获取用户头像失败");
+                        }
+                    }
+                }
+            },
+            //发送回调
+            sendCallback(message){
+		
+            },
+            extraInfo: {
+
+            }
+        });
+    });
+</script>
+
+<script
+	type="text/javascript"
+	th:src="@{/js/home.js}"></script>
+
+
+</html>

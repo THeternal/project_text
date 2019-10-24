@@ -1,0 +1,83 @@
+package com.kemean.vo.bo.c.mall;
+
+public class NewGoodsActivityListBO extends NewGoodsListBO {
+
+	/**
+	 * 库存
+	 */
+	private Integer countStock;
+
+	/**
+	 * 销量
+	 */
+	private Integer salesNum;
+
+	/**
+	 * 结束时间
+	 */
+	private String discountTimeEndStr;
+
+	/**
+	 * 是否开始
+	 */
+	private Boolean isBegin;
+
+	/**
+	 * 是否结束
+	 */
+	private Boolean isOver;
+
+	public Boolean getIsBegin() {
+		return isBegin;
+	}
+
+	public void setIsBegin(Boolean isBegin) {
+		this.isBegin = isBegin;
+	}
+
+	/**
+	 * 最低折扣
+	 */
+	private Float minDiscount;
+
+	public Integer getCountStock() {
+		return countStock;
+	}
+
+	public void setCountStock(Integer countStock) {
+		this.countStock = countStock;
+	}
+
+	public Integer getSalesNum() {
+		return salesNum;
+	}
+
+	public void setSalesNum(Integer salesNum) {
+		this.salesNum = salesNum;
+	}
+
+	public String getDiscountTimeEndStr() {
+		return discountTimeEndStr;
+	}
+
+	public void setDiscountTimeEndStr(String discountTimeEndStr) {
+		this.discountTimeEndStr = discountTimeEndStr;
+	}
+
+	public Boolean getIsOver() {
+		return isOver;
+	}
+
+	public void setIsOver(Boolean isOver) {
+		this.isOver = isOver;
+	}
+
+	public Float getMinDiscount() {
+		return minDiscount;
+	}
+
+	public void setMinDiscount(Float minDiscount) {
+		this.minDiscount = minDiscount;
+	}
+
+}

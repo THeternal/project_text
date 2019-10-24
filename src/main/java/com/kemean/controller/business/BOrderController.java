@@ -1,0 +1,117 @@
+package com.kemean.controller.business;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.business.BOrderService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.b.order.CourierCompanyBO;
+import com.kemean.vo.bo.b.order.OrderListBO;
+import com.kemean.vo.bo.b.order.RefundCauseBO;
+import com.kemean.vo.po.b.order.ConfirmRefundPO;
+import com.kemean.vo.po.b.order.OrderListPO;
+import com.kemean.vo.po.b.order.SendGoodsPO;
+
+/**
+ * 
+ * 【商户端】订单控制器
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/b/order")
+public class BOrderController extends DaikenBaseController {
+
+	@Autowired
+	private BOrderService borderService;
+
+	/**
+	 * 订单列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "order_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<OrderListBO>>> orderList(@Valid @RequestBody OrderListPO OrderListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<OrderListBO>>>(
+				borderService.orderList(OrderListPO, getLoginBusiness()));
+	}
+
+	/**
+	 * 订单取消
+	 * 
+	 * @author huwei
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "cancle_order", method = RequestMethod.GET)
+	public KemeanResult<String> cancleOrder(@RequestParam String orderNo) {
+		return borderService.cancleOrder(orderNo);
+	}
+
+	/**
+	 * 订单删除
+	 * 
+	 * @author huwei
+	 * @date 2018年6月6日
+	 */
+	@RequestMapping(value = "del_order", method = RequestMethod.GET)
+	public KemeanResult<String> delOrder(@RequestParam String orderNo) {
+		return borderService.delOrder(orderNo, getLoginBusiness());
+	}
+
+	/**
+	 * 查看退款原因
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	@RequestMapping(value = "refund_cause", method = RequestMethod.GET)
+	public KemeanResult<RefundCauseBO> refundCause(@RequestParam String orderNo) {
+		return new KemeanResult<RefundCauseBO>(borderService.refundCause(orderNo));
+	}
+
+	/**
+	 * 确认退款/拒绝退款按钮
+	 * 
+	 * @author huwei
+	 * @date 2018年7月3日
+	 */
+	@RequestMapping(value = "confirm_reject_refund", method = RequestMethod.POST)
+	public KemeanResult<String> confirmRejectRefund(@Valid @RequestBody ConfirmRefundPO confirmRefundPO) {
+		return borderService.confirmRejectRefund(confirmRefundPO);
+	}
+
+	/**
+	 * 获取快递公司
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	@RequestMapping(value = "express_delivery_list", method = RequestMethod.GET)
+	public KemeanResult<List<CourierCompanyBO>> getCourierCompany() {
+		return new KemeanResult<List<CourierCompanyBO>>(borderService.getCourierCompany());
+	}
+
+	/**
+	 * 发货
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	@RequestMapping(value = "send_goods", method = RequestMethod.POST)
+	public KemeanResult<String> sendGoods(@Valid @RequestBody SendGoodsPO sendGoodsPO) {
+		return borderService.sendGoods(sendGoodsPO);
+	}
+}

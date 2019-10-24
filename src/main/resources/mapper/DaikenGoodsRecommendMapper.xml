@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenGoodsRecommendMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenGoodsRecommend">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="recommend_id" property="recommendId" jdbcType="INTEGER" />
+		<result column="user_uid" property="userUid" jdbcType="INTEGER" />
+		<result column="user_phone" property="userPhone" jdbcType="VARCHAR" />
+		<result column="type_id" property="typeId" jdbcType="SMALLINT" />
+		<result column="recommend_way" property="recommendWay"
+			jdbcType="SMALLINT" />
+		<result column="recommend_type" property="recommendType"
+			jdbcType="SMALLINT" />
+		<result column="img" property="img" jdbcType="VARCHAR" />
+		<result column="buy_click_num" property="buyClickNum" jdbcType="INTEGER" />
+		<result column="click_num" property="clickNum" jdbcType="INTEGER" />
+		<result column="buy_days" property="buyDays" jdbcType="SMALLINT" />
+		<result column="buy_time" property="buyTime" jdbcType="DATE" />
+		<result column="is_over" property="isOver" jdbcType="BIT" />
+		<result column="is_take_effect" property="isTakeEffect"
+			jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+</mapper>

@@ -1,0 +1,43 @@
+package com.kemean.controller.business;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.vo.bo.KemeanResult;
+
+/**
+ * 
+ * 【商户端】消息控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/b/message")
+public class BMessageController extends DaikenBaseController {
+
+	/**
+	 * 消息列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "message_list", method = RequestMethod.GET)
+	public KemeanResult<String> messageList() {
+		return new KemeanResult<>();
+	}
+
+	/**
+	 * 消息删除
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "del_message", method = RequestMethod.GET)
+	public KemeanResult<String> delMessage() {
+		return new KemeanResult<>();
+	}
+}

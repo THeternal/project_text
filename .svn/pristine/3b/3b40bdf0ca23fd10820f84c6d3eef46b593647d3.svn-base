@@ -1,0 +1,50 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.mysql.DaikenGoodsNewDB;
+
+public interface DaikenGoodsNewMapper extends TkMapper<DaikenGoodsNew> {
+
+	/**
+	 * 商铺商品总售前红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedBefore(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商铺商品总售后红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedAfter(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商铺商品总代卖佣金统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsPurchasing(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 一手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年7月7日
+	 */
+	List<DaikenGoodsNewDB> newGoodsList(@Param("descStr") String descStr, @Param("minPriceSales") Double minPriceSales,
+			@Param("maxPriceSales") Double maxPriceSales, @Param("categoryIds") List<Integer> categoryIds,
+			@Param("purchasing") Boolean purchasing, @Param("keyWord") String keyWord);
+}

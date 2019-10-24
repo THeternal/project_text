@@ -1,0 +1,36 @@
+package com.kemean.bean;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_goods_recommend")
+public class DaikenGoodsRecommend extends KemeanAbstractBaseBean {
+
+	/**
+	 * 商品id，与商品表关联
+	 */
+	@Column(name = "goods_id")
+	private Integer goodsId;
+
+	/**
+	 * 展示图片
+	 */
+	@Column(name = "img")
+	private String img;
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+}

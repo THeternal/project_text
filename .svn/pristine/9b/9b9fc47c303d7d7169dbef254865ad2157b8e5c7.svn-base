@@ -1,0 +1,93 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenGoodsNewMapper extends TkMapper<DaikenGoodsNew> {
+
+	/**
+	 * 商铺商品总售前红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedBefore(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商铺商品总售后红包统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsRedAfter(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商铺商品总代卖佣金统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsPurchasing(@Param("shopId") Integer shopId, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商品数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsNum(@Param("shopName") String shopName, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商品下架数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsStatusNum(@Param("shopName") String shopName, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商品在售数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsSaleNum(@Param("shopName") String shopName, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+
+	/**
+	 * 商品类型统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodsCategoryCount(@Param("shopName") String shopName,
+			@Param("dateStart") String dateStart, @Param("dateEnd") String dateEnd);
+
+	/**
+	 * 帮卖商铺商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	List<DaikenGoodsNew> helpSellGoodsInfo(@Param("categoryIds") List<Integer> categoryIds,
+			@Param("title") String title, @Param("shopId") Integer shopId);
+
+	/**
+	 * 平台管理代客户上下架商品统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectAdminOperateGoodsCount(@Param("userId") Integer userId,
+			@Param("dateStart") String dateStart, @Param("dateEnd") String dateEnd, @Param("limit") Integer limit);
+}

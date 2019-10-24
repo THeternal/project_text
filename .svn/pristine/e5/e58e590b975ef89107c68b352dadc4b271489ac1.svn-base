@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<div
+		class="layui-form-item"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">投诉类型：</label>
+				<div class="layui-input-inline">
+					<select class="param_type">
+						<option value="1101">店铺</option>
+						<option value="1201">调研</option>
+						<option value="1301">销售</option>
+						<option value="1401">平台运营</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-col-md4 layui-col-sm3">
+			<label class="layui-form-label">名称：</label>
+			<div class="layui-input-block">
+				<input
+					placeholder="请输入被投诉的名称"
+					class="layui-input param_name"></input>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">用户类型：</label>
+				<div class="layui-input-inline">
+					<select class="param_userType">
+						<option value="1101">消费者</option>
+						<option value="1201">商家</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-col-md4 layui-col-sm3">
+			<label class="layui-form-label">用户名称：</label>
+			<div class="layui-input-block">
+				<input
+					placeholder="请输入发起投诉人的姓名"
+					class="layui-input param_userName"></input>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<div class="layui-col-md4 layui-col-sm3">
+			<label class="layui-form-label">手机号码：</label>
+			<div class="layui-input-block">
+				<input
+					placeholder="请输入发起投诉人的手机号码"
+					class="layui-input param_userPhone"></input>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-form-item"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md5 layui-col-sm4">
+			<label class="layui-form-label">投诉内容：</label>
+			<div class="layui-input-block">
+				<textarea
+					placeholder="请输入投诉的内容"
+					class="layui-textarea param_content"
+					cols="60"></textarea>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-form-item"
+		style="margin: 10px 0px;">
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button
+					class="layui-btn"
+					lay-submit=""
+					onclick="addComplaint()">保存</button>
+				<button
+					class="layui-btn layui-btn-primary"
+					onclick="history.back();">
+					<i
+						class="fa fa-arrow-left"
+						aria-hidden="true"></i>&nbsp;返回
+				</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    	var url_complain_add = /*[[@{/admin/complaint/add_data}]]*/;
+    	var url_complain_page = /*[[@{/admin/complaint/}]]*/;
+        layui.use(['laydate','form'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+    });
+        
+       function addComplaint(){
+    	    var param_type=$(".param_type").val();
+   			var param_userType=$(".param_userType").val();
+   			var param_name=$(".param_name").val();
+   			if(!param_name){
+   				layer.msg("被投诉的名称不能为空");
+   				return false;
+   			}
+			var param_userName=$(".param_userName").val();
+			if(!param_userName){
+   				layer.msg("发起投诉人的姓名不能为空");
+   				return false;
+   			}
+			var param_userPhone=$(".param_userPhone").val();
+			if(!param_userPhone){
+				layer.msg("发起投诉人的手机号码不能为空");
+   				return false;
+   			}
+			var param_content=$(".param_content").val();
+			if(!param_content){
+   				layer.msg("投诉的内容不能为空");
+   				return false;
+   			}
+   			
+   			$.post(url_complain_add, {complaintType:param_type,userType:param_userType,name:param_name,userName:param_userName,userPhone:param_userPhone,
+   				content:param_content},function(result) {
+   				if(result.success){
+   					showResultMsgAndJumpByFlag(result.success,result.info,url_complain_page);
+   				}
+   			});
+       }
+
+</script>
+</html>

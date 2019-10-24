@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div class="layui-row">
+		<div class="layui-col-md2 layui-col-sm3 layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="addReply('','')">
+				<i
+					class="fa fa-plus"
+					aria-hidden="true"></i> 添加
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/shop/info/reply_data}]]*/;
+    var url_reply_operate = /*[[@{/shop/info/reply_operate}]]*/;
+    var url_reply_del = /*[[@{/shop/info/reply_data_del}]]*/;
+    var table;
+    layui.use(['table', 'laydate'], function () {
+         table = layui.table;
+        var laydate = layui.laydate;
+        
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'objId',
+                    title: '消息编号',
+                    width: 100
+                },{
+	                field: 'content',
+	                title: '回复内容'
+	            },{
+                    toolbar: "#operate",
+                    title: '操作',
+                    width:280
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+        
+    });
+    
+    
+
+	function addReplyDiv(content){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">消息：</label>'
+				 +'<div class="layui-input-block"><textarea  type="text" class="layui-textarea  param_msg" placeholder="请输入消息内容">'+content+'</textarea></div></div>'
+	}
+	
+    function addReply(objId,content){
+		layer.open({
+			title : "添加/编辑回复消息",
+			content :addReplyDiv(content),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '确定' ],
+			offset: '100px',
+			btn1 : function() {
+				var param_msg=$(".param_msg").val();
+				if(!param_msg){
+					layer.msg("请输入消息内容");
+					return false;
+				}
+				$.post(url_reply_operate, {objId:objId,content:param_msg}, function(data, textStatus, req) {
+					layer.msg(data.info);
+					table.reload("dataTable");
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+    
+    
+    
+	
+
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+	<button class="layui-btn layui-btn-sm" onclick="addReply({{d.objId}},'{{d.content}}')"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;修改</button> 
+	<button class="layui-btn layui-btn-sm" onclick="deleteByObjId({{d.objId}},url_reply_del)"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>
+</script>
+
+
+
+
+</html>

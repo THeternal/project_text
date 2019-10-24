@@ -1,0 +1,32 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.KemeanRegion;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanRegionDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.KemeanRegionMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class KemeanRegionDaoImpl extends DaoSupport<KemeanRegion> implements KemeanRegionDao {
+	@Autowired
+	private KemeanRegionMapper mapper;
+
+	@Override
+	protected Mapper<KemeanRegion> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<KemeanRegion> selectByPid(Integer pid) {
+		return selectByProperties(new String[] { KemeanConstant.DATA_DELETED, "pid" }, new Object[] { false, pid },
+				"id", true);
+	}
+
+}

@@ -1,0 +1,111 @@
+package com.kemean.vo.bo.c.mall;
+
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class NewGoodsListBO extends KemeanIdBO {
+
+	/**
+	 * 商品图片
+	 */
+	private String headImg;
+
+	/**
+	 * 商品名称
+	 */
+	private String title;
+
+	/**
+	 * 代卖
+	 */
+	private Boolean purchasing;
+
+	/**
+	 * 代卖提成
+	 */
+	private Double pricePurchasing;
+
+	/**
+	 * 门市价
+	 */
+	private Double priceStore;
+
+	/**
+	 * 支付价
+	 */
+	private Double priceSales;
+
+	/**
+	 * 商品售卖类型
+	 */
+	private String salesTypeStr;
+
+	/**
+	 * 帮代卖商铺id，如果是0表示不是帮代卖
+	 */
+	private Integer userShopId;
+
+	public Integer getUserShopId() {
+		return userShopId;
+	}
+
+	public void setUserShopId(Integer userShopId) {
+		this.userShopId = userShopId;
+	}
+
+	public Double getPricePurchasing() {
+		return pricePurchasing;
+	}
+
+	public void setPricePurchasing(Double pricePurchasing) {
+		this.pricePurchasing = pricePurchasing;
+	}
+
+	public String getSalesTypeStr() {
+		return salesTypeStr;
+	}
+
+	public void setSalesTypeStr(String salesTypeStr) {
+		this.salesTypeStr = salesTypeStr;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public Double getPriceStore() {
+		return priceStore;
+	}
+
+	public void setPriceStore(Double priceStore) {
+		this.priceStore = priceStore;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+}

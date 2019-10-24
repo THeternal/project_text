@@ -1,0 +1,259 @@
+package com.kemean.vo.bo.c.mall;
+
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class OldGoodsInfoBO extends KemeanIdBO {
+
+	/**
+	 * 帮卖商铺id
+	 */
+	private Integer userShopId;
+
+	/**
+	 * 唯一标识(代研号)
+	 */
+	private Integer userUid;
+
+	/**
+	 * 发布者头像
+	 */
+	private String userHeadImg;
+
+	/**
+	 * 发布者昵称
+	 */
+	private String nickName;
+
+	/**
+	 * 创建日期
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+	private Date createTime;
+
+	/**
+	 * 成色
+	 */
+	private String qualityStr;
+
+	/**
+	 * 原价
+	 */
+	private Double priceOriginal;
+
+	/**
+	 * 支付价
+	 */
+	private Double priceSales;
+
+	/**
+	 * 描述
+	 */
+	private String descStr;
+
+	/**
+	 * 帮代卖
+	 */
+	private Boolean purchasing;
+
+	/**
+	 * 商品图片
+	 */
+	private List<String> headImg;
+
+	/**
+	 * 商品名称
+	 */
+	private String title;
+
+	/*
+	 * 是否收藏
+	 */
+	private Boolean isCollect;
+
+	/**
+	 * 售前红包
+	 */
+	private Double redBefore;
+
+	/**
+	 * 售后红包
+	 */
+	private Double redAfter;
+
+	/**
+	 * 代卖提成
+	 */
+	private Double pricePurchasing;
+
+	/**
+	 * 是否已代卖
+	 */
+	private Boolean isPurchasing;
+
+	/**
+	 * 撸羊毛标识
+	 */
+	private Boolean woolLabel;
+
+	/**
+	 * 是否可以分享
+	 */
+	private Boolean isShare;
+
+	public Integer getUserShopId() {
+		return userShopId;
+	}
+
+	public void setUserShopId(Integer userShopId) {
+		this.userShopId = userShopId;
+	}
+
+	public Integer getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(Integer userUid) {
+		this.userUid = userUid;
+	}
+
+	public Boolean getIsShare() {
+		return isShare;
+	}
+
+	public void setIsShare(Boolean isShare) {
+		this.isShare = isShare;
+	}
+
+	public Boolean getWoolLabel() {
+		return woolLabel;
+	}
+
+	public void setWoolLabel(Boolean woolLabel) {
+		this.woolLabel = woolLabel;
+	}
+
+	public Boolean getIsPurchasing() {
+		return isPurchasing;
+	}
+
+	public void setIsPurchasing(Boolean isPurchasing) {
+		this.isPurchasing = isPurchasing;
+	}
+
+	public Double getRedBefore() {
+		return redBefore;
+	}
+
+	public void setRedBefore(Double redBefore) {
+		this.redBefore = redBefore;
+	}
+
+	public Double getRedAfter() {
+		return redAfter;
+	}
+
+	public void setRedAfter(Double redAfter) {
+		this.redAfter = redAfter;
+	}
+
+	public Double getPricePurchasing() {
+		return pricePurchasing;
+	}
+
+	public void setPricePurchasing(Double pricePurchasing) {
+		this.pricePurchasing = pricePurchasing;
+	}
+
+	public String getQualityStr() {
+		return qualityStr;
+	}
+
+	public void setQualityStr(String qualityStr) {
+		this.qualityStr = qualityStr;
+	}
+
+	public Boolean getIsCollect() {
+		return isCollect;
+	}
+
+	public void setIsCollect(Boolean isCollect) {
+		this.isCollect = isCollect;
+	}
+
+	public String getUserHeadImg() {
+		return userHeadImg;
+	}
+
+	public void setUserHeadImg(String userHeadImg) {
+		this.userHeadImg = userHeadImg;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Double getPriceOriginal() {
+		return priceOriginal;
+	}
+
+	public void setPriceOriginal(Double priceOriginal) {
+		this.priceOriginal = priceOriginal;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+	public String getDescStr() {
+		return descStr;
+	}
+
+	public void setDescStr(String descStr) {
+		this.descStr = descStr;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public List<String> getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(List<String> headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+}

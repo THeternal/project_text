@@ -1,0 +1,36 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenUser;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenUserDao extends Idao<DaikenUser> {
+
+	DaikenUser selectByToken(String userToken, List<Integer> asList);
+
+	/**
+	 * 根据手机号找用户
+	 * 
+	 * @author huwei
+	 * @date 2018年6月20日
+	 */
+	DaikenUser selectByPhone(String phone, List<Integer> userType);
+
+	/**
+	 * 获取最大uid
+	 * 
+	 * @author huwei
+	 * @date 2018年6月21日
+	 */
+	Integer selectTheMaxId();
+
+	/**
+	 * 平台用户年龄统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	Integer selectCountAge(Integer minAge, Integer maxAge);
+
+}

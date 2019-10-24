@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">用户名称：</label>
+				<div class="layui-input-block">
+					<input
+						class="layui-input param_name"
+						type="text"
+						placeholder="请输入调研用户名称"></input>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">状态：</label>
+				<div class="layui-input-inline">
+					<select class="param_complaintStatus">
+						<option value="">全部</option>
+						<option value="1101">待处理</option>
+						<option value="1301">已完结</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i>搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-col-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/admin/complaint/page_data(complaintType=1201)}]]*/;
+	var url_message_add = /*[[@{/admin/msg/add_data}]]*/;
+	layui.use([ 'table', 'laydate','upload' ], function() {
+		var table = layui.table;
+		var laydate = layui.laydate;
+
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [{
+				field : 'objId',
+				title : '投诉编号'
+			},{
+				field : 'name',
+				title : '用户名称'
+			},{
+				field : 'userTypeStr',
+				title : '发起投诉的用户类型'
+			},{
+				field : 'userName',
+				title : '发起投诉的用户名称'
+			},{
+				field : 'userPhone',
+				title : '发起投诉的用户手机号'
+			},{
+				field : 'complaintStatusStr',
+				title : '状态'
+			},{
+				field : 'adminSerivceName',
+				title : '客服名称'
+			},{
+				field : 'createTime',
+				title : '投诉时间'
+			},{
+				toolbar : "#operate",
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function search(){
+		var table = layui.table;
+		var param_name=$(".param_name").val();
+		var param_complaintStatus=$(".param_complaintStatus").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					name : param_name,
+					complaintStatus : param_complaintStatus
+				}
+			});
+	}
+	
+	function serachComplaintFunc(content,dealContent,userName){
+    	var table = layui.table;
+    	layer.open({
+    		title:"用户投诉信息",
+    		content:serachUserDive(content,dealContent,userName),
+    		skin : "layui-layer-molv",
+			area : [ '550px', '424px' ],
+			offset: '100px',
+			btn:['关闭'],
+			closeBtn : 1,
+			anim : 0
+    	})
+    };
+    
+	function serachUserDive(content,dealContent,userName){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">用户姓名:</label>'
+		 		 +'<div class="layui-input-block"><input type="text" class="layui-input setterName" value="'+userName+'" readonly="readonly"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">投诉内容:</label>'
+				 +'<div class="layui-input-block"><textarea  lay-verify="required" autocomplete="off" class="layui-textarea feedbackContent" placeholder="投诉内容" readonly="readonly">'+content+'</textarea>'
+				 +'</div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">处理内容:</label>'
+				 +'<div class="layui-input-block"><textarea  lay-verify="required" autocomplete="off" class="layui-textarea feedbackContent" placeholder="处理内容" readonly="readonly">'+dealContent+'</textarea>'
+				 +'</div></div>';
+	}
+	
+	function sendInfo(objId){
+		layer.open({
+			title : "信息发送",
+			content :sendInfoDiv(),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '确定' ],
+			offset: '100px',
+			btn1 : function() {
+				var param_content=$(".param_content").val();
+				if(!param_content){
+					layer.msg("请输入发送的消息内容");
+					return false;
+				}
+				$.post(url_message_add, {userId:objId,type:1302,record:param_content,title:"您有一条来自平台运营发送的消息"}, function(data, textStatus, req) {
+					layer.msg(data.info);
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	function sendInfoDiv(){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">内容:</label>'
+				 +'<div class="layui-input-block"><textarea  type="textarea " class="layui-textarea  param_content" placeholder="请输入发送的内容" /></div></div>';
+	}
+	
+</script>
+
+
+<script
+	type="text/html"
+	id="operate">
+
+	 <button class="layui-btn layui-btn-sm" onclick="serachComplaintFunc('{{d.content}}','{{d.dealContent}}','{{d.userName}}')"><i class="fa fa-info"
+                                                                               aria-hidden="true"></i>&nbsp;详情
+    </button>
+	<button class="layui-btn layui-btn-sm" onclick="sendInfo({{d.adminSerivceId}})"><i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;消息发送</button> 
+
+</script>
+</html>

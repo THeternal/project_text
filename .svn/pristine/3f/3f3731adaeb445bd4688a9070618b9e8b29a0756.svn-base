@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta
+	name="renderer"
+	content="webkit" />
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta
+	name="format-detection"
+	content="telephone=no" />
+<title>代研总管理后台</title>
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}" />
+<link
+	rel="stylesheet"
+	th:href="@{/css/home.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-layout layui-layout-admin"
+		style="border-bottom: solid 5px #009688;">
+		<div class="layui-header header header-demo">
+			<div class="layui-main">
+				<div class="admin-login-box">
+					<img
+						alt="LOGO"
+						src="http://p68iq7sn2.bkt.clouddn.com/upload/201806/21/ad7e8db8775f48aa85cadb6903aa5967?imageView2/0/w/50"
+						style="height: 50px; margin: 5px 16px;" /><span style="font-size: 22px;">代研总管理后台</span>
+				</div>
+				<ul class="layui-nav admin-header-item">
+					<li class="layui-nav-item"><a
+						href="javascript:;"
+						class="admin-header-user"> <img src="http://ospkkikur.bkt.clouddn.com/upload/character8.png" /> &nbsp;&nbsp;
+							<span th:text="${loginUser.name}"></span>
+					</a>
+						<dl class="layui-nav-child">
+							<dd>
+								<a
+									href="javascript:;"
+									th:onclick="'javascript:update_info(\''+${loginUser.name}+'\');'"> <i
+									class="fa fa-user-circle"
+									aria-hidden="true"></i> 修改信息
+								</a>
+							</dd>
+							<dd>
+								<a
+									href="javascript:;"
+									onclick="signOut()"> <i
+									class="fa fa-sign-out"
+									aria-hidden="true"></i> 退出
+								</a>
+							</dd>
+						</dl></li>
+				</ul>
+			</div>
+		</div>
+		<div
+			class="layui-side layui-bg-black"
+			id="admin-side">
+			<div
+				class="layui-side-scroll"
+				id="admin-navbar-side"
+				lay-filter="side"></div>
+		</div>
+		<!--
+            	描述：主面板
+            -->
+		<div
+			class="layui-body"
+			style="bottom: 0; border-left: solid 2px #009688;"
+			id="admin-body">
+			<div
+				class="layui-tab admin-nav-card layui-tab-brief"
+				lay-filter="admin-tab">
+				<ul class="layui-tab-title">
+					
+				</ul>
+				<div
+					class="layui-tab-content"
+					style="min-height: 150px; padding: 5px 0 0 0;">
+					
+				</div>
+			</div>
+		</div>
+		<div
+			class="layui-footer footer footer-demo"
+			id="admin-footer">
+			<div class="layui-main">
+				<p>2018 &copy; 代研</p>
+			</div>
+		</div>
+		<!-- <script type="text/javascript" th:src="@{/js/nav.js}"></script> -->
+		<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+		<script
+			type="text/javascript"
+			th:src="@{/layui/layui.js}"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+		<script
+			type="text/javascript"
+			th:inline="javascript">
+			var endpointUrl = /*[[@{/web_socket_endpoint}]]*/;
+			var sign_out_url = /*[[@{/admin/open/sign_out}]]*/;
+			var login_url = /*[[@{/admin/open/login}]]*/;
+			
+			var menu_data = /*[[${menuData}]]*/;
+			var navs=JSON.parse(menu_data);
+			
+			var servicePath = /*[[@{/js/}]]*/;
+			
+			function signOut() {
+				$.get(sign_out_url, function(data, textStatus, req) {
+					window.location=login_url;
+				})
+			}
+		</script>
+
+		<script
+			type="text/javascript"
+			th:inline="javascript">
+			var update_url = /*[[@{/admin/kemean/account/update_info}]]*/;
+			
+			function get_edit_panel(name) {
+				return '<div class="layui-form-item"><label class="layui-form-label">名称:</label>'
+						+ '<div class="layui-input-block"><input type="text" class="layui-input param_name" placeholder="请输入名称(必选)"  value="'
+						+ name
+						+ '" /></div></div>'
+						+ '<div class="layui-form-item"><label class="layui-form-label">密码:</label>'
+						+ '<div class="layui-input-block"><input type="password" class="layui-input param_password" placeholder="请输入密码(可选)" /></div></div>';
+			}
+
+			function update_info(name) {
+				layer.open({
+					title : "修改个人信息",
+					content : get_edit_panel(name),
+					skin : "layui-layer-molv",
+					area : [ '450px', '240px' ],
+					btn : [ "确定修改" ],
+					btn1 : function() {
+						var paramName = $(".param_name").val();
+						var paramPassword = $(".param_password").val();
+						if(paramPassword){
+							paramPassword=md5(paramPassword);
+						}
+						$.post(update_url, {
+							password : paramPassword,
+							name : paramName
+						}, function(result) {
+							layer.msg(result.info);
+						});
+					},
+					closeBtn : 1,
+					anim : 0
+				});
+			};
+			
+			
+		</script>
+		<script
+			type="text/javascript"
+			th:src="@{/js/home.js}"></script>
+	</div>
+</body>
+</html>

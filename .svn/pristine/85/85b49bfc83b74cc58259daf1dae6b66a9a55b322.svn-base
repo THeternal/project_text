@@ -1,0 +1,47 @@
+package com.kemean.vo.bo.admin.platform;
+
+public class AdminIncomeBO {
+	// 入账
+	private Double inMoeny;
+	// 支出
+	private Double outMoeny;
+
+	// 净利
+	private Double netIncome;
+
+	// 毛利
+	private Double grossProfit;
+
+	public Double getInMoeny() {
+		return inMoeny;
+	}
+
+	public void setInMoeny(Double inMoeny) {
+		this.inMoeny = inMoeny;
+	}
+
+	public Double getOutMoeny() {
+		return outMoeny;
+	}
+
+	public void setOutMoeny(Double outMoeny) {
+		this.outMoeny = outMoeny;
+	}
+
+	public Double getNetIncome() {
+		return netIncome;
+	}
+
+	public void setNetIncome(Double netIncome) {
+		this.netIncome = netIncome;
+	}
+
+	public Double getGrossProfit() {
+		return grossProfit;
+	}
+
+	public void setGrossProfit(Double grossProfit) {
+		this.grossProfit = grossProfit;
+	}
+
+}

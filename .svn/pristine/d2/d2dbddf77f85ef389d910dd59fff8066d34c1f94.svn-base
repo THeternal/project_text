@@ -1,0 +1,72 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenOrder;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenOrderDao extends Idao<DaikenOrder> {
+
+	/**
+	 * 根据状态找订单
+	 * 
+	 * @author huwei
+	 * @date 2018年6月20日
+	 */
+	List<DaikenOrder> orderListBusiness(String keyWord, Integer shopId, Integer orderStatus, Integer pageNo,
+			Integer pageSize);
+
+	/**
+	 * 用户订单列表（待付款，代发货，待收货，待评价）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月28日
+	 */
+	List<DaikenOrder> orderListConsumer(Integer userId, String keyword, Integer orderStatus, Integer pageNo,
+			Integer pageSize);
+
+	/**
+	 * 订单列表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	List<DaikenOrder> orderListData(String orderNo, String shopName, Integer orderStatus, Integer pageNo,
+			Integer pageSize);
+
+	/**
+	 * 商品的销售数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodInSaleNum(Integer shopId, String goodsTitles, Boolean purchasing, String dateStart,
+			String dateEnd, Integer limit);
+
+	/**
+	 * 商品销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodInSaleMoney(Integer shopId, String goodsTitles, Boolean purchasing, String dateStart,
+			String dateEnd, Integer limit);
+
+	/**
+	 * 用户消费统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectUserSaleMoney(List<Integer> statusUsers, String dateStart, String dateEnd, Integer limit);
+
+	/**
+	 * 用户下单量分析
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminChartBO> selectUserOrderNum(String dateStart, String dateEnd, Integer limit);
+
+}

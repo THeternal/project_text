@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-user"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">账户信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item layui-form">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">手机号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_phone"
+							onfocusout="verfiyPhone()"
+							placeholder="请输入注册时的手机号码" /> <label
+							id="verify_phone"
+							style="color: red;"></label>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">验证码：</label>
+					<div class="layui-input-inline">
+						<input
+							type="text"
+							class="layui-input param_sendCode"
+							placeholder="请输入验证码" />
+					</div>
+					<div class="layui-col-md1 layui-col-sm1">
+						<button
+							class="layui-btn layui-btn-primary"
+							onclick="getSendCode(this)">获取验证码</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn"
+				onclick="verifyCode()">
+				<i
+					class="fa fa-check-square-o"
+					aria-hidden="true"></i>&nbsp;&nbsp;下一步
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_shop_prompt_page = /*[[@{/shop/open/prompt}]]*/;
+	var url_sendCode_page = /*[[@{/api/common/send_code}]]*/;
+	var url_verify_code = /*[[@{/shop/open/verify_code}]]*/;
+	var url_forget_password_next_page = /*[[@{/shop/open/forget_password_next}]]*/;
+	layui.use([ 'form', 'upload','laydate'], function() {
+		
+	});
+	
+	//校验手机号码
+	function verfiyPhone(){
+		var phone=$(".param_phone").val();
+		if(!phone){
+			document.getElementById("verify_phone").innerHTML="请输入登陆的手机号码";
+			return  false;
+		}
+		//手机号码校验
+		var reg=new RegExp('^1\\d{10}$');
+		if(!reg.test(phone)){
+			document.getElementById("verify_phone").innerHTML="手机号码格式不正确";
+			return  false;
+		}
+	}
+	
+	
+	var readonly = false;
+	var clear;
+	function getCodeState(_this) {
+	      readonly = true;
+	      _this.innerHTML = "60S后重新获取";
+	      var s = 60;
+	      clear = setInterval(function() {
+	        s--;
+	        _this.innerHTML = s + "S后重新获取";
+	       
+	        if ( 0 >= s) {
+	          clearInterval(clear);
+	          _this.innerHTML = "获取验证码";
+	          readonly = false;
+	        }
+	       
+	      }, 1000);
+	    }
+	    
+	//发送验证码
+	function getSendCode(_this){
+		if(verfiyPhone()){
+		   if(readonly){
+			    	layer.msg('验证码已发送');
+			    	return false;
+			    }else{
+			    	getCodeState(_this);
+			    }
+		}
+			  var phone=$(".param_phone").val();
+				$.ajax({
+					type:"POST",
+					url:url_sendCode_page,
+					contentType: "application/json; charset=utf-8",
+					dataType:"json",
+					data:JSON.stringify({
+						phone:phone,type:3203
+					}),
+					success:function(data){
+						if(data.success){
+							getCodeState(_this);
+						}
+					}
+				});
+    		
+    	}
+
+	function verifyCode() {
+		verfiyPhone();
+		var param_sendCode=$(".param_sendCode").val();
+		if(!param_sendCode){
+			layer.msg('验证码不能为空');
+			return false;
+		}
+		var phone=$(".param_phone").val();
+		
+		$.get(url_verify_code, {phone:phone,sendCode:param_sendCode}, function(data) {
+				if(data.success){
+				  window.location=url_forget_password_next_page+"?phone="+phone;
+				}else{
+					layer.msg(data.info);
+					return false;
+				}
+		})		
+	}
+
+
+</script>
+
+
+</html>

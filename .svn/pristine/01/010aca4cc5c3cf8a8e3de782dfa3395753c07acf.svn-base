@@ -1,0 +1,7 @@
+package com.kemean.mapper;
+
+import com.kemean.bean.DaikenOrderAfterSale;
+import com.kemean.tk.TkMapper;
+
+public interface DaikenOrderAfterSaleMapper extends TkMapper<DaikenOrderAfterSale> {
+}

@@ -1,0 +1,54 @@
+package com.kemean.vo.po.admin.goods;
+
+import com.kemean.vo.po.admin.AdminChartPO;
+
+public class AdminGoodsChartPO extends AdminChartPO {
+	private String goodsTitle;
+	private Boolean purchasing;
+	private Integer type;
+
+	private String shopName;
+
+	private Integer objId;
+
+	public Integer getObjId() {
+		return objId;
+	}
+
+	public void setObjId(Integer objId) {
+		this.objId = objId;
+	}
+
+	public String getGoodsTitle() {
+		return goodsTitle;
+	}
+
+	public void setGoodsTitle(String goodsTitle) {
+		this.goodsTitle = goodsTitle;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+}

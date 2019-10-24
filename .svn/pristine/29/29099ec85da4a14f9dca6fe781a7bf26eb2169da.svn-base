@@ -1,0 +1,7 @@
+package com.kemean.mapper;
+
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.tk.TkMapper;
+
+public interface DaikenGoodsNewSkuMapper extends TkMapper<DaikenGoodsNewSku> {
+}

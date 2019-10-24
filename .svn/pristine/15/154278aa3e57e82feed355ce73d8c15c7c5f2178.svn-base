@@ -1,0 +1,37 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewMinPriceBO;
+import com.kemean.vo.bo.admin.shop.AdminShopPromotionBO;
+
+public interface DaikenGoodsNewSkuMapper extends TkMapper<DaikenGoodsNewSku> {
+
+	/**
+	 * 商品库存
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminShopPromotionBO> selectGoodStockSum(@Param("goodsId") Integer goodsId);
+
+	/**
+	 * 立即下单，一手商品 乐观锁处理
+	 * 
+	 * @author huwei
+	 * @date 2018年7月17日
+	 */
+	Integer updateByHappyLock(@Param("goodsSkuid") Integer goodsSkuid, @Param("dateVersion") Integer dateVersion);
+
+	/**
+	 * 获取商品的最低折扣、门市价、售价
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	AdminGoodsNewMinPriceBO selectGoodsNewMinPrice(@Param("goodsId") Integer goodsId);
+}

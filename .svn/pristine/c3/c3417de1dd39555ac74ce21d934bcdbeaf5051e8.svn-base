@@ -1,0 +1,17 @@
+package com.kemean.mapper;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenInvestigateOperation;
+import com.kemean.tk.TkMapper;
+
+public interface DaikenInvestigateOperationMapper extends TkMapper<DaikenInvestigateOperation> {
+	/**
+	 * 用户token领取数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	Integer selectUserGetTokenNum(@Param("dateStart") String dateStart, @Param("dateEnd") String dateEnd);
+
+}

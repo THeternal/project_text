@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<div
+		class="layui-card layui-form"
+		style="margin-top: 10px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-user"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">用户基本信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-form-item ">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">代研号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.uid}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">昵称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.nickName}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item ">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">手机号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.phone}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">始初手机号：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.firstPhone}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item ">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">用户类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.userTypeStr}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">商铺id：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.shopId}" />
+					</div>
+				</div>
+			</div>
+
+
+			<div class="layui-form-item ">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">年龄：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.age}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">职业：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.professionStr}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">用户状态：</label>
+					<div class="layui-input-block">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.userStatus}"
+							class="param_userStatus"
+							lay-text="正常|禁用" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">性别：</label>
+					<div class="layui-input-block">
+						<input
+							type="radio"
+							name="sex"
+							value="男"
+							th:checked="${pageData.sexMan} "
+							title="男"/> <input
+							type="radio"
+							name="sex"
+							th:checked="${pageData.sexMan} eq (false)"
+							value="女"
+							title="女"/>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item ">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">余额：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.balancePrice}" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-md-offset1">
+					<label class="layui-form-label">token余额：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							th:value="${pageData.balanceToken}" />
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class=" layui-col-md4 layui-col-sm5">
+					<label class="layui-form-label">兴趣爱好：</label>
+					<div class="layui-input-block">
+						<textarea
+							class="layui-textarea"
+							th:text="${pageData.hobbiesInterests}" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-form-item layui-col-md-offset6">
+		<div class="layui-input-block">
+			<button
+				class="layui-btn  layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	layui.use([ 'table', 'form' ], function() {
+
+	});
+</script>
+</html>

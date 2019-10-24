@@ -1,0 +1,15 @@
+package com.kemean.dao;
+
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenGoodsNewSkuDao extends Idao<DaikenGoodsNewSku> {
+
+	/**
+	 * 总库存
+	 * 
+	 * @author huwei
+	 * @date 2018年7月12日
+	 */
+	Integer countStock(Integer goodsId);
+}

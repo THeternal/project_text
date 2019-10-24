@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg layui-btn-warm"
+			style="margin-top: 10px;"
+			th:onclick="'javascript:auditShop(\''+${pageData.shopId}+'\',1401);'"
+			th:if="${pageData.auditStatus} == 1201 ">
+			<i
+				class="fa fa-plus"
+				aria-hidden="true"></i>&nbsp;审核通过
+		</button>
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg layui-btn-danger"
+			style="margin-top: 10px; margin-left: 50px;"
+			th:onclick="'javascript:auditShop(\''+${pageData.shopId}+'\',1301);'"
+			th:if="${pageData.auditStatus} == 1201 ">
+			<i
+				class="fa fa-times"
+				aria-hidden="true"></i>&nbsp;审核不通过
+		</button>
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg"
+			style="margin-top: 10px; margin-left: 50px;"
+			onclick="history.back()">
+			<i
+				class="fa fa-arrow-left"
+				aria-hidden="true"></i>&nbsp;返回
+		</button>
+	</div>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">店铺信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">店铺名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.shopName}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">法人名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.legalPersonName}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">入驻类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.settledPersonalStr}" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-user"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">负责人信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">姓名：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.principalName}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">电话：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.principalPhone}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.principalIdCard}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">身份证有效期：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.isIdCardValidityStr}" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">身份证正面照片：</label>
+					<div class="layui-input-block">
+						<img
+							th:src="${pageData.principalIdCardFrontImg}"
+							width="200px"
+							th:onclick="'javascript:visitImg(\''+${pageData.principalIdCardFrontImg}+'\');'" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">身份证背面照片：</label>
+					<div class="layui-input-block">
+						<img
+							th:src="${pageData.principalIdCardReverseImg}"
+							width="200px"
+							th:onclick="'javascript:visitImg(\''+${pageData.principalIdCardReverseImg}+'\');'" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-picture-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">资质照</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">营业执照正面照：</label>
+					<div class="layui-input-block">
+						<img
+							th:src="${pageData.businessLicenseImg}"
+							width="200px"
+							th:onclick="'javascript:visitImg(\''+${pageData.businessLicenseImg}+'\');'" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">营业执照名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.businessLicenseName}" />
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class="layui-col-md4 layui-col-sm5 layui-col-sm6">
+					<label class="layui-form-label">营业执照注册号码：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input"
+							readonly="readonly"
+							th:value="${pageData.businessLicenseRegisterNo}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm5 layui-col-sm6 layui-col-md-offset1">
+					<label class="layui-form-label">营业执照经营场所：</label>
+					<div class="layui-input-block">
+						<img
+							th:src="${pageData.businessLicenseLocation}"
+							width="200px"
+							th:onclick="'javascript:visitImg(\''+${pageData.businessLicenseLocation}+'\');'" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<blockquote class="layui-elem-quote">
+			审核状态：<font
+				color="#FF5722"
+				th:text="${pageData.auditStatusStr}"></font>
+		</blockquote>
+	</div>
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg layui-btn-warm"
+			style="margin-top: 10px;"
+			th:onclick="'javascript:auditShop(\''+${pageData.shopId}+'\',1401);'"
+			th:if="${pageData.auditStatus} == 1201">
+			<i
+				class="fa fa-plus"
+				aria-hidden="true"></i>&nbsp;审核通过
+		</button>
+
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg layui-btn-danger"
+			style="margin-top: 10px; margin-left: 50px;"
+			th:onclick="'javascript:auditShop(\''+${pageData.shopId}+'\',1301);'"
+			th:if="${pageData.auditStatus} == 1201 ">
+			<i
+				class="fa fa-times"
+				aria-hidden="true"></i>&nbsp;审核不通过
+		</button>
+		<button
+			class="layui-btn layui-btn-radius layui-btn-lg"
+			style="margin-top: 10px; margin-left: 50px;"
+			onclick="history.back()">
+			<i
+				class="fa fa-arrow-left"
+				aria-hidden="true"></i>&nbsp;返回
+		</button>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var url_shop_audit = /*[[@{/admin/shop/status_audit}]]*/;
+	var url_settled_shop_page = /*[[@{/admin/shop/settled}]]*/;
+	
+	layui.use([ 'layer' ], function() {
+
+	});
+
+	function auditShop(objId,status) {
+		$.post(url_shop_audit,
+				{shopId:objId,
+				status:status
+			   },function(result){
+			showResultMsgAndJump(result.info,url_settled_shop_page);
+	 	});
+	}
+
+
+</script>
+
+
+</html>

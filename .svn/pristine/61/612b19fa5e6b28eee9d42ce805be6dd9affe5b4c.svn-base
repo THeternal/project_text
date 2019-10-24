@@ -1,0 +1,55 @@
+package com.kemean.vo.mysql;
+
+public class OrderGoodsRecordDB {
+
+	private String title;
+
+	private String headImg;
+
+	private Double priceSales;
+
+	private String skuNo;
+
+	private String recordType;
+
+	public String getRecordType() {
+		return recordType;
+	}
+
+	public void setRecordType(String recordType) {
+		this.recordType = recordType;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+	public String getSkuNo() {
+		return skuNo;
+	}
+
+	public void setSkuNo(String skuNo) {
+		this.skuNo = skuNo;
+	}
+
+}

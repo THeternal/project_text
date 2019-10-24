@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-users"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">数量统计</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class="layui-col-md4 layui-col-sm4">
+					<button class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-user-o"
+							aria-hidden="true"></i> &nbsp;总用户数： <span
+							class="layui-badge layui-bg-orange"
+							th:text="${pageData.platformSumUser}"></span>
+					</button>
+				</div>
+				<div class="layui-col-md4 layui-col-sm4">
+					<button class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-male"
+							aria-hidden="true"></i> &nbsp;消费端： <span
+							class="layui-badge layui-bg-orange"
+							th:text="${pageData.consumerNum}"></span>
+					</button>
+				</div>
+				<div class="layui-col-md4 layui-col-sm4">
+					<button class="layui-btn layui-btn-lg">
+						<i
+							class="fa fa-home"
+							aria-hidden="true"></i> &nbsp;商户端： <span
+							class="layui-badge layui-bg-orange"
+							th:text="${pageData.shopNumData}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i
+					class="fa fa-line-chart"
+					aria-hidden="true"></i>&nbsp;<font
+					color="#009688"
+					style="font-weight: bold;">数据分析</font>
+			</div>
+			<div class="layui-card-body">
+				<div class="layui-row layui-col-space15">
+					<div class="layui-col-md4">
+						<div id="user_type"></div>
+					</div>
+					<div class="layui-col-md4">
+						<div id="user_sex"></div>
+					</div>
+					<div class="layui-col-md4">
+						<div id="user_age"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var pageData= /*[[${pageData}]]*/;
+	
+	//平台用户类型
+	$('#user_type').highcharts({
+		title : {
+			text : '用户类型'
+		},
+		tooltip : {
+			headerFormat : '{series.name}<br/>',
+			pointFormat : '{point.name}: <b>{point.y}</b>'
+		},
+		colors : [ '#11CBD7', '#00BBF0', '#E63870', '#F68686', '#FFEED0' ],
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				dataLabels : {
+					enabled : true,
+					format : '<b>{point.name}</b>: {point.percentage:.1f} %'
+				}
+			}
+		},
+		series : [ {
+			type : 'pie',
+			name : '平台用户类型',
+			data : [ {
+				name : "商家",
+				"y" : pageData.shopNumData
+			}, {
+				name : "消费者",
+				"y" : pageData.consumerNum
+			},{
+				name : "客服",
+				"y" : pageData.serviceNumData
+			},{
+				name : "运营",
+				"y" : pageData.operationNumData
+			},{
+				name : "销售",
+				"y" : pageData.salesNumData
+			} ]
+		} ]
+	});
+	
+	
+	//平台用户性别
+	$('#user_sex').highcharts({
+		title : {
+			text : '平台用户性别'
+		},
+		tooltip : {
+			headerFormat : '{series.name}<br/>',
+			pointFormat : '{point.name}: <b>{point.y}</b>'
+		},
+		colors : [ '#11CBD7', '#00BBF0', '#E63870', '#F68686', '#FFEED0' ],
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				dataLabels : {
+					enabled : true,
+					format : '<b>{point.name}</b>: {point.percentage:.1f} %'
+				}
+			}
+		},
+		series : [ {
+			type : 'pie',
+			name : '平台用户性别',
+			data : [ {
+				name : "男",
+				"y" : pageData.userManDate
+			}, {
+				name : "女",
+				"y" : pageData.userGirlDate
+			}]
+		} ]
+	});
+	
+	//平台用户年龄
+	$('#user_age').highcharts({
+		title : {
+			text : '平台用户年龄'
+		},
+		tooltip : {
+			headerFormat : '{series.name}<br/>',
+			pointFormat : '{point.name}: <b>{point.y}</b>'
+		},
+		colors : [ '#11CBD7', '#00BBF0', '#E63870', '#F68686', '#FFEED0' ],
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				dataLabels : {
+					enabled : true,
+					format : '<b>{point.name}</b>: {point.percentage:.1f} %'
+				}
+			}
+		},
+		series : [ {
+			type : 'pie',
+			name : '平台用户年龄',
+			data : [ {
+				name : "未满18岁",
+				"y" : pageData.notAdult
+			}, {
+				name : "19岁~23岁",
+				"y" : pageData.eighteenBetweenTwentyThree
+			},{
+				name : "24岁~30岁",
+				"y" : pageData.twentyFourBetweenThirty
+			},{
+				name : "31岁~37岁",
+				"y" : pageData.thirtyOneBetweenThirtySeven
+			},{
+				name : "38岁~45岁",
+				"y" : pageData.thirtyEightBetweenFortyFive
+			}]
+		} ]
+	});
+	
+	
+</script>
+
+
+</html>

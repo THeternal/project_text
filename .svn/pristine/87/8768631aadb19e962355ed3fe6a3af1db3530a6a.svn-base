@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">联系电话：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_linePhone" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">店铺名称：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_shopName" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">审核状态：</label>
+				<div class="layui-input-inline">
+					<select class="param_status">
+						<option value="">全部</option>
+						<option value="1201">待审核</option>
+						<option value="1301">未通过</option>
+						<option value="1401">已通过</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i>搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-col-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/admin/shop/settled_data?settledPersonal=false}]]*/;
+	var url_settled_shop_info = /*[[@{/admin/settled/shop/get_settled_shop_info}]]*/;
+
+	layui.use([ 'table', 'laydate' ], function() {
+		var table = layui.table;
+		var laydate = layui.laydate;
+
+		laydate.render({
+			elem : '.param_beginTime',
+			type : 'datetime'
+		});
+
+		laydate.render({
+			elem : '.param_endTime',
+			type : 'datetime'
+		});
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [ {
+				field : 'shopName',
+				title : '商铺名称'
+			}, {
+				field : 'settledPersonalStr',
+				title : '商铺类型'
+			},{
+				field : 'principalName',
+				title : '负责人'
+			},{
+				field : 'principalPhone',
+				title : '负责人电话'
+			},{
+				field : 'auditStatusStr',
+				title : '审核状态'
+			}, {
+				field : 'createTime',
+				title : '提交时间'
+			},{
+				toolbar : "#operate"
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function search(){
+		var table = layui.table;
+		var paramshopName=$(".param_shopName").val();
+		var paramStatus=$(".param_status").val();
+		var paramLinePhone=$(".param_linePhone").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					shopName : paramshopName,
+					auditStatus : paramStatus,
+					phone:paramLinePhone
+				}
+			});
+	}
+</script>
+
+
+<script
+	type="text/html"
+	id="operate">
+	<a class="layui-btn layui-btn-sm"
+	th:href="@{/admin/shop/settled_info_page?objId={{d.objId}}}"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;详细信息</a>
+</script>
+</html>

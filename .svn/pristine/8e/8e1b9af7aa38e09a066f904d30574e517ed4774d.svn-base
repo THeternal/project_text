@@ -1,0 +1,7 @@
+package com.kemean.dao;
+
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.dao.su.Idao;
+
+public interface DaikenGoodsNewSkuDao extends Idao<DaikenGoodsNewSku> {
+}

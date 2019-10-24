@@ -1,0 +1,24 @@
+package com.kemean.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenGoodsNewSku;
+import com.kemean.dao.DaikenGoodsNewSkuDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenGoodsNewSkuMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenGoodsNewSkuDaoImpl extends DaoSupport<DaikenGoodsNewSku> implements DaikenGoodsNewSkuDao {
+
+	@Autowired
+	private DaikenGoodsNewSkuMapper mapper;
+
+	@Override
+	protected Mapper<DaikenGoodsNewSku> getMapper() {
+		return mapper;
+	}
+
+}

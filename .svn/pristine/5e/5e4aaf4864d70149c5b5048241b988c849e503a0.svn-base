@@ -1,0 +1,44 @@
+package com.kemean.vo.bo.c.common;
+
+public class ComLunboBO {
+
+	/**
+	 * 跳转类型
+	 */
+	private Integer jumpType;
+
+	/**
+	 * 图片链接
+	 */
+	private String imgUrl;
+
+	/**
+	 * 商铺id
+	 */
+	private Integer shopId;
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public Integer getJumpType() {
+		return jumpType;
+	}
+
+	public void setJumpType(Integer jumpType) {
+		this.jumpType = jumpType;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+}

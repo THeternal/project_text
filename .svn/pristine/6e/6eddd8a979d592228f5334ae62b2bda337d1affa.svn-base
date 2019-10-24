@@ -1,0 +1,97 @@
+package com.kemean.service.admin;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageInfo;
+import com.kemean.bean.KemeanLunbo;
+import com.kemean.constant.DaikenAdminResultTips;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanLunboDao;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.lunbo.AdminLunboBO;
+import com.kemean.vo.po.admin.lunbo.AddLunBoDataPO;
+import com.kemean.vo.po.admin.lunbo.LunBoDataPO;
+
+@Service
+public class AdminLunBoService {
+
+	@Autowired
+	private KemeanLunboDao kemeanLunboDao;
+
+	@Autowired
+	private KemeanRedisService kemeanRedisService;
+
+	// 获取轮播图数据
+	public KemeanPageAdminBO<List<AdminLunboBO>> getLunBoDate(LunBoDataPO lunBoDataPO) {
+		List<KemeanLunbo> dbLunbos = kemeanLunboDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "locatType" },
+				new Object[] { false, lunBoDataPO.getLocatType() }, lunBoDataPO.getPage(), lunBoDataPO.getLimit());
+		List<AdminLunboBO> result = new ArrayList<AdminLunboBO>(dbLunbos.size());
+		for (KemeanLunbo kemeanLunbo : dbLunbos) {
+			AdminLunboBO bo = new AdminLunboBO();
+			BeanUtils.copyProperties(kemeanLunbo, bo);
+			bo.setJumpTypeStr("商铺跳转");
+			result.add(bo);
+		}
+		return new KemeanPageAdminBO<List<AdminLunboBO>>(new PageInfo<KemeanLunbo>(dbLunbos).getTotal(), result);
+	}
+
+	// 删除轮播图数据
+	public void delLunbo(Integer objId) {
+		KemeanLunbo dbLunbo = kemeanLunboDao.selectById(objId);
+		dbLunbo.setDataDeleted(true);
+		dbLunbo.setUpdateTime(new Date());
+		kemeanLunboDao.updateByPrimaryKeySelective(dbLunbo);
+		kemeanRedisService.del(String.format(DaikenRedisKeyEnum.LUNBO.getKey(), dbLunbo.getLocatType()));
+	}
+
+	// 新增轮播图数据
+	public KemeanResult<String> addLunbo(AddLunBoDataPO addLunBoDataPO) {
+		Date now = new Date();
+		KemeanLunbo newLunbo = new KemeanLunbo();
+		BeanUtils.copyProperties(addLunBoDataPO, newLunbo);
+		newLunbo.setJumpType(1101);
+		newLunbo.setCreateTime(now);
+		newLunbo.setUpdateTime(now);
+		kemeanLunboDao.saveSelective(newLunbo);
+		kemeanRedisService.del(String.format(DaikenRedisKeyEnum.LUNBO.getKey(), addLunBoDataPO.getLocatType()));
+		return new KemeanResult<String>(DaikenAdminResultTips.Lunbo.LUNBO_ADD_SUCCESS);
+	}
+
+	/**
+	 * 获取轮播信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月6日
+	 */
+	public KemeanLunbo getLunboInfo(Integer objId) {
+		KemeanLunbo dbLunbo = kemeanLunboDao.selectById(objId);
+		KemeanLunbo bo = new KemeanLunbo();
+		BeanUtils.copyProperties(dbLunbo, bo);
+		return bo;
+	}
+
+	/**
+	 * 修改轮播图数据
+	 * 
+	 * @author huwei
+	 * @date 2018年7月6日
+	 */
+	public KemeanResult<String> updateLunbo(AddLunBoDataPO addLunBoDataPO) {
+		KemeanLunbo dbLunbo = kemeanLunboDao.selectById(addLunBoDataPO.getObjId());
+		BeanUtils.copyProperties(addLunBoDataPO, dbLunbo);
+		dbLunbo.setUpdateTime(new Date());
+		kemeanLunboDao.updateByPrimaryKeySelective(dbLunbo);
+		return new KemeanResult<String>();
+	}
+
+}

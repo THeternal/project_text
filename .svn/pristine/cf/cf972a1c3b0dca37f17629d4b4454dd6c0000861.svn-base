@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">分类名称：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_name" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">级别：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input"
+						readonly="readonly"
+						value="三级分类" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md10 layui-col-sm9 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">规格/类型：</label>
+				<div class="layui-input-block param_baseType" />
+
+			</div>
+		</div>
+	</div>
+
+	<div class="layui-col-md4 layui-col-sm5 layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label">图片：</label> <img
+				class="param_img"
+				width="200px"
+				th:onclick="'javascript:visitImg(this.src);'" />
+			<div
+				class="layui-input-block"
+				style="margin-top: 15px;">
+				<button
+					type="button"
+					class="layui-btn"
+					id="uploadimg">
+					<i class="layui-icon">&#xe67c;</i>上传图片
+				</button>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<button
+					class="layui-btn"
+					onclick="addCategory()">新增</button>
+				<button
+					class="layui-btn layui-btn-primary"
+					onclick="history.back();">
+					<i
+						class="fa fa-arrow-left"
+						aria-hidden="true"></i>&nbsp;返回
+				</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var baseType=/*[[${baseTypeData}]]*/;
+	var pid=/*[[${pid}]]*/;
+	var url_uoload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_category_page = /*[[@{/admin/goods/category_three_page(pid=${pid})}]]*/;
+	var url_category_operate = /*[[@{/admin/goods/category_operate}]]*/;
+	layui.use([ 'table', 'upload','element' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		var element = layui.element;
+
+		upload.render({
+			elem : '#uploadimg',
+			url : url_uoload_img,
+			data:{resetName:true},
+			done : function(res) {
+				//上传完毕回调
+				$(".param_img").prop("src",res.data);
+				layer.msg('上传成功');
+			}
+		});
+	});
+	
+	
+	$(function(){
+		$.each(baseType, function(i, elt) {
+			var base_type_html='<input type="checkbox" value="'+elt.id+'" title="'+elt.name+'" />';
+			$(".param_baseType").append(base_type_html);
+		});
+	})
+	
+	
+	function addCategory(){
+		var param_name=$(".param_name").val();
+		
+		if(!param_name){
+			layer.msg("分类名称不能为空");
+			return false;
+		}
+		
+		
+		var recordTypeId="";
+		var res=true;
+		$.each($('input[type=checkbox]:checked'), function(i, elt) {
+			if(!res){
+				recordTypeId+=",";
+			}
+			recordTypeId+=elt.value;
+			res=false;
+		});
+		
+		if(recordTypeId==""){
+			layer.msg("规格/类型 不能为空");
+			return false;
+		}
+		
+		var param_img=$(".param_img").attr("src");	
+		
+		if(!param_img){
+			layer.msg("图片不能为空");
+			return false;
+		}
+		
+		$.post(url_category_operate, {name:param_name,recordTypeId:recordTypeId,img:param_img,pid:pid,level:3}, function(data, textStatus, req) {
+			showResultMsgAndJumpByFlag(data.success,data.info,url_category_page);
+		})
+	}
+</script>
+
+</html>

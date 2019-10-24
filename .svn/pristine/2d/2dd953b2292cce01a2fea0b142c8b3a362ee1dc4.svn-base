@@ -1,0 +1,54 @@
+package com.kemean.controller.admin;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminShopService;
+import com.kemean.vo.bo.admin.shop.AdminShopChartBO;
+import com.kemean.vo.po.admin.AdminChartPO;
+
+/**
+ * 店铺报表
+ * 
+ * @Date 2018年6月21日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("admin/shop/chart")
+public class AdminShopChartController extends DaikenBaseController {
+
+	@Autowired
+	private AdminShopService adminShopService;
+
+	/**
+	 * 店铺统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String shopCountChartPage(@Valid AdminChartPO adminChartPO) {
+		request.setAttribute("pageData", adminShopService.shopChart(adminChartPO, 15));
+		return KemeanConstant.ADMIN_FOLDER + "shopChart";
+	}
+
+	/**
+	 * 店铺统计搜索
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	@RequestMapping(value = "search", method = RequestMethod.GET)
+	public AdminShopChartBO shopCountChartData(@Valid AdminChartPO adminChartPO) {
+		return adminShopService.shopChart(adminChartPO, 0);
+	}
+
+	
+}

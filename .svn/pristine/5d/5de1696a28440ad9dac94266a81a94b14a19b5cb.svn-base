@@ -1,0 +1,53 @@
+package com.kemean.constant;
+
+/**
+ * 配置
+ * 
+ * @Date 2018年6月21日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+public enum DaikenConfigEnum {
+	/** 短信配置 **/
+	SMS_CONFIG(1100),
+	/** 短信-注册 **/
+	SMS_REGISTERED(1101),
+	/** 短信-修改密码 **/
+	SMS_RESET_PASSWORD(1103),
+	/** 短信-修改手机 **/
+	SMS_RESET_PHONE(1104),
+	/** 调研平台收费 **/
+	INVESTIGATE_CHARGE(1201),
+	/** token奖励 **/
+	TOKEN_AWARD(1301),
+	/** 提现 **/
+	WITH_DRAW(1401),
+	/** 精准投放单价 **/
+	PRECISE_DELIVERY(1501),
+	/** 问卷提成比例 **/
+	QUESTION_PRICE(1601),
+	/** 投票提成比例 **/
+	VOTE_PRICE(1602),
+	/** 点赞提成比例 **/
+	LIKE_PRICE(1603),
+	/** 活动商品出售提成比例 **/
+	ACTIVITY_PRICE(1604),
+	/** 搜索框默认值 **/
+	SEARCH_BOX_DEFAULT_VALUE(1701),
+	/** UID前缀 **/
+	UID_PREFIX(1801);
+
+	private Integer type;
+
+	private DaikenConfigEnum(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+}

@@ -1,0 +1,17 @@
+package com.kemean.vo.po.admin.investigate;
+
+import com.kemean.vo.po.admin.AdminDatePO;
+
+public class AdminInvestChartPO extends AdminDatePO {
+
+	private Integer type;
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+<style type="text/css">
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 70vh;
+	flex-direction: column;
+}
+
+.success {
+	display: flex;
+	width: 800px;
+}
+
+.success svg {
+	flex-shrink: 0;
+	width: 100px;
+	height: 100px;
+	margin-right: 20px;
+}
+
+.success>div h1 {
+	font-size: 40px;
+	color: #1afa29;
+}
+
+.success>div p {
+	margin-top: 20px;
+	font-size: 20px;
+}
+
+.back_home>a {
+	margin-top: 30px;
+	margin-left: 400px;
+}
+</style>
+</head>
+<body>
+	<div class="success">
+		<svg
+			viewBox="0 0 1024 1024"
+			width="100"
+			height="100">
+			<path
+				d="M512.697383 63.443961c-247.539816 0-448.208115 200.668299-448.208115 448.208115 0 247.539816 200.668299 448.208115 448.208115 448.208115 247.539816 0 448.208115-200.668299 448.208115-448.208115C960.905498 264.11226 760.237199 63.443961 512.697383 63.443961zM782.650675 386.324696 472.510102 703.184297c-1.057075 1.586125-2.233877 3.100618-3.620457 4.504594-12.155854 12.346189-31.861662 12.346189-44.025703 0L270.811334 551.265282c-12.146645-12.347213-12.146645-32.354895 0-44.683688 12.154831-12.347213 31.860638-12.347213 44.016493 0L446.411701 640.173195l292.213271-298.549583c12.165064-12.346189 31.861662-12.346189 44.025703 0C794.797319 353.9698 794.797319 373.97646 782.650675 386.324696z"
+				p-id="1482"
+				fill="#1afa29"></path>
+		</svg>
+		<div>
+			<h1>入驻资料提交成功！</h1>
+			<p>商家运营人员会在7个工作日内审核，期间您可以登录后台查看审核结果，运营审核完成之后会短信通知您是否通过！</p>
+		</div>
+	</div>
+	<div class="back_home" >
+		<a th:href="@{/shop/open/login}" class="layui-btn">返回</a>
+	</div>
+</body>
+</html>

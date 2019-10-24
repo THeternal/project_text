@@ -1,0 +1,63 @@
+package com.kemean.vo.po.admin.lunbo;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+public class AddLunBoDataPO {
+
+	private Integer objId;
+
+	@NotNull(message = "展示顺序不能为空")
+	private Integer sortNum;
+
+	@NotNull(message = "展示位置不能为空")
+	private Integer locatType;
+
+	@NotBlank(message = "图片链接地址不能为空")
+	private String imgUrl;
+
+	@NotBlank(message = "标识不能为空")
+	private String record;
+
+	public Integer getLocatType() {
+		return locatType;
+	}
+
+	public void setLocatType(Integer locatType) {
+		this.locatType = locatType;
+	}
+
+	public Integer getSortNum() {
+		return sortNum;
+	}
+
+	public void setSortNum(Integer sortNum) {
+		this.sortNum = sortNum;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public String getRecord() {
+		return record;
+	}
+
+	public void setRecord(String record) {
+		this.record = record;
+	}
+
+	public Integer getObjId() {
+		return objId;
+	}
+
+	public void setObjId(Integer objId) {
+		this.objId = objId;
+	}
+
+}

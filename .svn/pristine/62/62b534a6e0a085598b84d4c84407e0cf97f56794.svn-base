@@ -1,0 +1,27 @@
+package com.kemean.constant;
+
+public enum DaikenFinanceTypeClearEnum {
+
+	/** 商户提现 **/
+	CASH_SHOP(1101),
+	/** 客户提现 **/
+	CASE_USER(1102),
+	/** 平台充值 **/
+	RECHARGE(1201),
+	/** 商户商品精准投递费用 **/
+	SHOP_PUSH_GOODS(1301);
+	private Integer type;
+
+	private DaikenFinanceTypeClearEnum(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+}

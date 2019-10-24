@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenOrderGoodsMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenOrderGoods">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="goods_id" property="goodsId" jdbcType="SMALLINT" />
+		<result column="goods_uid" property="goodsUid" jdbcType="VARCHAR" />
+		<result column="red_before" property="redBefore" jdbcType="DOUBLE" />
+		<result column="red_after" property="redAfter" jdbcType="DOUBLE" />
+		<result column="compensate_money" property="compensateMoney" jdbcType="DOUBLE" />
+		<result column="price_purchasing" property="pricePurchasing"
+			jdbcType="DOUBLE" />
+		<result column="sku_no" property="skuNo" jdbcType="VARCHAR" />
+		<result column="quantity" property="quantity" jdbcType="SMALLINT" />
+		<result column="goods_record" property="goodsRecord" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+	
+	
+	<select id="selectGoodsDiscountPriceSum" resultType="com.kemean.vo.bo.admin.shop.AdminShopPromotionBO">
+		SELECT 
+		     b.`title` as goodTitle,
+			a.`shop_name` as shopName,
+			b.`id` as goodId,
+			b.`discount_time_begin` as discountTimeBegin ,
+			b.`sales_type` as salesType,
+			b.`discount_time_end` as discountTimeEnd,
+			b.`create_time` as createTime,
+			SUM(c.`price_store`) as priceStore,
+			 SUM(c.`quantity`) as quantity,
+			  SUM(c.`sales_price`) as salesPrice
+		FROM
+			  `daiken_shop` a,
+			  `daiken_goods_new` b,
+			 `daiken_order_goods` c
+			  WHERE a.`id`= b.`shop_id`
+			  AND b.`id`= c.`goods_id`
+			  AND b.`sales_type` != '1101'
+			 AND a.`data_deleted`= FALSE
+			 AND b.`data_deleted`= FALSE
+			 AND c.`data_deleted`= FALSE
+			 
+			 <if test="shopId!=null and shopId!=''">
+			AND a.`id` = #{shopId,jdbcType=INTEGER}
+			</if>
+			<if test="shopName!=null and shopName!=''">
+			  AND a.`shop_name`=#{shopName,jdbcType=VARCHAR}
+			  </if>
+			<if test="goodsTitles!=null and goodsTitles!=''">
+				AND b.`title` = #{goodsTitles,jdbcType=VARCHAR}
+			</if>
+		
+			  <if test="salesType!=null and salesType!=''">
+			  AND b.`sales_type`=#{salesType,jdbcType=INTEGER}
+			  </if>
+			  
+			  <if test="dateStart!=null and dateStart!=''">
+			  	AND b.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			  </if>
+			  <if test="dateEnd!=null and dateEnd!=''">
+			  AND b.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			  </if>
+			  
+			  GROUP BY a.`shop_name`,b.`id`,b.`sales_type`,b.`discount_time_begin`,b.`discount_time_end`,b.`create_time`
+			  ORDER BY b.`create_time`
+			 LIMIT #{pageNo,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectGoodInSaleNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+			DATE_FORMAT(c.`create_time`,'%Y-%m-%d') AS name,
+			SUM(c.`quantity`) AS y
+		FROM
+			`daiken_shop` a,
+  			`daiken_goods_new` b,
+  			`daiken_order_goods` c 
+
+		WHERE a.`data_deleted` = FALSE
+			AND b.`data_deleted`= FALSE
+			AND c.`data_deleted`= FALSE
+			AND a.`id`= b.`shop_id`
+			AND b.`id` = c.`goods_id`
+		<if test="shopId!=null and shopId!=''">
+			AND a.`id` = #{shopId,jdbcType=INTEGER}
+		</if>
+		
+		<if test="goodsId!=null and goodsId!=''">
+			AND b.`id` = #{goodsId,jdbcType=INTEGER}
+		</if>
+		
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="purchasing!=null">
+			AND b.purchasing = #{purchasing,jdbcType=BIT}
+		</if>
+		
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(c.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	
+	
+	<select id="selectGoodInSalePrice" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+			DATE_FORMAT(c.`create_time`,'%Y-%m-%d') AS name,
+			SUM(c.`sales_price`) AS y
+		FROM
+			`daiken_shop` a,
+  			`daiken_goods_new` b,
+  			`daiken_order_goods` c 
+
+		WHERE a.`data_deleted` = FALSE
+			AND b.`data_deleted`= FALSE
+			AND c.`data_deleted`= FALSE
+			AND a.`id`= b.`shop_id`
+			AND b.`id` = c.`goods_id`
+		<if test="shopId!=null and shopId!=''">
+			AND a.`id` = #{shopId,jdbcType=INTEGER}
+		</if>
+		<if test="goodsId!=null and goodsId!=''">
+			AND b.`id` = #{goodsId,jdbcType=INTEGER}
+		</if>
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		<if test="purchasing!=null">
+			AND b.purchasing = #{purchasing,jdbcType=BIT}
+		</if>
+		
+		GROUP BY DATE_FORMAT(c.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+
+	</select>
+	
+	
+	<select id="selectGoodsSaleTotalData" resultType="com.kemean.vo.bo.admin.goods.AdminGoodsSaleTotalBO">
+		SELECT 
+		  DATE_FORMAT(a.`create_time`, '%Y-%m-%d') AS totalDate,
+		  SUM(b.`sales_price`) AS salesPrice,
+		  SUM(b.`price_purchasing`) AS pricePurchasing,
+		  SUM(a.`price_total` - b.`compensate_money`) AS pricePay,
+		  SUM(b.`red_after`) AS redAfter,
+		  SUM(b.`red_before`) AS redBefore,
+		  SUM(b.`compensate_money`) AS compensateMoney
+		FROM
+		    `daiken_order` a ,
+		   `daiken_order_goods` b
+		  
+		WHERE a.`data_deleted` = FALSE 
+		AND b.`data_deleted`=FALSE
+		AND a.`order_no`= b.`order_no`
+		AND a.`id_shop` = #{shopId,jdbcType=INTEGER}
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		AND a.`status_shop` NOT IN('1101','1102')
+		GROUP BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d') 
+		ORDER BY DATE_FORMAT(a.`create_time`, '%Y-%m-%d') DESC 
+		LIMIT #{pageNo,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+	</select>
+	
+</mapper>

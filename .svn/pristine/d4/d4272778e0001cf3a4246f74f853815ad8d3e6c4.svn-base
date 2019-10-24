@@ -1,0 +1,84 @@
+package com.kemean.constant;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DaikenMapData {
+
+	public static Map<Integer, String> salesType = new HashMap<>(5);
+	public static Map<Integer, String> userType = new HashMap<>(3);
+	public static Map<Integer, String> investType = new HashMap<>(4);
+	public static Map<Integer, String> investQuestionType = new HashMap<>(4);
+	public static Map<Integer, String> salesLevel = new HashMap<>(5);
+	public static Map<Integer, String> messageType = new HashMap<>(3);
+	public static Map<Integer, String> financeType = new HashMap<>(3);
+	public static Map<Integer, String> financeClearType = new HashMap<>(3);
+	public static Map<Integer, String> complaintType = new HashMap<>(4);
+	public static Map<Integer, String> complaintStatus = new HashMap<>(3);
+
+	static {
+		
+		// 商品售卖类型
+		salesType.put(DaikenGoodsType.SalesType.DISCOUNT_FAMOUS_BRAND.getType(), "名牌折扣");
+		salesType.put(DaikenGoodsType.SalesType.DISCOUNT_LIMITED_TIME.getType(), "限时折扣");
+		salesType.put(DaikenGoodsType.SalesType.LOSS_MONEY.getType(), "亏本走量");
+		salesType.put(DaikenGoodsType.SalesType.NINE_EXEMPTION_POSTAGE.getType(), "9.9包邮");
+		salesType.put(DaikenGoodsType.SalesType.NORMAL_SALES.getType(), "正常售卖");
+
+		// 用户类型
+		userType.put(DaikenUserEnum.DaikenUserTypeEnum.CONSUMER.getType(), "消费者");
+		userType.put(DaikenUserEnum.DaikenUserTypeEnum.BUSINESS.getType(), "商家");
+		userType.put(DaikenUserEnum.DaikenUserTypeEnum.BUSINESS_SON.getType(), "商家子账号");
+
+		// 消息类型
+		messageType.put(DaikenMessageTypeEnum.SYSTEM.getType(), "系统消息");
+		messageType.put(DaikenMessageTypeEnum.SHOP.getType(), "商户消息");
+		messageType.put(DaikenMessageTypeEnum.CONSUMER.getType(), "消费者");
+
+		// 投诉类型
+		complaintType.put(DaikenComplaint.ComplaintType.INVEST.getType(), "调研客户");
+		complaintType.put(DaikenComplaint.ComplaintType.SHOP.getType(), "店铺");
+		complaintType.put(DaikenComplaint.ComplaintType.SALE.getType(), "销售");
+		complaintType.put(DaikenComplaint.ComplaintType.ADMIN.getType(), "平台运营");
+
+		// 投诉状态
+		complaintStatus.put(DaikenComplaint.ComplaintStatus.WAIT_DEAL.getStatus(), "待处理");
+		complaintStatus.put(DaikenComplaint.ComplaintStatus.DEAL_IN.getStatus(), "已处理");
+		complaintStatus.put(DaikenComplaint.ComplaintStatus.FINISH.getStatus(), "已完结");
+
+		// 财务结算、落地
+		financeClearType.put(DaikenFinanceTypeClearEnum.CASH_SHOP.getType(), "商户提现");
+		financeClearType.put(DaikenFinanceTypeClearEnum.RECHARGE.getType(), "商户充值");
+
+		// 财务类型
+		financeType.put(DaikenFinanceTypeEnum.HELLP_SELL_GOODS.getType(), "帮买收入");
+		financeType.put(DaikenFinanceTypeEnum.INVESTIGATE_LIKE.getType(), "调研点赞收入");
+		financeType.put(DaikenFinanceTypeEnum.SELL_GOODS.getType(), "二手卖货收入");
+		financeType.put(DaikenFinanceTypeEnum.INVESTIGATE_QUESTION.getType(), "调研问卷收入");
+		financeType.put(DaikenFinanceTypeEnum.INVESTIGATE_VOTE.getType(), "调研投票收入");
+		financeType.put(DaikenFinanceTypeEnum.LATER_RED_INCOME.getType(), "售后红包收入");
+		financeType.put(DaikenFinanceTypeEnum.LINE_PAY.getType(), "在线支付");
+
+		// 销售人员等级
+		salesLevel.put(DaikenSalesUserLevelEnum.SALE_COMPANY.getLevel(), "销售公司");
+		salesLevel.put(DaikenSalesUserLevelEnum.SALE_DIRECTOR.getLevel(), "销售总监");
+		salesLevel.put(DaikenSalesUserLevelEnum.SALE_MANAGER.getLevel(), "销售经理");
+		salesLevel.put(DaikenSalesUserLevelEnum.SALE_SUPERVISOR.getLevel(), "销售主管");
+		salesLevel.put(DaikenSalesUserLevelEnum.SELLER.getLevel(), "销售员");
+
+		// 调研类型
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.ALL_INVESTIGATE.getType(), "全部");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.POST_LIKE.getType(), "点赞");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.POST_VOTE.getType(), "投票");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(), "问卷调查");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.NEW_GOODS_LIKE.getType(), "一手商品(点赞)");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.OLD_GOODS_LIKE.getType(), "二手商品(点赞)");
+		investType.put(DaikenInvestigate.DaikenInvestigateTypeEnum.QUESTIONNAIRE.getType(), "问卷调查");
+
+		// 调查问卷问题类型
+		investQuestionType.put(DaikenInvestigate.DaikenInvestigateQuestionTypeEnum.ONE_SELECT.getType(), "单选");
+		investQuestionType.put(DaikenInvestigate.DaikenInvestigateQuestionTypeEnum.MANY_SELECT.getType(), "多选");
+		investQuestionType.put(DaikenInvestigate.DaikenInvestigateQuestionTypeEnum.SIMPLE.getType(), "简答题");
+
+	}
+}

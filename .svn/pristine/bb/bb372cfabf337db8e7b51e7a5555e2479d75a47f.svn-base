@@ -1,0 +1,365 @@
+package com.kemean.controller.consumer;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.api.KemeanUserAddressService;
+import com.kemean.service.common.CommonService;
+import com.kemean.service.consumer.CMineService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.api.UserAddressBO;
+import com.kemean.vo.bo.c.collect.CollectListBO;
+import com.kemean.vo.bo.c.investigate.InvestigateListBO;
+import com.kemean.vo.bo.c.mall.OldGoodsListBO;
+import com.kemean.vo.bo.c.mine.finance.WalletBO;
+import com.kemean.vo.bo.c.mine.helpsell.HelpsellGoodsListBO;
+import com.kemean.vo.bo.c.mine.helpsell.ShopInfoBO;
+import com.kemean.vo.bo.c.mine.old.GoodsInfoBO;
+import com.kemean.vo.bo.com.MessageBO;
+import com.kemean.vo.po.KemeanPageApiPO;
+import com.kemean.vo.po.api.UserAddressEditPO;
+import com.kemean.vo.po.c.collect.AddCollectPO;
+import com.kemean.vo.po.c.collect.CollectListPO;
+import com.kemean.vo.po.c.investigate.UpdateStatusInvestigatePO;
+import com.kemean.vo.po.c.mine.UpdateUserInfoPO;
+import com.kemean.vo.po.c.mine.UpdateUserPhonePO;
+import com.kemean.vo.po.c.mine.finance.WalletPO;
+import com.kemean.vo.po.c.mine.helpsell.AddSellGoodsPO;
+import com.kemean.vo.po.c.mine.helpsell.HelpsellGoodsListPO;
+import com.kemean.vo.po.c.mine.helpsell.UpdateShopInfoPO;
+import com.kemean.vo.po.c.mine.old.IssueSecondGoodsPO;
+import com.kemean.vo.po.c.mine.old.UpdateStatusSecondhandPO;
+import com.kemean.vo.po.com.FeedBackPO;
+import com.kemean.vo.po.com.MessageListPO;
+import com.kemean.vo.po.com.MessageOperatePO;
+import com.kemean.vo.po.com.OrderSettleAccountsPO;
+
+/**
+ * 【客户端】 我的控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/c/mine")
+public class CMineController extends DaikenBaseController {
+
+	@Autowired
+	private CMineService cmineService;
+
+	@Autowired
+	private CommonService commonService;
+
+	@Autowired
+	private KemeanUserAddressService kemeanUserAddressService;
+
+	/**
+	 * 反馈意见
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	@RequestMapping(value = "feedback", method = RequestMethod.POST)
+	public KemeanResult<String> feedBack(@Valid @RequestBody FeedBackPO feedBackPO) {
+		return cmineService.feedBack(feedBackPO, getLoginConsumer());
+	}
+
+	/**
+	 * 修改手机号
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	@RequestMapping(value = "update_user_phone", method = RequestMethod.POST)
+	public KemeanResult<String> updateUserPhone(@Valid @RequestBody UpdateUserPhonePO updateUserPhonePO) {
+		return cmineService.updateUserPhone(updateUserPhonePO, getLoginConsumer());
+	}
+
+	/**
+	 * 修改个人信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月13日
+	 */
+	@RequestMapping(value = "update_user_info", method = RequestMethod.POST)
+	public KemeanResult<String> updateUserInfo(@Valid @RequestBody UpdateUserInfoPO updateUserInfoPO) {
+		return cmineService.updateUserInfo(updateUserInfoPO, getLoginConsumer());
+	}
+
+	// --------------------------消息(message)--------------------------------
+	// 消息列表(message_list)
+	// 消息删除(del_message)
+
+	// --------------------------我的帮卖(helpsell)--------------------------------
+	/**
+	 * 我的帮卖商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "helpsell/goods_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<HelpsellGoodsListBO>>> helpsellGoodsList(
+			@Valid @RequestBody HelpsellGoodsListPO helpsellGoodsListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<HelpsellGoodsListBO>>>(
+				cmineService.helpsellGoodsList(getLoginConsumer(), helpsellGoodsListPO));
+	}
+
+	/**
+	 * 帮买店铺信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "helpsell/shop_info", method = RequestMethod.GET)
+	public KemeanResult<ShopInfoBO> shopInfo() {
+		return new KemeanResult<ShopInfoBO>(cmineService.shopInfo(getLoginConsumer()));
+	}
+
+	/**
+	 * 添加（删除）帮卖商品
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12
+	 */
+	@RequestMapping(value = "helpsell/operation_sell_goods", method = RequestMethod.POST)
+	public KemeanResult<String> operationSellGoods(@Valid @RequestBody AddSellGoodsPO addSellGoodsPO) {
+		return cmineService.operationSellGoods(addSellGoodsPO, getLoginConsumer());
+	}
+
+	/**
+	 * 修改帮买店铺信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "helpsell/update_shop_info", method = RequestMethod.POST)
+	public KemeanResult<String> updateShopInfo(@Valid @RequestBody UpdateShopInfoPO updateShopInfoPO) {
+		return cmineService.updateShopInfo(updateShopInfoPO, getLoginConsumer());
+	}
+
+	// --------------------------我的调研(investigate)--------------------------------
+
+	/**
+	 * 上下架、删除
+	 * 
+	 * @author huwei
+	 * @date 2018年6月11日
+	 */
+	@RequestMapping(value = "investigate/update_status_investigate", method = RequestMethod.POST)
+	public KemeanResult<String> updateStatusInvestigate(
+			@Valid @RequestBody UpdateStatusInvestigatePO updateStatusInvestigatePO) {
+		return cmineService.updateStatusInvestigate(updateStatusInvestigatePO);
+	}
+
+	/**
+	 * 我的调研列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月11日
+	 */
+	@RequestMapping(value = "investigate/investigate_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<InvestigateListBO>>> investigateList(
+			@Valid @RequestBody KemeanPageApiPO kemeanPageApiPO) {
+		return new KemeanResult<KemeanPageApiBO<List<InvestigateListBO>>>(
+				cmineService.investigateList(kemeanPageApiPO, getLoginConsumer()));
+	}
+
+	// --------------------------我的收藏(collect)--------------------------------
+	/**
+	 * 添加（删除）收藏
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "collect/operation_collect", method = RequestMethod.POST)
+	public KemeanResult<String> addCollect(@Valid @RequestBody AddCollectPO addCollectPO) {
+		return cmineService.addCollect(addCollectPO, getLoginConsumer());
+	}
+
+	/**
+	 * 收藏列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "collect/collect_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<CollectListBO>>> collectList(
+			@Valid @RequestBody CollectListPO collectListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<CollectListBO>>>(
+				cmineService.collectList(collectListPO, getLoginConsumer()));
+	}
+
+	// --------------------------我的二手(old)--------------------------------
+	/**
+	 * 发布（修改）二手商品
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "old/issue_second_goods", method = RequestMethod.POST)
+	public KemeanResult<String> issueSecondGoods(@Valid @RequestBody IssueSecondGoodsPO issueSecondGoodsPO) {
+		return cmineService.issueSecondGoods(issueSecondGoodsPO, getLoginConsumer());
+	}
+
+	/**
+	 * 上下架、删除
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "old/update_status_secondhand", method = RequestMethod.POST)
+	public KemeanResult<String> updateStatusSecondhand(
+			@Valid @RequestBody UpdateStatusSecondhandPO updateStatusSecondhandPO) {
+		return cmineService.updateStatusSecondhand(updateStatusSecondhandPO);
+	}
+
+	/**
+	 * 我的二手商品列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "old/old_goods_list", method = RequestMethod.GET)
+	public KemeanResult<KemeanPageApiBO<List<OldGoodsListBO>>> oldGoodsList() {
+		return new KemeanResult<KemeanPageApiBO<List<OldGoodsListBO>>>(cmineService.oldGoodsList(getLoginConsumer()));
+	}
+
+	/**
+	 * 二手商品信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	@RequestMapping(value = "old/goods_info", method = RequestMethod.GET)
+	public KemeanResult<GoodsInfoBO> goodsInfo(@RequestParam Integer objId) {
+		return new KemeanResult<GoodsInfoBO>(cmineService.goodsInfo(objId));
+	}
+
+	// --------------------------收货地址(address)--------------------------------
+	/**
+	 * 获取收货地址
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "address/address_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<UserAddressBO>>> addressList(
+			@Valid @RequestBody KemeanPageApiPO kemeanPageApiPO) {
+		return new KemeanResult<KemeanPageApiBO<List<UserAddressBO>>>(
+				kemeanUserAddressService.list(kemeanPageApiPO, getLoginConsumer().getId()));
+	}
+
+	/**
+	 * 添加/修改 收货地址
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "address/edit_address", method = RequestMethod.POST)
+	public KemeanResult<String> editAddress(@Valid @RequestBody UserAddressEditPO userAddressEditPO) {
+		return kemeanUserAddressService.edit(userAddressEditPO, getLoginConsumer().getId());
+	}
+
+	/**
+	 * 收货地址详情
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "address/address_info", method = RequestMethod.GET)
+	public KemeanResult<UserAddressBO> addressInfo(@RequestParam Integer objId) {
+		return kemeanUserAddressService.info(objId, getLoginConsumer().getId());
+	}
+
+	/**
+	 * 设置默认地址
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "address/set_default_address", method = RequestMethod.GET)
+	public KemeanResult<String> setDefaultAddress(@RequestParam Integer objId) {
+		return kemeanUserAddressService.setDefault(objId, getLoginConsumer().getId());
+	}
+
+	/**
+	 * 删除地址
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "address/del_address", method = RequestMethod.GET)
+	public KemeanResult<String> delAddress(@RequestParam Integer objId) {
+		return kemeanUserAddressService.del(objId, getLoginConsumer().getId());
+	}
+
+	/**
+	 * 获取默认地址
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	@RequestMapping(value = "address/default_address", method = RequestMethod.GET)
+	public KemeanResult<UserAddressBO> defaultAddress() {
+		return cmineService.defaultAddress(getLoginConsumer().getId());
+	}
+
+	// --------------------------钱包，财务(finance)--------------------------------
+	/**
+	 * 钱包信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月11日
+	 */
+	@RequestMapping(value = "finance/wallet", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<WalletBO>>> wallet(@Valid @RequestBody WalletPO walletPO) {
+		return new KemeanResult<KemeanPageApiBO<List<WalletBO>>>(cmineService.wallet(walletPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 客户端 -- 提现
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "order_settle_accounts", method = RequestMethod.POST)
+	public KemeanResult<String> orderSettleAccounts(@Valid @RequestBody OrderSettleAccountsPO orderSettleAccountsPO) {
+		return commonService.orderSettleAccounts(orderSettleAccountsPO, getLoginBusiness());
+	}
+
+	// --------------------------消息--------------------------------
+	/**
+	 * 消息
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	@RequestMapping(value = "message_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<MessageBO>>> messageList(@Valid @RequestBody MessageListPO messageListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<MessageBO>>>(
+				commonService.messageList(messageListPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 消息-删除、已读
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	@RequestMapping(value = "message_del_read", method = RequestMethod.POST)
+	public KemeanResult<String> messageDelRead(@Valid @RequestBody MessageOperatePO messageOperatePO) {
+		return commonService.messageDelRead(messageOperatePO, getLoginConsumer());
+	}
+
+}

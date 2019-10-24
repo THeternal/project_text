@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<style>
+.layui-form-radio {
+	width: 10px;
+}
+</style>
+<body class="layui-fluid">
+	<div
+		id="recharge_div"
+		class="layui-form"
+		style="padding: 40px; margin: 0 auto; width: 500px; margin-top: 20px; margin-bottom: 40px; background-color: #fff;">
+		<div class="layui-form-item">
+			<label class="layui-form-label">充值金额</label>
+			<div class="layui-input-block">
+				<input
+					type="text"
+					placeholder="请输入充值金额，可包含两位小数"
+					style="width: 300px;"
+					class="layui-input param_compensate_money" />
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">支付方式</label>
+			<div class="layui-input-block">
+				<span> <input
+					type="radio"
+					name="pay_type"
+					value="1101"
+					checked="checked" /> <img src="http://p68iq7sn2.bkt.clouddn.com/upload/201808/20/218773be37a140b58dac0d4063474a18" />
+				</span> <span style="margin-left: 80px;"> <input
+					type="radio"
+					name="pay_type"
+					value="1102" /> <img src="http://p68iq7sn2.bkt.clouddn.com/upload/201808/20/446ae49fc86745b395bc38c0aa9ddc57" />
+				</span>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<input
+					type="checkbox"
+					lay-skin="primary"
+					checked=""
+					style="vertical-align: middle;" /> <span style="vertical-align: bottom;">已阅<a
+					href="javascript:void(0);"
+					onclick="showItem()"
+					style="vertical-align: bottom;">《充值条款》</a></span>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"></label>
+			<div class="layui-input-block">
+				<button
+					onclick="openPayPage()"
+					style="width: 300px;"
+					class="layui-btn layui-btn-lg">确认充值</button>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_wx_pay = /*[[@{/shop/common/my_recharge_wx_pay}]]*/;
+	var url_ali_pay = /*[[@{/shop/common/ali_pay_page}]]*/;
+	var url_pay_item = /*[[@{/shop/common/pay_item}]]*/;
+	
+	layui.use([ 'table', 'laydate' ], function() {
+		var table = layui.table;
+	});
+
+	// 条款显示页面    
+	function showItem() {
+		$.ajax({
+			url: url_pay_item,
+			type: 'GET',
+			success: function(res){
+				if (res.success) {
+					var index = layer.open({
+						type : 1,
+						title : "充值条款",
+						content : '<div style="padding:10px;">' + res.data.contentHtml + '</div>',
+						skin : "layui-layer-molv",
+						area : [ '800px', '600px' ],
+						btn : [ '关闭' ],
+						offset : "100px",
+						closeBtn : 1,
+						anim : 0
+					});
+				} else {
+					layer.msg(res.info);
+				}
+			}
+		});
+	}
+	
+	// 确认充值
+	function openPayPage() {
+		var paramCompensateMoney = $(".param_compensate_money").val();
+		// 验证金额
+		var moneyPattern = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
+		if (!paramCompensateMoney) {
+			layer.msg("请输入充值金额");
+			return false;
+		}
+		if (!moneyPattern.test(paramCompensateMoney)) {
+			layer.msg("请输入合法的金额");
+			return false;
+		}
+		if (paramCompensateMoney == '0.00' || paramCompensateMoney == '0.0') {
+			layer.msg("请输入合法的金额");
+			return false;
+		}
+		// 判断用户是否同意条款
+		var isChecked = $("input[type='checkbox']").is(':checked');
+		if (!isChecked) {
+			layer.msg("需要先勾选同意充值条款，才能进行后续确认充值");
+			return false;
+		}
+		var payType = $("input[type='radio']:checked").val();
+		
+		// 判断支付方式，1101：支付宝；1102：微信
+		// 支付宝
+		if (payType == '1101') {
+			// 打开新的浏览器标签页，进行支付宝支付操作
+			window.open(url_ali_pay + "?payPrice=" + paramCompensateMoney);
+			// 支付完成或取消后回调
+			var index = layer.confirm('您是否支付完成？', {
+				  btn: ['确认支付','取消支付'] //按钮
+			}, function(){
+				// 关闭本标签页，回到审核信息页并刷新
+				layer.close(index);
+				window.parent.cutoverPageFun();
+			}, function(){
+				// 关闭
+			});
+			return true;
+		}
+		
+		// 微信
+		// 展示二维码的html
+		var payTitle = "微信扫码支付";
+		var showQrCodeHtml = '<div style="padding-top:35px;text-align:center;"><img src="'+ url_wx_pay + '?payPrice=' + paramCompensateMoney + '"></img></div>';
+		// 弹出支付二维码
+		var index = layer.open({
+			type : 1,
+			title : payTitle,
+			content : showQrCodeHtml,
+			skin : "layui-layer-molv",
+			area : [ '500px', '500px' ],
+			btn : [ '确认支付', '取消支付' ],
+			offset : "100px",
+			closeBtn : 1,
+			anim : 0,
+			btn1 : function() {
+				// 先关闭支付二维码弹出框
+				// 再关闭充值页面
+				layer.close(index);
+				// 跳到审核信息标签页并刷新页面数据
+				window.parent.cutoverPageFun();
+			},
+			btn2 : function() {
+			},
+			cancel : function(){
+			}
+		});
+	}
+</script>
+
+</html>

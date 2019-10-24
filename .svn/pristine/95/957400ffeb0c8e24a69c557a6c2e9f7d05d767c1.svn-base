@@ -1,0 +1,31 @@
+package com.kemean.vo.po.c.investigate;
+
+import java.util.List;
+
+/**
+ * @author Administrator
+ *
+ */
+public class QuestionInvestigateInfoPO {
+
+	private Integer investigateInId;
+
+	private List<QuestionInfoPO> questionInfoPO;
+
+	public Integer getInvestigateInId() {
+		return investigateInId;
+	}
+
+	public void setInvestigateInId(Integer investigateInId) {
+		this.investigateInId = investigateInId;
+	}
+
+	public List<QuestionInfoPO> getQuestionInfoPO() {
+		return questionInfoPO;
+	}
+
+	public void setQuestionInfoPO(List<QuestionInfoPO> questionInfoPO) {
+		this.questionInfoPO = questionInfoPO;
+	}
+
+}

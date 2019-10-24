@@ -1,0 +1,58 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenGoodsOldDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenGoodsOldMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class DaikenGoodsOldDaoImpl extends DaoSupport<DaikenGoodsOld> implements DaikenGoodsOldDao {
+
+	@Autowired
+	private DaikenGoodsOldMapper mapper;
+
+	@Override
+	protected Mapper<DaikenGoodsOld> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<DaikenGoodsOld> oldGoodsList(List<Integer> categoryIds, String descStr, Double maxPriceSales,
+			Double minPriceSales, Boolean isPurchasing, String keyWord) {
+		Example example = new Example(DaikenGoodsOld.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andGreaterThanOrEqualTo("priceSales", minPriceSales);
+		criteria.andLessThanOrEqualTo("priceSales", maxPriceSales);
+		criteria.andEqualTo("goodsStatus", true);
+		criteria.andEqualTo("isBuy", false);
+		criteria.andIn("categoryId", categoryIds);
+		if (isPurchasing) {
+			criteria.andEqualTo("purchasing", true);
+		}
+
+		if (StringUtils.isNotBlank(keyWord)) {
+			criteria.andLike("title", keyWord);
+			criteria.andLike("priceSales", keyWord);
+		}
+
+		if (StringUtils.isNotBlank(descStr)) {
+			example.setOrderByClause(descStr + " DESC");
+		}
+		// PageHelper.startPage(pageNo, pageSize);
+
+		return mapper.selectByExample(example);
+	}
+
+}

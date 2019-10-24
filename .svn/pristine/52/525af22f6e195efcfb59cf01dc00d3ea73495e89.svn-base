@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/admin/config/config_data}]]*/;
+	
+	var url_config_reset_record = /*[[@{/admin/config/reset_record}]]*/;
+
+	layui.use([ 'table', 'laydate' ], function() {
+		var table = layui.table;
+		var laydate = layui.laydate;
+		var form = layui.form;
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [ {
+				field : 'objId',
+				title : '常量配置序号'
+			}, {
+				field : 'record',
+				title : '金额'
+			},{
+				field : 'remark',
+				title : '备注'
+			}, {
+				field : 'createTimeStr',
+				title : '创建日期'
+			},{
+				toolbar : "#operate"
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function resetRecordDiv(record){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">金额:</label>'
+				 +'<div class="layui-input-block"><input type="charge" class="layui-input charge" value="'+record+'" /></div></div>';
+	}
+	
+	
+	function resetRecord(objId,record){
+		var table = layui.table;
+		layer.open({
+			title : "修改金额",
+			content :resetRecordDiv(record),
+			skin : "layui-layer-molv",
+			area : [ '500px', '200px' ],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function() {
+				var charge=$(".charge").val();
+				if(!charge){
+					layer.msg("请输入金额");
+					return false;
+				}
+				$.get(url_config_reset_record, {objId:objId,charge:charge}, function(data, textStatus, req) {
+					layer.msg(data.info);
+					table.reload("dataTable");
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+		
+		
+		
+	}
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+		<button class="layui-btn layui-btn-sm" onclick="resetRecord({{d.objId}},{{d.record}})"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;修改金额</button> 
+</script>
+</html>

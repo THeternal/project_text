@@ -1,0 +1,5 @@
+package com.kemean.vo.bo.admin.platform;
+
+public class AdminPlatformSalesBO {
+	
+}

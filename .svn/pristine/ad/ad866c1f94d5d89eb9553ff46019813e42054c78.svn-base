@@ -1,0 +1,20 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenRedShareGet;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenRedShareGetDao extends Idao<DaikenRedShareGet> {
+
+	/**
+	 * 商品红包领取金额(适用于单个店铺和总店铺)
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectRedShareGetRecord(String goodsTitle, Integer shopId, String dateStart, String dateEnd,
+			Integer limit);
+
+}

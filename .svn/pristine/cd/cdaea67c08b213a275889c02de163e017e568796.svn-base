@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md6 layui-col-sm6">
+			<blockquote
+				class="layui-elem-quote"
+				th:text="'【当前调研】：'+${investData.name}"></blockquote>
+		</div>
+
+	</div>
+	<div class="layui-row layui-col-md-offset9">
+		<button
+			class="layui-btn layui-btn-primary"
+			onclick="history.back();">
+			<i
+				class="fa fa-arrow-left"
+				aria-hidden="true"></i>&nbsp;返回
+		</button>
+	</div>
+
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/shop/invest/join_user_data(investId=${investData.id})}]]*/;
+	var url_user_record_page = /*[[@{/shop/common/push_user_record_page}]]*/;
+	var investId=/*[[${investData.id}]]*/;
+	var form;
+	var table;
+	layui.use([ 'table', 'laydate' ], function() {
+		 table = layui.table;
+		var laydate = layui.laydate;
+		 form = layui.form;
+		
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [  {
+				field : 'uid',
+				title : '用户代研号'
+			},{
+				field : 'nickName',
+				title : '用户昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'sexMan',
+				title : '性别',
+			},{
+				field : 'investTypeStr',
+				title : '调研类型',
+			},{
+				field : 'createTime',
+				title : '参与时间'
+			},{
+				toolbar : "#operate",
+				title : '操作',
+				width: 280
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	
+	function behaviorRecord(objId){
+		layer.open({
+			type:2,
+			title : "查看用户活动轨迹",
+			content :url_user_record_page+'?userId='+objId,
+			skin : "layui-layer-molv",
+			area : [ '950px', '434px' ],
+			 btn: ['关闭'],
+			offset: '100px',
+		})	
+	}
+	
+	function search(){
+		var table = layui.table;
+		var param_userId=$(".param_userId").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					userId:param_userId
+				}
+			});
+	}
+	
+	
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+    	<a class="layui-btn layui-btn-sm"
+		   th:href="@{/shop/invest/question_join_user_answer_page?questionStr={{investId}},{{d.objId}}}"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;答案</a>
+		<button class="layui-btn layui-btn-sm" onclick="behaviorRecord({{d.objId}})"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;用户活动轨迹</button> 
+</script>
+</html>

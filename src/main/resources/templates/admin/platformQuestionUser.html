@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm4 layui-col-md-offset5">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">结果：</label>
+				<div class="layui-input-inline">
+					<select class="param_result">
+						<option value="">全部</option>
+						<option value="1">已完成</option>
+						<option value="0">未完成</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/admin/platform/question_user_data}]]*/;
+	
+	layui.use([ 'table', 'laydate' ], function() {
+		var table = layui.table;
+		var laydate = layui.laydate;
+		var  form = layui.form;
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [ {
+				field : 'investigateId',
+				title : '问卷编号'
+			},{
+				field : 'nickName',
+				title : '昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'isFinishedStr',
+				title : '结果',
+			},{
+				field : 'createTime',
+				title : '创建时间',
+			},{
+				toolbar : "#operate",
+				title : '操作'
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function search(){
+		var table = layui.table;
+		var param_result=$(".param_result").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					result:param_result
+				}
+			});
+	}
+	
+	
+	
+
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+
+<a class="layui-btn layui-btn-sm"
+	th:href="@{/admin/user/user_info_page?objId={{d.userId}}}"><i
+	class="fa fa-info"
+	aria-hidden="true"></i>&nbsp;用户详情</a>
+</script>
+</html>

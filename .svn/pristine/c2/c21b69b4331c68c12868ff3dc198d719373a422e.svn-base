@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">代研号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_uid" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md3 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">手机号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_phone" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">人员等级：</label>
+				<div class="layui-input-inline">
+					<select class="param_userType">
+						<option value="">全部</option>
+						<option value="5">销售公司</option>
+						<option value="4">销售总监</option>
+						<option value="3">销售主管</option>
+						<option value="2">销售经理</option>
+						<option value="1">销售员</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+			<a
+				class="layui-btn param_add"
+				th:href="@{/sale/user/add_page}"><i
+				class="fa fa-plus"
+				aria-hidden="true"></i>&nbsp;添加 </a>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var pageData = /*[[${pageData}]]*/;
+	var url_page_data = /*[[@{/sale/user/page_data}]]*/;
+	var url_user_status_operate = /*[[@{/sale/user/status_operate}]]*/;
+	var url_user_reset_password = /*[[@{/sale/user/password_edit}]]*/;
+	var form;
+	var table;
+	layui.use([ 'table', 'laydate' ], function() {
+		 table = layui.table;
+		var laydate = layui.laydate;
+		 form = layui.form;
+		
+		 //监听【用户状态】操作
+		 form.on('switch(user_status)', function(obj){
+		   var status=obj.elem.checked;
+				 $.get(url_user_status_operate,{objId:this.value,status:status},function(result){
+				 		layer.msg(result.info); 
+				 	});
+		 });
+
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [  {
+				field : 'uid',
+				title : '代研号'
+			},{
+				field : 'nickName',
+				title : '昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'levelStr',
+				title : '等级',
+			},{
+				title : '用户状态',
+				templet : '#switch_user_status',
+			},{
+				field : 'createTime',
+				title : '创建时间'
+			},{
+				toolbar : "#operate",
+				title : '操作'
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function search(){
+		var table = layui.table;
+		var param_uid=$(".param_uid").val();
+		var param_phone=$(".param_phone").val();
+		var param_userType=$(".param_userType").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					uid:param_uid,
+					phone:param_phone,
+					level:param_userType
+				}
+			});
+	}
+	
+	
+	$(function(){
+		
+		if(pageData.level === 1){
+			$(".param_add").removeAttr("href").addClass("layui-disabled");
+		}
+	});
+	
+	function resetPasswordDiv(){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">登录密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password" placeholder="请输入新密码" /></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">确定密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password_sure" placeholder="请输入确认密码" /></div></div>';
+	}
+	
+	
+	function resetPassword(objId){
+		layer.open({
+			title : "修改密码",
+			content :resetPasswordDiv(),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function() {
+				var paramPassword=$(".param_password").val();
+				var paramPasswordSure=$(".param_password_sure").val();
+				if(!paramPassword){
+					layer.msg("请输入密码");
+					return false;
+				}
+				if(!paramPasswordSure){
+					layer.msg("请输入确认密码");
+					return false;
+				}
+				if(paramPasswordSure != paramPassword){
+					layer.msg("密码不一致");
+					return false;
+				}
+				$.get(url_user_reset_password, {objId:objId,password:md5(paramPassword)}, function(data, textStatus, req) {
+					layer.msg(data.info);
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+
+</script>
+
+<script
+	type="text/html"
+	id="switch_user_status">
+{{# if(d.userStatus == 1101){ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" checked="checked" ></input>
+{{# }else{ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" ></input>
+{{# } }}
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+	<button class="layui-btn layui-btn-sm" onclick="resetPassword({{d.objId}})"><i class="fa fa-edit" aria-hidden="true"></i>&nbsp;修改密码</button> 
+	<a class="layui-btn layui-btn-sm"
+	th:href="@{/sale/user/info_page?objId={{d.objId}}}"><i
+	class="fa fa-info"
+	aria-hidden="true"></i>&nbsp;用户详情</a>
+</script>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">商品编号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_goodsId" placeholder="请选输入商品编号"/>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">精准推送：</label>
+				<div class="layui-input-inline">
+					<select class="param_isPrecision">
+						<option
+							value=""
+							id="all">全部</option>
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+
+
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/shop/goods/push_user_data}]]*/;
+	var url_user_record_page = /*[[@{/shop/goods/push_user_record_page}]]*/;
+	var form;
+	var table;
+	layui.use([ 'table', 'laydate' ], function() {
+		 table = layui.table;
+		var laydate = layui.laydate;
+		 form = layui.form;
+		
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [  {
+				field : 'goodsId',
+				title : '商品编号'
+			},{
+				field : 'nickName',
+				title : '昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'sexMan',
+				title : '性别',
+			},{
+				field : 'isPrecision',
+				title : '是否精准推送',
+			},{
+				field : 'createTime',
+				title : '推送时间'
+			},{
+				toolbar : "#operate",
+				title : '操作'
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	
+	function behaviorRecord(objId){
+		layer.open({
+			type:2,
+			title : "查看用户活动轨迹",
+			content :url_user_record_page+'?userId='+objId,
+			skin : "layui-layer-molv",
+			area : [ '950px', '434px' ],
+			 btn: ['关闭'],
+			offset: '100px',
+		})	
+	}
+	
+	
+	function search() {
+        var table = layui.table;
+        var param_goodsId = $(".param_goodsId").val();
+        var param_isPrecision = $(".param_isPrecision").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	goodsId: param_goodsId,
+                	isPrecision:param_isPrecision
+                }
+            });
+    }
+    
+	
+
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+	<button class="layui-btn layui-btn-sm" onclick="behaviorRecord({{d.objId}})"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;用户活动轨迹</button> 
+</script>
+</html>

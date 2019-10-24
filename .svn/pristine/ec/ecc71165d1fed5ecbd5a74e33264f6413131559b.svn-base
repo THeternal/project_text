@@ -1,0 +1,254 @@
+package com.kemean.vo.bo.admin.shop;
+
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class AdminShopBO extends KemeanIdBO {
+
+	/**
+	 * 商铺图片
+	 */
+	private String shopLogo;
+
+	/**
+	 * 商铺名称
+	 */
+	private String shopName;
+
+	/**
+	 * 入驻类型(默认，待确定)
+	 */
+	private String settledTypeStr;
+
+	/**
+	 * 商铺联系电话
+	 */
+	private String shopPhone;
+
+	/**
+	 * 店铺介绍
+	 */
+	private String presentation;
+
+	/**
+	 * 营业状态
+	 */
+	private String workStatusStr;
+
+	/**
+	 * 营业状态
+	 */
+	private Boolean workStatus;
+
+	/**
+	 * 商铺状态
+	 */
+	private Boolean shopStatus;
+
+	/**
+	 * 平台推荐
+	 */
+	private Boolean platformRecommend;
+
+	/**
+	 * 销量
+	 */
+	private Integer salesVolume;
+
+	/**
+	 * 赞
+	 */
+	private Integer numPraise;
+
+	/**
+	 * 踩
+	 */
+	private Integer numTrample;
+
+	/**
+	 * 一般
+	 */
+	private Integer numCommon;
+
+	/**
+	 * 收藏
+	 */
+	private Integer numCollect;
+
+	/**
+	 * 好评度(百分比形式)
+	 */
+	private Float degreeOfPraise;
+
+	/**
+	 * 物流服务
+	 */
+	private Float logisticsService;
+
+	/**
+	 * 公司名称
+	 */
+	private String businessLicenseName;
+
+	/**
+	 * 所在地
+	 */
+	private String businessLicenseLocation;
+
+	/**
+	 * 审核状态
+	 */
+	private String auditStatusStr;
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public Boolean getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(Boolean workStatus) {
+		this.workStatus = workStatus;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getSettledTypeStr() {
+		return settledTypeStr;
+	}
+
+	public void setSettledTypeStr(String settledTypeStr) {
+		this.settledTypeStr = settledTypeStr;
+	}
+
+	public String getShopPhone() {
+		return shopPhone;
+	}
+
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
+	}
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+	public String getWorkStatusStr() {
+		return workStatusStr;
+	}
+
+	public void setWorkStatusStr(String workStatusStr) {
+		this.workStatusStr = workStatusStr;
+	}
+
+	public Boolean getShopStatus() {
+		return shopStatus;
+	}
+
+	public void setShopStatus(Boolean shopStatus) {
+		this.shopStatus = shopStatus;
+	}
+
+	public Boolean getPlatformRecommend() {
+		return platformRecommend;
+	}
+
+	public void setPlatformRecommend(Boolean platformRecommend) {
+		this.platformRecommend = platformRecommend;
+	}
+
+	public Integer getSalesVolume() {
+		return salesVolume;
+	}
+
+	public void setSalesVolume(Integer salesVolume) {
+		this.salesVolume = salesVolume;
+	}
+
+	public Integer getNumPraise() {
+		return numPraise;
+	}
+
+	public void setNumPraise(Integer numPraise) {
+		this.numPraise = numPraise;
+	}
+
+	public Integer getNumTrample() {
+		return numTrample;
+	}
+
+	public void setNumTrample(Integer numTrample) {
+		this.numTrample = numTrample;
+	}
+
+	public Integer getNumCommon() {
+		return numCommon;
+	}
+
+	public void setNumCommon(Integer numCommon) {
+		this.numCommon = numCommon;
+	}
+
+	public Integer getNumCollect() {
+		return numCollect;
+	}
+
+	public void setNumCollect(Integer numCollect) {
+		this.numCollect = numCollect;
+	}
+
+	public Float getDegreeOfPraise() {
+		return degreeOfPraise;
+	}
+
+	public void setDegreeOfPraise(Float degreeOfPraise) {
+		this.degreeOfPraise = degreeOfPraise;
+	}
+
+	public Float getLogisticsService() {
+		return logisticsService;
+	}
+
+	public void setLogisticsService(Float logisticsService) {
+		this.logisticsService = logisticsService;
+	}
+
+	public String getBusinessLicenseName() {
+		return businessLicenseName;
+	}
+
+	public void setBusinessLicenseName(String businessLicenseName) {
+		this.businessLicenseName = businessLicenseName;
+	}
+
+	public String getBusinessLicenseLocation() {
+		return businessLicenseLocation;
+	}
+
+	public void setBusinessLicenseLocation(String businessLicenseLocation) {
+		this.businessLicenseLocation = businessLicenseLocation;
+	}
+
+	public String getAuditStatusStr() {
+		return auditStatusStr;
+	}
+
+	public void setAuditStatusStr(String auditStatusStr) {
+		this.auditStatusStr = auditStatusStr;
+	}
+
+}

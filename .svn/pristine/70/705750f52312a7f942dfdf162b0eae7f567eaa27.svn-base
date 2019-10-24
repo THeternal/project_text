@@ -1,0 +1,61 @@
+package com.kemean.vo.po.admin.investigate;
+
+import java.util.List;
+
+public class AdminMatchConditionPO {
+
+	// 职业
+	private List<Integer> profession;
+
+	// 兴趣爱好
+	private List<Integer> interests;
+
+	// 性别
+	private List<Integer> sexMan;
+	// 年龄
+	private List<String> age;
+
+	// 地区
+	private List<Integer> cityId;
+
+	public List<Integer> getProfession() {
+		return profession;
+	}
+
+	public void setProfession(List<Integer> profession) {
+		this.profession = profession;
+	}
+
+	public List<Integer> getInterests() {
+		return interests;
+	}
+
+	public void setInterests(List<Integer> interests) {
+		this.interests = interests;
+	}
+
+	public List<Integer> getSexMan() {
+		return sexMan;
+	}
+
+	public void setSexMan(List<Integer> sexMan) {
+		this.sexMan = sexMan;
+	}
+
+	public List<String> getAge() {
+		return age;
+	}
+
+	public void setAge(List<String> age) {
+		this.age = age;
+	}
+
+	public List<Integer> getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(List<Integer> cityId) {
+		this.cityId = cityId;
+	}
+
+}

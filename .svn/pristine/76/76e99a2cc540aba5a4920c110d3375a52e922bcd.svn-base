@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenInvestigateOperationMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenInvestigateOperation">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="investigate_id" property="investigateId"
+			jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="operation" property="operation" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+
+	<select id="selectUserGetTokenNum" resultType="java.lang.Integer">
+		SELECT 
+			 SUM(number)
+			FROM
+			  (SELECT 
+			    COUNT(*) AS number
+			  FROM
+			    `daiken_investigate_operation` a 
+		         WHERE a.`type` NOT IN ('1301') 
+			    AND a.`data_deleted` = FALSE 
+			    <if test="dateStart!=null and dateStart!=''">
+			  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+			   </if>
+			    <if test="dateEnd!=null and dateEnd!=''">
+				  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+			   </if>
+			  UNION
+			  ALL 
+				  SELECT 
+				    COUNT(*) AS number
+				  FROM
+				    (SELECT 
+				      COUNT(*) 
+				    FROM
+				      `daiken_investigate_operation` a 
+				    WHERE a.`data_deleted` = FALSE 
+				      AND a.`type` IN ('1301') 
+				      <if test="dateStart!=null and dateStart!=''">
+					  AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+				   </if>
+				    <if test="dateEnd!=null and dateEnd!=''">
+					  AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+				   </if>
+				    GROUP BY a.`user_id`) b
+		) c 
+		
+		
+	</select>
+
+
+</mapper>

@@ -1,0 +1,154 @@
+package com.kemean.dao.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.KemeanFinanceClear;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanFinanceClearDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.KemeanFinanceClearMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class KemeanFinanceClearDaoImpl extends DaoSupport<KemeanFinanceClear> implements KemeanFinanceClearDao {
+	@Autowired
+	private KemeanFinanceClearMapper mapper;
+
+	@Override
+	protected Mapper<KemeanFinanceClear> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<KemeanFinanceClear> closeAccountList(Date plusDay, Integer shopId, Integer pageNo, Integer pageSize) {
+		Example example = new Example(KemeanFinanceClear.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("submitAimsId", shopId);
+		criteria.andGreaterThanOrEqualTo("createTime", plusDay);
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<KemeanFinanceClear> shopFinanceOrderList(String financeNo, Integer financeStatus, Integer type,
+			String dateStart, String dateEnd, List<Integer> shopId, Integer pageNo, Integer pageSize) {
+		Example example = new Example(KemeanFinanceClear.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		if (shopId != null) {
+			criteria.andIn("submitAimsId", shopId);
+
+		}
+		if (StringUtils.isNoneBlank(financeNo)) {
+			criteria.andEqualTo("financeNo", financeNo);
+		}
+
+		if (type != null) {
+			criteria.andEqualTo("financeType", type);
+		}
+		if (financeStatus != null) {
+			criteria.andEqualTo("financeStatus", financeStatus);
+		}
+
+		if (StringUtils.isNoneBlank(dateStart)) {
+			criteria.andGreaterThanOrEqualTo("createTime", dateStart);
+		}
+		if (StringUtils.isNoneBlank(dateEnd)) {
+			criteria.andLessThanOrEqualTo("createTime", dateEnd);
+		}
+
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public Double shopMoneyCount(List<Integer> financeType, Integer status, Integer submitAimsId) {
+
+		Example example = new Example(KemeanFinanceClear.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("financeType", financeType);
+		criteria.andEqualTo("submitAimsId", submitAimsId);
+		criteria.andEqualTo("financeStatus", status);
+		Double shopMoney = 0.0;
+		List<KemeanFinanceClear> dbData = mapper.selectByExample(example);
+		for (KemeanFinanceClear kemeanFinanceClear : dbData) {
+			shopMoney += kemeanFinanceClear.getDealMoney();
+		}
+
+		return shopMoney;
+	}
+
+	@Override
+	public List<AdminChartBO> selectShopFinanceSum(List<Integer> financeType, Integer financeStatus,
+			Integer submitAimsId, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectShopFinanceSum(financeType, submitAimsId, financeStatus, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public Double selectPlatformInMoney(Integer financeType, Integer financeStatus, String dateStart, String dateEnd) {
+		Example example = new Example(KemeanFinanceClear.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("financeType", financeType);
+		criteria.andEqualTo("financeStatus", financeStatus);
+
+		if (StringUtils.isNoneBlank(dateStart)) {
+			criteria.andGreaterThanOrEqualTo("createTime", dateStart);
+		}
+		if (StringUtils.isNoneBlank(dateEnd)) {
+			criteria.andLessThanOrEqualTo("createTime", dateEnd);
+		}
+		List<KemeanFinanceClear> dbExample = mapper.selectByExample(example);
+		Double inMoney = 0.0;
+
+		for (KemeanFinanceClear kemeanFinanceClear : dbExample) {
+			inMoney += kemeanFinanceClear.getDealMoney();
+
+		}
+
+		return inMoney;
+	}
+
+	@Override
+	public Double selectPlatformOutMoney(List<Integer> financeType, Boolean rate, Integer financeStatus,
+			String dateStart, String dateEnd) {
+		Example example = new Example(KemeanFinanceClear.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("financeType", financeType);
+		criteria.andEqualTo("financeStatus", financeStatus);
+
+		if (StringUtils.isNoneBlank(dateStart)) {
+			criteria.andGreaterThanOrEqualTo("createTime", dateStart);
+		}
+		if (StringUtils.isNoneBlank(dateEnd)) {
+			criteria.andLessThanOrEqualTo("createTime", dateEnd);
+		}
+		List<KemeanFinanceClear> dbExample = mapper.selectByExample(example);
+		Double outMoney = 0.0;
+
+		for (KemeanFinanceClear kemeanFinanceClear : dbExample) {
+			if (rate) {
+				outMoney += kemeanFinanceClear.getSubmitMoney() - kemeanFinanceClear.getDealMoney();
+			} else {
+				outMoney += kemeanFinanceClear.getDealMoney();
+
+			}
+		}
+
+		return outMoney;
+	}
+
+}

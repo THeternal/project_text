@@ -1,0 +1,85 @@
+package com.kemean.vo.bo.admin.investigate;
+
+import java.util.List;
+
+import com.kemean.vo.bo.KemeanIdBO;
+import com.kemean.vo.mysql.IdAndValueDB;
+
+public class AdminInvestQuestionBO extends KemeanIdBO {
+
+	/**
+	 * 调研表id
+	 */
+	private Integer investigateId;
+
+	/**
+	 * 区分（单选，多选，简答题）
+	 */
+	private Integer type;
+
+	private String typeStr;
+
+	/**
+	 * 问题
+	 */
+	private String question;
+
+	/**
+	 * 答案
+	 */
+	private List<String> answer;
+
+	/**
+	 * 答案选项-json
+	 */
+	private List<IdAndValueDB> recordAnswer;
+
+	public Integer getInvestigateId() {
+		return investigateId;
+	}
+
+	public void setInvestigateId(Integer investigateId) {
+		this.investigateId = investigateId;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public List<String> getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(List<String> answer) {
+		this.answer = answer;
+	}
+
+	public String getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}
+
+	public List<IdAndValueDB> getRecordAnswer() {
+		return recordAnswer;
+	}
+
+	public void setRecordAnswer(List<IdAndValueDB> recordAnswer) {
+		this.recordAnswer = recordAnswer;
+	}
+
+	public String getTypeStr() {
+		return typeStr;
+	}
+
+	public void setTypeStr(String typeStr) {
+		this.typeStr = typeStr;
+	}
+
+}

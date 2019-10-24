@@ -1,0 +1,167 @@
+package com.kemean.controller.consumer;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.consumer.COrderService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.order.GetPaidOrderBO;
+import com.kemean.vo.bo.c.order.OrderInfoBO;
+import com.kemean.vo.bo.c.order.OrderListBO;
+import com.kemean.vo.bo.c.order.RefundCauseBO;
+import com.kemean.vo.bo.c.order.SubmitOrderBO;
+import com.kemean.vo.po.c.oder.CancelAfterSalePO;
+import com.kemean.vo.po.c.oder.GetPaidOrderPO;
+import com.kemean.vo.po.c.oder.OrderAppraisalPO;
+import com.kemean.vo.po.c.oder.OrderListPO;
+import com.kemean.vo.po.c.oder.RefundAfterSalePO;
+import com.kemean.vo.po.c.oder.SubmitOrderPO;
+
+/*
+ * 【客户端】 订单控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/c/order")
+public class COrderController extends DaikenBaseController {
+
+	@Autowired
+	private COrderService corderService;
+
+	/**
+	 * 根据订单信息查找物品
+	 * 
+	 * @author huwei
+	 * @date 2018年7月12日
+	 */
+	@RequestMapping(value = "get_paid_order", method = RequestMethod.POST)
+	public KemeanResult<GetPaidOrderBO> getPaidOrder(@Valid @RequestBody GetPaidOrderPO getPaidOrderPO) {
+		return corderService.getPaidOrder(getPaidOrderPO, getLoginConsumer());
+	}
+
+	/**
+	 * 查看退款原因
+	 * 
+	 * @author huwei
+	 * @date 2018年7月12日
+	 */
+	@RequestMapping(value = "refund_cause", method = RequestMethod.GET)
+	public KemeanResult<RefundCauseBO> refundCause(@RequestParam String orderNo) {
+		return new KemeanResult<RefundCauseBO>(corderService.refundCause(orderNo));
+	}
+
+	/**
+	 * 立即下单
+	 * 
+	 * @author huwei
+	 * @throws InterruptedException
+	 * @date 2018年6月26日
+	 */
+	@RequestMapping(value = "submit_order", method = RequestMethod.POST)
+	public KemeanResult<SubmitOrderBO> submitOrder(@Valid @RequestBody SubmitOrderPO submitOrderPO)
+			throws InterruptedException {
+		return corderService.submitOrder(submitOrderPO, getLoginConsumer());
+	}
+
+	/**
+	 * 用户订单列表（待付款，代发货，待收货，待评价）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "order_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<OrderListBO>>> orderList(@Valid @RequestBody OrderListPO orderListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<OrderListBO>>>(
+				corderService.orderList(orderListPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 订单详情
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "order_info", method = RequestMethod.GET)
+	public KemeanResult<OrderInfoBO> orderInfo(@RequestParam String orderNo) {
+		return new KemeanResult<OrderInfoBO>(corderService.orderInfo(orderNo));
+	}
+
+	/**
+	 * 订单取消
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "cancle_order", method = RequestMethod.GET)
+	public KemeanResult<String> cancleOrder(@RequestParam String orderNo) {
+		return corderService.cancleOrder(orderNo);
+	}
+
+	/**
+	 * 订单删除
+	 * 
+	 * @author huwei
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "del_order", method = RequestMethod.GET)
+	public KemeanResult<String> delOrder(@RequestParam String orderNo) {
+		return corderService.delOrder(orderNo);
+	}
+
+	/**
+	 * 确认收货
+	 * 
+	 * @author huwei
+	 * @date 2018年7月13日
+	 */
+	@RequestMapping(value = "affirm_take_goods", method = RequestMethod.GET)
+	public KemeanResult<String> affirmTakeGoods(@RequestParam String orderNo) {
+		return corderService.affirmTakeGoods(orderNo);
+	}
+
+	/**
+	 * 退款（售后）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "refund_after_sale", method = RequestMethod.POST)
+	public KemeanResult<String> refundAfterSale(@Valid @RequestBody RefundAfterSalePO refundAfterSalePO) {
+		return corderService.refundAfterSale(refundAfterSalePO);
+	}
+
+	/**
+	 * 取消退款（售后）
+	 * 
+	 * @author huwei
+	 * @date 2018年7月17日
+	 */
+	@RequestMapping(value = "cancel_after_sale", method = RequestMethod.POST)
+	public KemeanResult<String> cancelAfterSale(@Valid @RequestBody CancelAfterSalePO cancelAfterSalePO) {
+		return corderService.cancelAfterSale(cancelAfterSalePO);
+	}
+
+	/**
+	 * 订单评价
+	 * 
+	 * @author huwei
+	 * @date 2018年6月8日
+	 */
+	@RequestMapping(value = "order_appraisal", method = RequestMethod.POST)
+	public KemeanResult<String> orderAppraisal(@Valid @RequestBody OrderAppraisalPO orderAppraisalPO) {
+		return corderService.orderAppraisal(orderAppraisalPO, getLoginConsumer());
+	}
+}

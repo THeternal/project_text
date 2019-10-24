@@ -1,0 +1,8 @@
+package com.kemean.mapper;
+
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.tk.TkMapper;
+
+public interface DaikenGoodsOldMapper extends TkMapper<DaikenGoodsOld> {
+
+}

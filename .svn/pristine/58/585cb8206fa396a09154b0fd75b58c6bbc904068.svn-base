@@ -1,0 +1,430 @@
+package com.kemean.bean;
+
+import java.util.Date;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_order")
+public class DaikenOrder extends KemeanAbstractBaseBean {
+
+	/**
+	 * 订单编号
+	 */
+	@Column(name = "order_no")
+	private String orderNo;
+
+	/**
+	 * 调研id
+	 */
+	@Column(name = "id_investigate")
+	private Integer idInvestigate;
+
+	/**
+	 * 购买用户id
+	 */
+	@Column(name = "id_user")
+	private Integer idUser;
+
+	/**
+	 * 商铺id
+	 */
+	@Column(name = "id_shop")
+	private Integer idShop;
+
+	/**
+	 * 商铺名称
+	 */
+	@Column(name = "shop_name")
+	private String shopName;
+
+	/**
+	 * 购买商品名称
+	 */
+	@Column(name = "goods_titles")
+	private String goodsTitles;
+
+	/**
+	 * 帮代卖id,0-为店铺自卖
+	 */
+	@Column(name = "id_purchasing")
+	private Integer idPurchasing;
+
+	/**
+	 * 订单状态-商家
+	 */
+	@Column(name = "status_shop")
+	private Integer statusShop;
+
+	/**
+	 * 订单状态-用户
+	 */
+	@Column(name = "status_user")
+	private Integer statusUser;
+
+	/**
+	 * 用户手机号
+	 */
+	@Column(name = "user_phone")
+	private String userPhone;
+
+	/**
+	 * 商品购买数量
+	 */
+	@Column(name = "quantity")
+	private Integer quantity;
+
+	/**
+	 * 支付价格
+	 */
+	@Column(name = "price_pay")
+	private Double pricePay;
+
+	/**
+	 * 优惠价格
+	 */
+	@Column(name = "price_discount")
+	private Double priceDiscount;
+
+	/**
+	 * 订单总价
+	 */
+	@Column(name = "price_total")
+	private Double priceTotal;
+
+	/**
+	 * 邮费
+	 */
+	@Column(name = "postage")
+	private Double postage;
+
+	/**
+	 * 第三方交易号
+	 */
+	@Column(name = "third_trade_no")
+	private String thirdTradeNo;
+
+	/**
+	 * 第三方通知时间
+	 */
+	@Column(name = "third_notify_time")
+	private String thirdNotifyTime;
+
+	/**
+	 * 第三方交易状态
+	 */
+	@Column(name = "third_trade_status")
+	private String thirdTradeStatus;
+
+	/**
+	 * 用户支付请求时间
+	 */
+	@Column(name = "pay_req_time")
+	private Date payReqTime;
+
+	/**
+	 * 支付类型
+	 */
+	@Column(name = "pay_type")
+	private Integer payType;
+
+	/**
+	 * 收货地址-json
+	 */
+	@Column(name = "record_receiving")
+	private String recordReceiving;
+
+	/**
+	 * 快递公司信息-json
+	 */
+	@Column(name = "record_logistics")
+	private String recordLogistics;
+
+	/**
+	 * 付款时间
+	 */
+	@Column(name = "payment_time")
+	private Date paymentTime;
+
+	/**
+	 * 发货时间
+	 */
+	@Column(name = "send_time")
+	private Date sendTime;
+
+	/**
+	 * 收货时间
+	 */
+	@Column(name = "receive_goods_time")
+	private Date receiveGoodsTime;
+
+	/**
+	 * 订单删除-商家
+	 */
+	@Column(name = "deleted_shop")
+	private Boolean deletedShop;
+
+	/**
+	 * 订单删除-用户
+	 */
+	@Column(name = "deleted_user")
+	private Boolean deletedUser;
+
+	/**
+	 * 订单时间(年月)
+	 */
+	@Column(name = "create_year_month")
+	private String createYearMonth;
+
+	/**
+	 * 备注
+	 */
+	@Column(name = "remark")
+	private String remark;
+
+	/**
+	 * 是否是一手商品订单
+	 */
+	@Column(name = "is_new_goods")
+	private Boolean isNewGoods;
+
+	public Boolean getIsNewGoods() {
+		return isNewGoods;
+	}
+
+	public void setIsNewGoods(Boolean isNewGoods) {
+		this.isNewGoods = isNewGoods;
+	}
+
+	public String getGoodsTitles() {
+		return goodsTitles;
+	}
+
+	public void setGoodsTitles(String goodsTitles) {
+		this.goodsTitles = goodsTitles;
+	}
+
+	public Integer getIdInvestigate() {
+		return idInvestigate;
+	}
+
+	public void setIdInvestigate(Integer idInvestigate) {
+		this.idInvestigate = idInvestigate;
+	}
+
+	public Date getPaymentTime() {
+		return paymentTime;
+	}
+
+	public void setPaymentTime(Date paymentTime) {
+		this.paymentTime = paymentTime;
+	}
+
+	public Date getReceiveGoodsTime() {
+		return receiveGoodsTime;
+	}
+
+	public void setReceiveGoodsTime(Date receiveGoodsTime) {
+		this.receiveGoodsTime = receiveGoodsTime;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public Integer getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(Integer idUser) {
+		this.idUser = idUser;
+	}
+
+	public Integer getIdShop() {
+		return idShop;
+	}
+
+	public void setIdShop(Integer idShop) {
+		this.idShop = idShop;
+	}
+
+	public Integer getIdPurchasing() {
+		return idPurchasing;
+	}
+
+	public void setIdPurchasing(Integer idPurchasing) {
+		this.idPurchasing = idPurchasing;
+	}
+
+	public Integer getStatusShop() {
+		return statusShop;
+	}
+
+	public void setStatusShop(Integer statusShop) {
+		this.statusShop = statusShop;
+	}
+
+	public Integer getStatusUser() {
+		return statusUser;
+	}
+
+	public void setStatusUser(Integer statusUser) {
+		this.statusUser = statusUser;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPricePay() {
+		return pricePay;
+	}
+
+	public void setPricePay(Double pricePay) {
+		this.pricePay = pricePay;
+	}
+
+	public Double getPriceDiscount() {
+		return priceDiscount;
+	}
+
+	public void setPriceDiscount(Double priceDiscount) {
+		this.priceDiscount = priceDiscount;
+	}
+
+	public Double getPriceTotal() {
+		return priceTotal;
+	}
+
+	public void setPriceTotal(Double priceTotal) {
+		this.priceTotal = priceTotal;
+	}
+
+	public String getThirdTradeNo() {
+		return thirdTradeNo;
+	}
+
+	public void setThirdTradeNo(String thirdTradeNo) {
+		this.thirdTradeNo = thirdTradeNo;
+	}
+
+	public String getThirdNotifyTime() {
+		return thirdNotifyTime;
+	}
+
+	public void setThirdNotifyTime(String thirdNotifyTime) {
+		this.thirdNotifyTime = thirdNotifyTime;
+	}
+
+	public String getThirdTradeStatus() {
+		return thirdTradeStatus;
+	}
+
+	public void setThirdTradeStatus(String thirdTradeStatus) {
+		this.thirdTradeStatus = thirdTradeStatus;
+	}
+
+	public Date getPayReqTime() {
+		return payReqTime;
+	}
+
+	public void setPayReqTime(Date payReqTime) {
+		this.payReqTime = payReqTime;
+	}
+
+	public Integer getPayType() {
+		return payType;
+	}
+
+	public void setPayType(Integer payType) {
+		this.payType = payType;
+	}
+
+	public String getRecordReceiving() {
+		return recordReceiving;
+	}
+
+	public void setRecordReceiving(String recordReceiving) {
+		this.recordReceiving = recordReceiving;
+	}
+
+	public String getRecordLogistics() {
+		return recordLogistics;
+	}
+
+	public void setRecordLogistics(String recordLogistics) {
+		this.recordLogistics = recordLogistics;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public Boolean getDeletedShop() {
+		return deletedShop;
+	}
+
+	public void setDeletedShop(Boolean deletedShop) {
+		this.deletedShop = deletedShop;
+	}
+
+	public Boolean getDeletedUser() {
+		return deletedUser;
+	}
+
+	public void setDeletedUser(Boolean deletedUser) {
+		this.deletedUser = deletedUser;
+	}
+
+	public String getCreateYearMonth() {
+		return createYearMonth;
+	}
+
+	public void setCreateYearMonth(String createYearMonth) {
+		this.createYearMonth = createYearMonth;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+}

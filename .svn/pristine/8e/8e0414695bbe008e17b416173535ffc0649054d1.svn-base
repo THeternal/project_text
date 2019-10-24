@@ -1,0 +1,54 @@
+package com.kemean.vo.bo.admin.lunbo;
+
+public class AdminLunboBO {
+
+	private Integer id;
+
+	private Integer sortNum;
+
+	private String imgUrl;
+
+	private String jumpTypeStr;
+
+	private String record;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getSortNum() {
+		return sortNum;
+	}
+
+	public void setSortNum(Integer sortNum) {
+		this.sortNum = sortNum;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public String getJumpTypeStr() {
+		return jumpTypeStr;
+	}
+
+	public void setJumpTypeStr(String jumpTypeStr) {
+		this.jumpTypeStr = jumpTypeStr;
+	}
+
+	public String getRecord() {
+		return record;
+	}
+
+	public void setRecord(String record) {
+		this.record = record;
+	}
+}

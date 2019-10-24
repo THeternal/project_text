@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md5 layui-col-sm6  layui-col-md-offset1">
+			<div class="layui-block">
+				<label class="layui-form-label">标题：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_title"
+						placeholder="请输入商品名称,可模糊查询" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div
+		class="layui-row layui-col-space20"
+		style="margin: 8px 0px;">
+		<div class="layui-col-md4 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-block layui-form">
+				<label class="layui-form-label">活动类型：</label>
+				<div class="layui-input-inline">
+					<select class="param_salesType">
+						<option
+							value=""
+							id="all">全部</option>
+						<option value="1102">限时折扣</option>
+						<option value="1103">亏本走量</option>
+						<option value="1104">9.9包邮</option>
+						<option value="1105">名牌折扣</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm3">
+			<div class="layui-block">
+				<label class="layui-form-label">商品编号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_goodsUid"
+						placeholder="请输入商品编号" />
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+
+	</div>
+
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData" lay-filter="monitorFunc"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/shop/goods/news_page_data(marketing=true)}]]*/;
+   	var url_goods_delete=/*[[@{/shop/goods/new_del}]]*/;
+   	var url_goods_info=/*[[@{/shop/goods/news_info_page}]]*/;
+   	var table;
+    layui.use(['table', 'laydate','element'], function () {
+         table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        
+        
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'goodsUid',
+                    title: '商品编号',
+                },{
+                    field: 'categoryName',
+                    title: '分类名称',
+                },{
+	                field: 'salesTypeStr',
+	                title: '活动类型'
+	            }, {
+	                title: '商品标题',
+	                field: 'title'
+	            },{
+                    field: 'salesNum',
+                    title: '销量'
+                },{
+                    field: 'salesNum',
+                    title: '排名'
+                },{
+                    field: 'createTime',
+                    title: '创建时间'
+                },{
+                    toolbar: "#operate",
+                    title: '操作',
+                    width:328
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+    });
+    
+
+    function search() {
+        var table = layui.table;
+        var paramTitle = $(".param_title").val();
+        var paramSalesType = $(".param_salesType").val();
+        var param_goodUid=$(".param_goodsUid").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	title: paramTitle,
+                	salesType:paramSalesType,
+                	goodsNo:param_goodUid
+                }
+            });
+       
+    }
+    
+    
+    //查看营销活动后的销量、销售额、访问量、成交量
+    function goodsMarketing(saleNum,salePrice,accessNum,clinchNum){
+    	layer.open({
+			title : "营销活动",
+			content :goodsMarketingDiv(saleNum,salePrice,accessNum,clinchNum),
+			skin : "layui-layer-molv",
+			area : [ '328px', '349px' ],
+			offset: '100px',
+			closeBtn : 1,
+			anim : 0
+		})	
+    }
+    
+    function goodsMarketingDiv(saleNum,salePrice,accessNum,clinchNum){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">销量:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input" readonly="readonly" value="'+saleNum+'"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">销售额:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input" readonly="readonly" value="'+salePrice+'"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">成交量:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input"  readonly="readonly" value="'+clinchNum+'"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">访问量:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input" readonly="readonly" value="'+accessNum+'"/></div></div>';
+	}
+	
+    
+</script>
+
+
+
+
+
+<script
+	type="text/html"
+	id="operate">
+	<button class="layui-btn layui-btn-sm" onclick="goodsMarketing({{d.goodsMarketing.saleNum}},{{d.goodsMarketing.salePrice}},{{d.goodsMarketing.accessNum}},{{d.goodsMarketing.clinchNum}})">
+		<i class="fa fa-info" aria-hidden="true"></i>&nbsp;营销活动</button>
+	<a th:href="@{/shop/goods/access_people_page?goodsId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;访问列表</a>
+	<button class="layui-btn layui-btn-sm" onclick="deleteByObjId({{d.objId}},url_goods_delete)"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>
+
+
+</script>
+</html>

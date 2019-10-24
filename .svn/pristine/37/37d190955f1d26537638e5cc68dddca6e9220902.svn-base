@@ -1,0 +1,35 @@
+package com.kemean.vo.po.admin.goods;
+
+import com.kemean.vo.po.KemeanPageAdminPO;
+
+public class AdminGoodsListPO extends KemeanPageAdminPO {
+
+	private String title;
+	private Integer salesType;
+	private Integer shopId;
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getSalesType() {
+		return salesType;
+	}
+
+	public void setSalesType(Integer salesType) {
+		this.salesType = salesType;
+	}
+
+}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+
+	<div
+		class="layui-row"
+		style="margin-top: 30px;">
+		<div class="layui-col-md6 layui-col-md6 layui-col-md-offset3">
+			<label class="layui-form-label">时间：</label>
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_start" placeholder="请选择开始日期"/>
+			</div>
+			-
+			<div class="layui-input-inline">
+				<input
+					type="text"
+					class="layui-input param_date_end" placeholder="请选择结束日期"/>
+			</div>
+		</div>
+		<div class="layui-col-md1 layui-col-sm1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+
+
+
+	<div
+		class="layui-row"
+		style="margin-top: 10px;">
+		<div class="layui-card">
+			<div class="layui-card-header">
+				<i
+					class="fa fa-line-chart"
+					aria-hidden="true"></i>&nbsp;<font
+					color="#009688"
+					style="font-weight: bold;">数据分析</font>
+			</div>
+			<div class="layui-card-body">
+				<div class="layui-row">
+					<div id="order_price"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script src="https://img.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>
+<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var search_url=/*[[@{/admin/user/order_money_chart_serach}]]*/;
+	var chart_data=/*[[${pageData}]]*/;
+	layui.use(['laydate','layer'],function(){
+		var laydate=layui.laydate;
+		laydate.render({
+			elem : '.param_date_start',
+			type : 'date'
+		});
+		
+		laydate.render({
+			elem : '.param_date_end',
+			type : 'date'
+		});
+	});
+	
+	function search(){
+		var paramDateStart=$(".param_date_start").val();
+		var paramDateEnd=$(".param_date_end").val();
+		if(Date.parse(paramDateStart)>Date.parse(paramDateEnd)){
+			layer.msg('开始日期不能大于结束日期');
+			return false;
+		};
+		
+		$.ajax({
+			url:search_url,
+			type:'GET',
+			data:{
+				dateStart:paramDateStart,
+				dateEnd:paramDateEnd
+			},
+			success:function(res){
+				goodsIn(res);
+				
+			}
+		})
+	}
+	
+	$(function(){
+		goodsIn(chart_data);
+		
+	});
+	
+	function goodsIn(chartData){
+		Highcharts.chart('order_price', {
+			  chart: {
+					zoomType: 'x'
+			  },
+			  title: {
+			    text: '下单金额分析统计'
+			  },
+			  xAxis: {
+			    type: 'datetime',
+			    dateTimeLabelFormats: {
+			      day: '%Y-%m-%d'
+			    }
+			  },
+			  yAxis: {
+			    title: {
+			      text: '金额'
+			    }
+			  },
+			  tooltip: {
+			    formatter: function () {
+			      var currentDate = new Date(this.x);
+			      var year = currentDate.getFullYear();
+			      var month = currentDate.getMonth() + 1;
+			      var date = currentDate.getDate();
+			      return '<b>' + year + '-' + month + '-' + date + '</b><br/>元：' + this.y;
+			    }
+			  },
+				plotOptions: {
+					area: {
+							fillColor: {
+									linearGradient: {
+											x1: 0,
+											y1: 0,
+											x2: 0,
+											y2: 1
+									},
+									stops: [
+											[0, Highcharts.getOptions().colors[0]],
+											[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+									]
+							},
+							marker: {
+									radius: 2
+							},
+							lineWidth: 1,
+							states: {
+									hover: {
+											lineWidth: 1
+									}
+							},
+							threshold: null
+					}
+			},
+			  series: [{
+			      name: '日下单金额',
+			      type: 'area',
+			      data: JSON.parse(chartData)
+			    }]
+			});
+	}
+	
+	
+</script>
+
+</html>

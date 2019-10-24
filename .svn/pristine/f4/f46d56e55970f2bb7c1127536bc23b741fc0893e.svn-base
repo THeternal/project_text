@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">商铺名：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_shopName" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md3 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">联系电话：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_phone" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md3 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">商铺类型：</label>
+				<div
+					class="layui-input-inline"
+					lay-filter="test2">
+					<select class="param_shopType">
+						<option
+							value=""
+							id="all">全部</option>
+						<option value="1">个人</option>
+						<option value="0">商铺</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm5">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+    var url_page_data = /*[[@{/admin/shop/page_data}]]*/;
+    var url_shop_status_operate = /*[[@{/admin/shop/shop_status_operate}]]*/;
+    
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        //监听【商铺状态】操作
+		 form.on('switch(shopStatus)', function(obj){
+		 	$.get(url_shop_status_operate,{objId:this.value,status:obj.elem.checked,TjOperateTj:false},function(result){
+		 		layer.msg(result.info); 
+		 	});
+		 });
+        
+		//监听【平台推荐】操作
+		 form.on('switch(platformRecommend)', function(obj){
+		 	$.get(url_shop_status_operate,{objId:this.value,status:obj.elem.checked,TjOperateTj:true},function(result){
+		 		layer.msg(result.info); 
+		 	});
+		 });
+        
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[
+            	{
+                    field: 'objId',
+                    title: '商铺编号',
+                    width: 100
+                },{
+	                field: 'shopName',
+	                title: '商铺名'
+	            }, {
+	                title: '入驻类型',
+	                field: 'settledTypeStr'
+	            },{
+	                field: 'shopPhone',
+	                title: '联系电话'
+	            },{
+                    field: 'salesVolume',
+                    title: '销量'
+                },{
+                    title: '营业状态',
+                    field : 'workStatusStr'
+                },{
+                    templet : '#switch_platform_recommend',
+                    title: '平台推荐'
+                },{
+                    templet : '#switch_shop_status',
+                    title: '商铺状态'
+                }, {
+                    toolbar: "#operate",
+                    title: '操作',
+                    width:280
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+        
+    });
+
+    function search() {
+        var table = layui.table;
+        var paramShopName = $(".param_shopName").val();
+        var paramPhone = $(".param_phone").val();
+        var paramShopType = $(".param_shopType").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	shopName: paramShopName,
+                	phone:paramPhone,
+                	paramShopType:param_shopType
+                }
+            });
+    }
+</script>
+
+<script
+	type="text/html"
+	id="switch_platform_recommend">
+    {{# if(d.platformRecommend){ }}
+    	<input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="是|否" lay-filter="platformRecommend"
+          	 checked="checked"></input>
+    {{# }else{ }}
+    	<input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="是|否" lay-filter="platformRecommend"></input>
+    {{# } }}
+</script>
+
+
+<script
+	type="text/html"
+	id="switch_shop_status">
+    {{# if(d.shopStatus){ }}
+    <input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="上架|下架" lay-filter="shopStatus"
+           checked="checked"></input>
+    {{# }else{ }}
+    <input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="上架|下架" lay-filter="shopStatus"></input>
+    {{# } }}
+</script>
+
+
+<script
+	type="text/html"
+	id="operate">
+	<a th:href="@{/admin/shop/shop_info_page?objId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;店铺详情</a>
+	<a th:href="@{/admin/goods/new?objId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;商品详情</a>
+</script>
+</html>

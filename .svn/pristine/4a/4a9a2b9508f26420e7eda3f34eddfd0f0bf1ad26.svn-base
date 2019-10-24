@@ -1,0 +1,17 @@
+package com.kemean.vo.bo.com;
+
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class UserHobbiesinterestsBO extends KemeanIdBO {
+
+	private String content;
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+}

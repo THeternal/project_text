@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row layui-form"
+		style="margin-top: 30px;">
+		<div class="layui-col-md4 layui-col-sm5">
+			<div class="layui-form-item">
+				<label class="layui-form-label">名称：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_nickName"
+						placeholder="请输入名称" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">用户性别：</label>
+				<div class="layui-input-block param_sexMan">
+					<input
+						type="radio"
+						name="sex"
+						value="1"
+						title="男" /> <input
+						type="radio"
+						name="sex"
+						value="0"
+						title="女" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">手机号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_phone"
+						placeholder="请输入手机号" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">登录密码：</label>
+				<div class="layui-input-block">
+					<input
+						type="password"
+						class="layui-input param_loginPwd"
+						placeholder="请输入管理员登录密码" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">确认密码：</label>
+				<div class="layui-input-block">
+					<input
+						type="password"
+						class="layui-input param_loginPwdSure"
+						placeholder="请输入确认登录密码" />
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">人员等级：</label>
+				<div class="layui-input-block">
+					<select class="param_level">
+					</select>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">用户状态：</label>
+				<div class="layui-input-inline">
+					<input
+						type="checkbox"
+						lay-skin="switch"
+						class="param_userStatus"
+						lay-text="正常|禁用" />
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="addUser()">新增</button>
+					<button
+						class="layui-btn layui-btn-primary"
+						onclick="history.back();">
+						<i
+							class="fa fa-arrow-left"
+							aria-hidden="true"></i>&nbsp;返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var pageData=/*[[${pageData}]]*/;
+	var url_add_user = /*[[@{/sale/user/add_data}]]*/;
+	var url_sales_user_page = /*[[@{/sale/user/}]]*/;
+	
+	layui.use([ 'table', 'form'], function() {
+
+		
+	});
+	
+	$(function(){
+		
+		if(pageData.level === 4){
+			var user_level_html='<option value="3">销售主管</option><option value="2">销售经理</option><option value="1">销售员</option>';
+			$(".param_level").append(user_level_html);
+		}
+		
+		if(pageData.level === 3){
+			var user_level_html='<option value="2">销售经理</option><option value="1">销售员</option>';
+			$(".param_level").append(user_level_html);
+		}
+		
+		if(pageData.level === 2){
+			var user_level_html='<option value="1">销售员</option>';
+			$(".param_level").append(user_level_html);
+		}
+		
+		
+	})
+	
+	
+	
+	
+	
+	function addUser(){
+		
+		var param_nickName=$(".param_nickName").val();
+		
+		if(!param_nickName){
+			layer.msg('用户名称不能为空');
+			return false;
+		}
+		var param_phone=$(".param_phone").val();
+		if(!param_phone){
+			layer.msg('用户手机号码不能为空');
+			return false;
+		}
+		var param_loginPwd=$(".param_loginPwd").val();
+		if(!param_loginPwd){
+			layer.msg('用户密码不能为空');
+			return false;
+		}
+		var param_loginPwdSure=$(".param_loginPwdSure").val();
+		if(!param_loginPwdSure){
+			layer.msg('确认密码不能为空');
+			return false;
+		}
+		if(param_loginPwd != param_loginPwdSure){
+			layer.msg("密码不一致");
+			return false;
+		}
+		
+		var param_userStatus= $(".param_userStatus").prop("checked");
+		var param_sexMan= $(".param_sexMan").find('input[name=sex]:checked').val();
+		var param_level=$(".param_level").val();
+		
+		
+		
+		$.post(url_add_user,{
+				nickName:param_nickName,
+				phone : param_phone,
+				password : md5(param_loginPwdSure),
+				userStatus : param_userStatus,
+				level : param_level,
+				sexMan:param_sexMan
+			},
+			function(result){
+				showResultMsgAndJumpByFlag(result.success,result.info,url_sales_user_page);
+	 	});
+		
+	}
+	
+
+</script>
+
+</html>

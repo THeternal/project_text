@@ -1,0 +1,106 @@
+package com.kemean.vo.bo.admin.goods;
+
+import java.util.List;
+
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public class AdminGoodsChartBO {
+
+	/// ===========商品收入报表=======
+	// 销售数量
+	private List<AdminChartBO> saleNum;
+	// 销售额
+	private List<AdminChartBO> saleMoney;
+
+	/// ==========商品代卖报表=======
+	// 销售数量
+	// 销售额
+	// 代卖佣金
+	private List<AdminChartBO> purchasing;
+
+	// ========== 促销商品报表========
+	// 销售数量
+	// 原价销售额 === 门市价
+	private List<AdminChartBO> originalMoney;
+	// 实际销售额 === 销售额
+
+	// ======== 商品红包报表=========
+	// 商品红包分享记录
+	private List<AdminChartBO> redShareRecord;
+
+	// 商品红包领取记录
+	private List<AdminChartBO> redShareGetRecord;
+
+	// =========商品总销售============
+	// 销售数量、销售额
+	// 代卖佣金、售前红包、售后红包金额
+	// 售前红包
+	private List<AdminChartBO> redBeforeMoney;
+	// 售后红包
+	private List<AdminChartBO> redAfterMoney;
+
+	public List<AdminChartBO> getSaleNum() {
+		return saleNum;
+	}
+
+	public void setSaleNum(List<AdminChartBO> saleNum) {
+		this.saleNum = saleNum;
+	}
+
+	public List<AdminChartBO> getSaleMoney() {
+		return saleMoney;
+	}
+
+	public void setSaleMoney(List<AdminChartBO> saleMoney) {
+		this.saleMoney = saleMoney;
+	}
+
+	public List<AdminChartBO> getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(List<AdminChartBO> purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public List<AdminChartBO> getOriginalMoney() {
+		return originalMoney;
+	}
+
+	public void setOriginalMoney(List<AdminChartBO> originalMoney) {
+		this.originalMoney = originalMoney;
+	}
+
+	public List<AdminChartBO> getRedShareRecord() {
+		return redShareRecord;
+	}
+
+	public void setRedShareRecord(List<AdminChartBO> redShareRecord) {
+		this.redShareRecord = redShareRecord;
+	}
+
+	public List<AdminChartBO> getRedShareGetRecord() {
+		return redShareGetRecord;
+	}
+
+	public void setRedShareGetRecord(List<AdminChartBO> redShareGetRecord) {
+		this.redShareGetRecord = redShareGetRecord;
+	}
+
+	public List<AdminChartBO> getRedBeforeMoney() {
+		return redBeforeMoney;
+	}
+
+	public void setRedBeforeMoney(List<AdminChartBO> redBeforeMoney) {
+		this.redBeforeMoney = redBeforeMoney;
+	}
+
+	public List<AdminChartBO> getRedAfterMoney() {
+		return redAfterMoney;
+	}
+
+	public void setRedAfterMoney(List<AdminChartBO> redAfterMoney) {
+		this.redAfterMoney = redAfterMoney;
+	}
+
+}

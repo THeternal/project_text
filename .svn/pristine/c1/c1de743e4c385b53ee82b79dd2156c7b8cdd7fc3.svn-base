@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md4 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">代研号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_uid" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="layui-row">
+		<div class="layui-col-md4 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-inline">
+				<label class="layui-form-label">手机号：</label>
+				<div class="layui-input-inline">
+					<input
+						type="text"
+						class="layui-input param_phone" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-inline layui-form">
+				<label class="layui-form-label">用户类型：</label>
+				<div class="layui-input-inline">
+					<select class="param_userType">
+						<option value="">全部</option>
+						<option value="1101">消费者</option>
+						<option value="1201">商家</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md1">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+		</div>
+	</div>
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.min.js"></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_data = /*[[@{/sale/user/user_data}]]*/;
+	var url_user_status_operate = /*[[@{/admin/user/status_operate}]]*/;
+	var url_user_reset_password = /*[[@{/admin/user/user_reset_password}]]*/;
+	var url_recharge = /*[[@{/admin/user/recharge}]]*/;
+	var form;
+	var table;
+	layui.use([ 'table', 'laydate' ], function() {
+		 table = layui.table;
+		var laydate = layui.laydate;
+		 form = layui.form;
+		
+		 //监听【用户状态】操作
+		 form.on('switch(user_status)', function(obj){
+		   var status=obj.elem.checked;
+		   
+			 if(status){
+				 $.get(url_user_status_operate,{objId:this.value,status:status},function(result){
+				 		layer.msg(result.info); 
+				 	});
+			 }else{
+				 userDisabled(this.value);
+			 }
+		 
+		 	
+		 });
+
+		table.render({
+			elem : '#pageData',
+			url : url_page_data,
+			cols : [ [  {
+				field : 'objId',
+				title : '用户编号'
+			},{
+				field : 'uid',
+				title : '代研号'
+			},{
+				field : 'nickName',
+				title : '昵称'
+			}, {
+				field : 'phone',
+				title : '手机号'
+			},{
+				field : 'userTypeStr',
+				title : '用户类型',
+			},{
+				title : '用户状态',
+				templet : '#switch_user_status',
+			},{
+				field : 'createTime',
+				title : '注册时间'
+			},{
+				toolbar : "#operate",
+				title : '操作'
+			} ] ],
+			page : true,
+			id : 'dataTable'
+		});
+	});
+	
+	function search(){
+		var table = layui.table;
+		var paramUid=$(".param_uid").val();
+		var paramPhone=$(".param_phone").val();
+		var paramUserType=$(".param_userType").val();
+		table.reload("dataTable",
+			{
+				page:{curr:1},
+				where:{
+					uid:paramUid,
+					phone:paramPhone,
+					userType:paramUserType
+				}
+			});
+	}
+	
+	
+	
+	function userDisabled(objId){
+		layer.open({
+			title : "原因",
+			content :userDisabledDiv(),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '确定' ],
+			offset: '100px',
+			btn1 : function() {
+				var param_cause=$(".param_cause").val();
+				if(!param_cause){
+					layer.msg("请输入禁用原因");
+					table.reload("dataTable");
+					return false;
+				}
+				$.get(url_user_status_operate, {objId:objId,status:false,cause:param_cause}, function(data, textStatus, req) {
+					layer.msg(data.info);
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	function userDisabledDiv(){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">禁用原因:</label>'
+				 +'<div class="layui-input-block"><textarea  type="textarea " class="layui-textarea  param_cause" placeholder="请输入禁用原因" /></div></div>';
+	}
+	
+	
+	function resetPasswordDiv(){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">登录密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password" placeholder="请输入新密码" /></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">确定密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password_sure" placeholder="请输入确认密码" /></div></div>';
+	}
+	
+	
+	function resetPassword(objId){
+		layer.open({
+			title : "修改密码",
+			content :resetPasswordDiv(),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function() {
+				var paramPassword=$(".param_password").val();
+				var paramPasswordSure=$(".param_password_sure").val();
+				if(!paramPassword){
+					layer.msg("请输入密码");
+					return false;
+				}
+				if(!paramPasswordSure){
+					layer.msg("请输入确认密码");
+					return false;
+				}
+				if(paramPasswordSure != paramPassword){
+					layer.msg("密码不一致");
+					return false;
+				}
+				$.get(url_user_reset_password, {objId:objId,password:md5(paramPassword)}, function(data, textStatus, req) {
+					layer.msg(data.info);
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	
+	function resetRechargeDiv(){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">充值金额:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_money" placeholder="请输入充值金额" /></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">财务密码:</label>'
+				 +'<div class="layui-input-block"><input type="password" class="layui-input param_password" placeholder="输入财务密码以确认充值" /></div></div>';
+	}
+	/*<![CDATA[*/
+	function recharge(objId){
+		var table = layui.table;
+		layer.open({
+			title : "充值",
+			content :resetRechargeDiv(),
+			skin : "layui-layer-molv",
+			area : [ '500px', '250px' ],
+			btn : [ '充值' ],
+			offset: '100px',
+			btn1 : function() {
+				var paramMoney=$(".param_money").val();
+				var paramPassword=$(".param_password").val();
+				if(!paramMoney){
+					layer.msg("请输入充值金额");
+					return false;
+				}
+				if(paramMoney < 0.01){
+					layer.msg("金额不能低于0.01");
+					return false;
+				}
+				if(!paramPassword){
+					layer.msg("请输入密码");
+					return false;
+				}
+				$.post(url_recharge, 
+						{objId:objId,
+						password:md5(paramPassword),
+						money:paramMoney}, function(data, textStatus, req) {
+						layer.msg(data.info);
+						if(data.success){
+							table.reload("dataTable");
+						}
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	/*]]>*/
+
+</script>
+
+<script
+	type="text/html"
+	id="switch_user_status">
+{{# if(d.userStatus == 1101){ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" checked="checked" ></input>
+{{# }else{ }}
+	<input type="checkbox"  value="{{d.objId}}" lay-skin="switch" lay-text="正常|禁用"  lay-filter="user_status" ></input>
+{{# } }}
+</script>
+
+<script
+	type="text/html"
+	id="operate">
+	<a class="layui-btn layui-btn-sm"
+	th:href="@{/admin/user/user_info_page?objId={{d.objId}}}"><i
+	class="fa fa-info"
+	aria-hidden="true"></i>&nbsp;用户详情</a>
+</script>
+</html>

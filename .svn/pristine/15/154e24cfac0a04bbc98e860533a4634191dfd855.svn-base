@@ -1,0 +1,74 @@
+package com.kemean.service.admin;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.kemean.bean.DaikenGoodsBaseCategory;
+import com.kemean.bean.DaikenGoodsBaseType;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenGoodsBaseCategoryDao;
+import com.kemean.dao.DaikenGoodsBaseTypeDao;
+import com.kemean.vo.bo.KemeanIdAndName;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewCategoryBO;
+
+@Service
+public class AdminCommonService {
+
+	@Autowired
+	private DaikenGoodsBaseCategoryDao daikenGoodsBaseCategoryDao;
+
+	@Autowired
+	private DaikenGoodsBaseTypeDao daikenGoodsBaseTypeDao;
+
+	/**
+	 * 获取商品的分类
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月26日
+	 */
+	// TODO 加 redis
+	public List<AdminGoodsNewCategoryBO> goodsBeseCategory(Integer pid) {
+		List<DaikenGoodsBaseCategory> dbBaseCategory = daikenGoodsBaseCategoryDao
+				.selectByProperties(new String[] { KemeanConstant.DATA_DELETED, "pid" }, new Object[] { false, pid });
+		return Lists.transform(dbBaseCategory, new Function<DaikenGoodsBaseCategory, AdminGoodsNewCategoryBO>() {
+
+			@Override
+			public AdminGoodsNewCategoryBO apply(DaikenGoodsBaseCategory input) {
+				AdminGoodsNewCategoryBO bo = new AdminGoodsNewCategoryBO();
+				BeanUtils.copyProperties(input, bo);
+				return bo;
+			}
+		});
+
+	}
+
+	/**
+	 * 获取商品规格
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月26日
+	 */
+	public List<KemeanIdAndName> goodsBeseType(Integer objId) {
+		DaikenGoodsBaseCategory dbBaseCategory = daikenGoodsBaseCategoryDao.selectById(objId);
+		List<KemeanIdAndName> baseTypes = new ArrayList<>();
+		if (StringUtils.isNoneBlank(dbBaseCategory.getRecordTypeId())) {
+			List<Integer> baseType = JSONArray.parseArray(dbBaseCategory.getRecordTypeId(), Integer.class);
+			baseTypes = new ArrayList<>(baseType.size());
+			for (Integer item : baseType) {
+				DaikenGoodsBaseType dbBaseType = daikenGoodsBaseTypeDao.selectById(item);
+				baseTypes.add(new KemeanIdAndName(dbBaseType.getId(), dbBaseType.getName()));
+			}
+		}
+		return baseTypes;
+
+	}
+
+}

@@ -1,0 +1,73 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenUserMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class DaikenUserDaoImpl extends DaoSupport<DaikenUser> implements DaikenUserDao {
+
+	@Autowired
+	private DaikenUserMapper mapper;
+
+	@Override
+	protected Mapper<DaikenUser> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public DaikenUser selectByToken(String userToken, List<Integer> asList) {
+		Example example = new Example(DaikenUser.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("token", userToken);
+		criteria.andIn("userType", asList);
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		List<DaikenUser> result = mapper.selectByExample(example);
+		return result.isEmpty() ? null : result.get(0);
+	}
+
+	@Override
+	public DaikenUser selectByPhone(String phone, List<Integer> userType) {
+		Example example = new Example(DaikenUser.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("phone", phone);
+		criteria.andIn("userType", userType);
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		List<DaikenUser> result = mapper.selectByExample(example);
+		return result.isEmpty() ? null : result.get(0);
+	}
+
+	@Override
+	public Integer selectTheMaxId() {
+		Example example = new Example(DaikenUser.class);
+		example.setOrderByClause(" uid DESC");
+		List<DaikenUser> dbUsers = mapper.selectByExample(example);
+		if (CollectionUtils.isEmpty(dbUsers)) {
+			return 1;
+		}
+		dbUsers.get(0).getUid();
+		return dbUsers.get(0).getId();
+	}
+
+	@Override
+	public Integer selectCountAge(Integer minAge, Integer maxAge) {
+		Example example = new Example(DaikenUser.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andBetween("age", minAge, maxAge);
+		return mapper.selectCountByExample(example);
+	}
+
+}

@@ -1,0 +1,40 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.KemeanCollect;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.KemeanCollectDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.KemeanCollectMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class KemeanCollectDaoImpl extends DaoSupport<KemeanCollect> implements KemeanCollectDao {
+	@Autowired
+	private KemeanCollectMapper mapper;
+
+	@Override
+	protected Mapper<KemeanCollect> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<KemeanCollect> collectList(Integer userId, List<Integer> types, Integer pageNo, Integer pageSize) {
+		Example example = new Example(KemeanCollect.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("userId", userId);
+		criteria.andIn("type", types);
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+}

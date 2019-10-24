@@ -1,0 +1,422 @@
+package com.kemean.vo.bo.admin.shop;
+
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kemean.vo.bo.KemeanIdBO;
+import com.kemean.vo.mysql.UserAddressDB;
+
+public class AdminShopOrderBO extends KemeanIdBO {
+	/**
+	 * 订单编号
+	 */
+	private String orderNo;
+
+	/**
+	 * 购买用户id
+	 */
+	private Integer idUser;
+
+	/**
+	 * 用户昵称
+	 */
+	private Integer userUid;
+	/**
+	 * 商铺id
+	 */
+	private Integer idShop;
+	/**
+	 * 订单类型
+	 */
+	private String typeStr;
+
+	/**
+	 * 商铺名称
+	 */
+	private String shopName;
+
+	/**
+	 * 购买商品名称
+	 */
+	private String goodsTitles;
+
+	/**
+	 * 帮代卖id,0-为店铺自卖
+	 */
+	private Integer idPurchasing;
+
+	/**
+	 * 订单状态-商家
+	 */
+	private String statusShopStr;
+
+	/**
+	 * 订单状态-用户
+	 */
+	private String statusUserStr;
+
+	/**
+	 * 订单状态-用户
+	 */
+	private Integer statusUser;
+
+	/**
+	 * 用户手机号
+	 */
+	private String userPhone;
+
+	/**
+	 * 商品购买数量
+	 */
+	private Integer quantity;
+
+	/**
+	 * 支付价格
+	 */
+	private Double pricePay;
+
+	/**
+	 * 优惠价格
+	 */
+	private Double priceDiscount;
+
+	/**
+	 * 订单总价
+	 */
+	private Double priceTotal;
+
+	/**
+	 * 邮费
+	 */
+	private Double postage;
+
+	/**
+	 * 第三方交易号
+	 */
+	private String thirdTradeNo;
+
+	/**
+	 * 第三方通知时间
+	 */
+	private String thirdNotifyTime;
+
+	/**
+	 * 第三方交易状态
+	 */
+	private String thirdTradeStatus;
+
+	/**
+	 * 支付类型
+	 */
+	private String payTypeStr;
+
+	/**
+	 * 收货地址-json
+	 */
+	private UserAddressDB recordReceiving;
+
+	/**
+	 * 快递公司信息-json
+	 */
+	private String recordLogistics;
+
+	/**
+	 * 付款时间
+	 */
+	private Date paymentTime;
+
+	/**
+	 * 发货时间
+	 */
+	private Date sendTime;
+
+	/**
+	 * 收货时间
+	 */
+	private Date receiveGoodsTime;
+
+	/**
+	 * 订单删除-商家
+	 */
+	private Boolean deletedShop;
+
+	/**
+	 * 订单删除-用户
+	 */
+	private Boolean deletedUser;
+
+	/**
+	 * 订单时间(年月)
+	 */
+	private String createYearMonth;
+
+	/**
+	 * 备注
+	 */
+	private String remark;
+
+	/**
+	 * 是否是一手商品订单
+	 */
+	private Boolean isNewGoods;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+	private Date createTime;
+
+	public String getOrderNo() {
+		return orderNo;
+	}
+
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
+	}
+
+	public Integer getIdUser() {
+		return idUser;
+	}
+
+	public void setIdUser(Integer idUser) {
+		this.idUser = idUser;
+	}
+
+	public Integer getIdShop() {
+		return idShop;
+	}
+
+	public void setIdShop(Integer idShop) {
+		this.idShop = idShop;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getGoodsTitles() {
+		return goodsTitles;
+	}
+
+	public void setGoodsTitles(String goodsTitles) {
+		this.goodsTitles = goodsTitles;
+	}
+
+	public Integer getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(Integer userUid) {
+		this.userUid = userUid;
+	}
+
+	public String getTypeStr() {
+		return typeStr;
+	}
+
+	public void setTypeStr(String typeStr) {
+		this.typeStr = typeStr;
+	}
+
+	public Integer getIdPurchasing() {
+		return idPurchasing;
+	}
+
+	public void setIdPurchasing(Integer idPurchasing) {
+		this.idPurchasing = idPurchasing;
+	}
+
+	public String getStatusShopStr() {
+		return statusShopStr;
+	}
+
+	public void setStatusShopStr(String statusShopStr) {
+		this.statusShopStr = statusShopStr;
+	}
+
+	public String getStatusUserStr() {
+		return statusUserStr;
+	}
+
+	public void setStatusUserStr(String statusUserStr) {
+		this.statusUserStr = statusUserStr;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPricePay() {
+		return pricePay;
+	}
+
+	public void setPricePay(Double pricePay) {
+		this.pricePay = pricePay;
+	}
+
+	public Double getPriceDiscount() {
+		return priceDiscount;
+	}
+
+	public void setPriceDiscount(Double priceDiscount) {
+		this.priceDiscount = priceDiscount;
+	}
+
+	public Double getPriceTotal() {
+		return priceTotal;
+	}
+
+	public void setPriceTotal(Double priceTotal) {
+		this.priceTotal = priceTotal;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public String getThirdTradeNo() {
+		return thirdTradeNo;
+	}
+
+	public void setThirdTradeNo(String thirdTradeNo) {
+		this.thirdTradeNo = thirdTradeNo;
+	}
+
+	public String getThirdNotifyTime() {
+		return thirdNotifyTime;
+	}
+
+	public void setThirdNotifyTime(String thirdNotifyTime) {
+		this.thirdNotifyTime = thirdNotifyTime;
+	}
+
+	public String getThirdTradeStatus() {
+		return thirdTradeStatus;
+	}
+
+	public void setThirdTradeStatus(String thirdTradeStatus) {
+		this.thirdTradeStatus = thirdTradeStatus;
+	}
+
+	public String getPayTypeStr() {
+		return payTypeStr;
+	}
+
+	public void setPayTypeStr(String payTypeStr) {
+		this.payTypeStr = payTypeStr;
+	}
+
+	public UserAddressDB getRecordReceiving() {
+		return recordReceiving;
+	}
+
+	public void setRecordReceiving(UserAddressDB recordReceiving) {
+		this.recordReceiving = recordReceiving;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getRecordLogistics() {
+		return recordLogistics;
+	}
+
+	public void setRecordLogistics(String recordLogistics) {
+		this.recordLogistics = recordLogistics;
+	}
+
+	public Date getPaymentTime() {
+		return paymentTime;
+	}
+
+	public void setPaymentTime(Date paymentTime) {
+		this.paymentTime = paymentTime;
+	}
+
+	public Date getSendTime() {
+		return sendTime;
+	}
+
+	public void setSendTime(Date sendTime) {
+		this.sendTime = sendTime;
+	}
+
+	public Date getReceiveGoodsTime() {
+		return receiveGoodsTime;
+	}
+
+	public void setReceiveGoodsTime(Date receiveGoodsTime) {
+		this.receiveGoodsTime = receiveGoodsTime;
+	}
+
+	public Boolean getDeletedShop() {
+		return deletedShop;
+	}
+
+	public void setDeletedShop(Boolean deletedShop) {
+		this.deletedShop = deletedShop;
+	}
+
+	public Boolean getDeletedUser() {
+		return deletedUser;
+	}
+
+	public void setDeletedUser(Boolean deletedUser) {
+		this.deletedUser = deletedUser;
+	}
+
+	public Integer getStatusUser() {
+		return statusUser;
+	}
+
+	public void setStatusUser(Integer statusUser) {
+		this.statusUser = statusUser;
+	}
+
+	public String getCreateYearMonth() {
+		return createYearMonth;
+	}
+
+	public void setCreateYearMonth(String createYearMonth) {
+		this.createYearMonth = createYearMonth;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Boolean getIsNewGoods() {
+		return isNewGoods;
+	}
+
+	public void setIsNewGoods(Boolean isNewGoods) {
+		this.isNewGoods = isNewGoods;
+	}
+
+}

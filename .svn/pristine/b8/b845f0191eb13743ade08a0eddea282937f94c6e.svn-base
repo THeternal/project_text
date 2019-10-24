@@ -1,0 +1,46 @@
+package com.kemean.mapper;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.kemean.bean.DaikenOrderGoods;
+import com.kemean.tk.TkMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.bo.admin.shop.AdminShopPromotionBO;
+
+public interface DaikenOrderGoodsMapper extends TkMapper<DaikenOrderGoods> {
+
+	/**
+	 * 商品销售数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	List<AdminChartBO> selectGoodInSaleNum(@Param("shopId") Integer shopId, @Param("goodsId") Integer goodsId,
+			@Param("goodsTitle") String goodsTitle, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("purchasing") Boolean purchasing, @Param("limit") Integer limit);
+
+	/**
+	 * 商品销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+
+	List<AdminChartBO> selectGoodInSalePrice(@Param("shopId") Integer shopId, @Param("goodsId") Integer goodsId,
+			@Param("goodsTitle") String goodsTitle, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("purchasing") Boolean purchasing, @Param("limit") Integer limit);
+
+	/**
+	 * 店铺促销活动活动周期对应的销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminShopPromotionBO> selectGoodsDiscountPriceSum(@Param("shopId") Integer shopId,
+			@Param("shopName") String shopName, @Param("goodsTitles") String goodsTitles,
+			@Param("salesType") Integer salesType, @Param("dateStart") String dateStart,
+			@Param("dateEnd") String dateEnd, @Param("pageNo") Integer pageNo, @Param("limit") Integer limit);
+
+}

@@ -1,0 +1,70 @@
+package com.kemean.controller;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.kemean.bean.DaikenSalesUser;
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.KemeanConstant;
+
+/**
+ * 【公共】基础控制器
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+public class DaikenBaseController extends KemeanBaseController {
+
+	/** 获取登录消费者 **/
+	protected DaikenUser getLoginConsumer() {
+		String userToken = request.getHeader(KemeanConstant.USER_TOKEN);
+		String cachekey = String.format(DaikenRedisKeyEnum.USER_CONSUMER.getKey(), userToken);
+		String cacheUser = kemeanRedisService.getString(cachekey);
+		if (StringUtils.isBlank(cacheUser)) {
+			return null;
+		}
+		return JSONObject.parseObject(cacheUser, DaikenUser.class);
+	}
+
+	/** 获取登录商户 **/
+	protected DaikenUser getLoginBusiness() {
+		String userToken = request.getHeader(KemeanConstant.USER_TOKEN);
+		String cachekey = String.format(DaikenRedisKeyEnum.USER_BUSINESS.getKey(), userToken);
+		String cacheUser = kemeanRedisService.getString(cachekey);
+		if (StringUtils.isBlank(cacheUser)) {
+			return null;
+		}
+		return JSONObject.parseObject(cacheUser, DaikenUser.class);
+	}
+
+	/**
+	 * 获取管理后台登陆的商家
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月18日
+	 */
+	protected DaikenUser getAdminLoginShop() {
+		Object sessionShop = request.getSession().getAttribute("login_shop");
+		if (sessionShop == null) {
+			return null;
+		}
+		return (DaikenUser) sessionShop;
+	}
+
+	/**
+	 * 获取管理后台登陆的销售
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月18日
+	 */
+	protected DaikenSalesUser getAdminLoginSale() {
+		Object sessionSale = request.getSession().getAttribute("login_sale");
+		if (sessionSale == null) {
+			return null;
+		}
+		return (DaikenSalesUser) sessionSale;
+	}
+
+}

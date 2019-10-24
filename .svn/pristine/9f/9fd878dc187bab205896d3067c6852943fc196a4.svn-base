@@ -1,0 +1,260 @@
+package com.kemean.bean;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_shop")
+public class DaikenShop extends KemeanAbstractBaseBean {
+
+	/**
+	 * 商铺图片
+	 */
+	@Column(name = "shop_logo")
+	private String shopLogo;
+
+	/**
+	 * 商铺名称
+	 */
+	@Column(name = "shop_name")
+	private String shopName;
+
+	/**
+	 * 入驻类型(默认，待确定)
+	 */
+	@Column(name = "settled_type")
+	private Boolean settledType;
+
+	/**
+	 * 商铺联系电话
+	 */
+	@Column(name = "shop_phone")
+	private String shopPhone;
+
+	/**
+	 * 店铺介绍
+	 */
+	@Column(name = "presentation")
+	private String presentation;
+
+	/**
+	 * 营业状态
+	 */
+	@Column(name = "work_status")
+	private Boolean workStatus;
+
+	/**
+	 * 商铺状态
+	 */
+	@Column(name = "shop_status")
+	private Boolean shopStatus;
+
+	/**
+	 * 平台推荐
+	 */
+	@Column(name = "platform_recommend")
+	private Boolean platformRecommend;
+
+	/**
+	 * 销量
+	 */
+	@Column(name = "sales_volume")
+	private Integer salesVolume;
+
+	/**
+	 * 赞
+	 */
+	@Column(name = "num_praise")
+	private Integer numPraise;
+
+	/**
+	 * 踩
+	 */
+	@Column(name = "num_trample")
+	private Integer numTrample;
+
+	/**
+	 * 一般
+	 */
+	@Column(name = "num_common")
+	private Integer numCommon;
+
+	/**
+	 * 收藏
+	 */
+	@Column(name = "num_collect")
+	private Integer numCollect;
+
+	/**
+	 * 好评度(百分比形式)
+	 */
+	@Column(name = "degree_of_praise")
+	private Float degreeOfPraise;
+
+	/**
+	 * 物流服务
+	 */
+	@Column(name = "logistics_service")
+	private Float logisticsService;
+
+	/**
+	 * 公司名称
+	 */
+	@Column(name = "business_license_name")
+	private String businessLicenseName;
+
+	/**
+	 * 所在地
+	 */
+	@Column(name = "business_license_location")
+	private String businessLicenseLocation;
+
+	/**
+	 * 审核状态
+	 */
+	@Column(name = "audit_status")
+	private Integer auditStatus;
+
+	public Integer getNumCommon() {
+		return numCommon;
+	}
+
+	public void setNumCommon(Integer numCommon) {
+		this.numCommon = numCommon;
+	}
+
+	public String getBusinessLicenseName() {
+		return businessLicenseName;
+	}
+
+	public void setBusinessLicenseName(String businessLicenseName) {
+		this.businessLicenseName = businessLicenseName;
+	}
+
+	public String getBusinessLicenseLocation() {
+		return businessLicenseLocation;
+	}
+
+	public void setBusinessLicenseLocation(String businessLicenseLocation) {
+		this.businessLicenseLocation = businessLicenseLocation;
+	}
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public Boolean getSettledType() {
+		return settledType;
+	}
+
+	public void setSettledType(Boolean settledType) {
+		this.settledType = settledType;
+	}
+
+	public Integer getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(Integer auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+
+	public String getShopPhone() {
+		return shopPhone;
+	}
+
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
+	}
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+	public Boolean getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(Boolean workStatus) {
+		this.workStatus = workStatus;
+	}
+
+	public Boolean getShopStatus() {
+		return shopStatus;
+	}
+
+	public void setShopStatus(Boolean shopStatus) {
+		this.shopStatus = shopStatus;
+	}
+
+	public Boolean getPlatformRecommend() {
+		return platformRecommend;
+	}
+
+	public void setPlatformRecommend(Boolean platformRecommend) {
+		this.platformRecommend = platformRecommend;
+	}
+
+	public Integer getSalesVolume() {
+		return salesVolume;
+	}
+
+	public void setSalesVolume(Integer salesVolume) {
+		this.salesVolume = salesVolume;
+	}
+
+	public Integer getNumPraise() {
+		return numPraise;
+	}
+
+	public void setNumPraise(Integer numPraise) {
+		this.numPraise = numPraise;
+	}
+
+	public Integer getNumTrample() {
+		return numTrample;
+	}
+
+	public void setNumTrample(Integer numTrample) {
+		this.numTrample = numTrample;
+	}
+
+	public Integer getNumCollect() {
+		return numCollect;
+	}
+
+	public void setNumCollect(Integer numCollect) {
+		this.numCollect = numCollect;
+	}
+
+	public Float getDegreeOfPraise() {
+		return degreeOfPraise;
+	}
+
+	public void setDegreeOfPraise(Float degreeOfPraise) {
+		this.degreeOfPraise = degreeOfPraise;
+	}
+
+	public Float getLogisticsService() {
+		return logisticsService;
+	}
+
+	public void setLogisticsService(Float logisticsService) {
+		this.logisticsService = logisticsService;
+	}
+
+}

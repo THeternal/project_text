@@ -1,0 +1,375 @@
+package com.kemean.service.common;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.kemean.bean.DaikenGoodsBaseCategory;
+import com.kemean.bean.DaikenGoodsBaseType;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.DaikenUserBase;
+import com.kemean.bean.KemeanConfig;
+import com.kemean.bean.KemeanLunbo;
+import com.kemean.bean.KemeanRegion;
+import com.kemean.constant.DaikenApiResultTips;
+import com.kemean.constant.DaikenConfigEnum;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.DaikenSmsTypeEnum;
+import com.kemean.constant.DaikenUserEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenGoodsBaseCategoryDao;
+import com.kemean.dao.DaikenGoodsBaseTypeDao;
+import com.kemean.dao.DaikenUserBaseDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.dao.KemeanConfigDao;
+import com.kemean.dao.KemeanLunboDao;
+import com.kemean.dao.KemeanRegionDao;
+import com.kemean.exception.KemeanException;
+import com.kemean.service.KemeanAidService;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.common.ComLunboBO;
+import com.kemean.vo.bo.com.CloseAccountListBO;
+import com.kemean.vo.bo.com.ComRegionBO;
+import com.kemean.vo.bo.com.FinanceOrderListBO;
+import com.kemean.vo.bo.com.GetBaseCategoryBBO;
+import com.kemean.vo.bo.com.GetBaseCategoryBO;
+import com.kemean.vo.bo.com.GetBaseTypeBO;
+import com.kemean.vo.bo.com.UserHobbiesinterestsBO;
+import com.kemean.vo.po.com.BaseCategoryPO;
+import com.kemean.vo.po.com.FinanceOrderListPO;
+import com.kemean.vo.po.com.OrderSettleAccountsPO;
+
+/**
+ * 
+ * 【公共端】公共业务层
+ * 
+ * @Date 2018年6月12日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+public class CommonService {
+
+	@Autowired
+	private KemeanAidService aidService;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenGoodsBaseCategoryDao daikenGoodsBaseCategoryDao;
+
+	@Autowired
+	private DaikenGoodsBaseTypeDao daikenGoodsBaseTypeDao;
+
+	@Autowired
+	private DaikenUserBaseDao daikenUserBaseDao;
+
+	@Autowired
+	private KemeanRedisService redisService;
+
+	@Autowired
+	private KemeanConfigDao kemeanConfigDao;
+
+	@Autowired
+	private KemeanRegionDao kemeanRegionDao;
+
+	@Autowired
+	private KemeanLunboDao kemeanLunboDao;
+
+	/**
+	 * 订单流水
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	// TODO 未实现
+	public KemeanPageApiBO<List<FinanceOrderListBO>> financeOrderList(FinanceOrderListPO financeOrderListPO) {
+		FinanceOrderListBO bo = new FinanceOrderListBO("订单编号", "订单完成时间", 100.0);
+		List<FinanceOrderListBO> data = Arrays.asList(bo, bo, bo, bo, bo, bo, bo, bo, bo, bo);
+		return new KemeanPageApiBO<List<FinanceOrderListBO>>(10l, 1, data);
+	}
+
+	/**
+	 * 结算流水
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	// TODO 未实现
+	public KemeanPageApiBO<List<CloseAccountListBO>> closeAccountList(FinanceOrderListPO financeOrderListPO) {
+		CloseAccountListBO bo = new CloseAccountListBO("流水编号", 10.0, 20.0, 10.0, 1101, "财务状态", new Date());
+		List<CloseAccountListBO> data = Arrays.asList(bo, bo, bo, bo, bo, bo, bo, bo, bo, bo);
+		return new KemeanPageApiBO<List<CloseAccountListBO>>(10l, 1, data);
+	}
+
+	/**
+	 * 提现
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	// TODO 未实现
+	public KemeanResult<String> orderSettleAccounts(OrderSettleAccountsPO orderSettleAccountsPO,
+			DaikenUser daikenUser) {
+		// 判断是商家端还是小程序端
+		if (daikenUser.getUserStatus().equals(DaikenUserEnum.DaikenUserTypeEnum.CONSUMER.getType())) {
+			// 小程序端
+			if (!KemeanConstant.SUPER_CODE.equals(orderSettleAccountsPO.getCode())) {
+				String cachaKey = String.format(DaikenRedisKeyEnum.CODE.getKey(),
+						DaikenSmsTypeEnum.C_WITHDRAW.getType(), daikenUser.getPhone());
+				String cacheCode = redisService.getString(cachaKey);
+				if (StringUtils.isBlank(cacheCode)) {
+					return new KemeanResult<>(false, DaikenApiResultTips.CODE_CHECK.CODE_NOT_EXIT);
+				}
+				if (!cacheCode.equals(orderSettleAccountsPO.getCode())) {
+					return new KemeanResult<>(false, DaikenApiResultTips.CODE_CHECK.CODE_ERROR);
+				}
+				redisService.del(cachaKey);
+				// TODO 未实现
+
+			}
+		}
+
+		if (daikenUser.getUserStatus().equals(DaikenUserEnum.DaikenUserTypeEnum.BUSINESS.getType())) {
+			// 客户端
+			if (!KemeanConstant.SUPER_CODE.equals(orderSettleAccountsPO.getCode())) {
+				String cachaKey = String.format(DaikenRedisKeyEnum.CODE.getKey(),
+						DaikenSmsTypeEnum.B_WITHDRAW.getType(), daikenUser.getPhone());
+				String cacheCode = redisService.getString(cachaKey);
+				if (StringUtils.isBlank(cacheCode)) {
+					return new KemeanResult<>(false, DaikenApiResultTips.CODE_CHECK.CODE_NOT_EXIT);
+				}
+				if (!cacheCode.equals(orderSettleAccountsPO.getCode())) {
+					return new KemeanResult<>(false, DaikenApiResultTips.CODE_CHECK.CODE_ERROR);
+				}
+				redisService.del(cachaKey);
+				// TODO 未实现
+			}
+		}
+		return new KemeanResult<String>();
+	}
+
+	/** 获取UID **/
+	public Integer getUid() {
+		return aidService.getUid(DaikenRedisKeyEnum.UID.getKey(), daikenUserDao.selectTheMaxId(),
+				Integer.valueOf(getConfig(DaikenConfigEnum.UID_PREFIX).getRecord()));
+	}
+
+	/**
+	 * 获取商品分类
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	public List<GetBaseCategoryBO> getBaseCategory(BaseCategoryPO baseCategoryPO) {
+		List<Integer> levels = new ArrayList<Integer>();
+		if (baseCategoryPO.getLevel() != null) {
+			levels.add(baseCategoryPO.getLevel());
+		} else {
+			levels.add(1);
+			levels.add(2);
+			levels.add(3);
+		}
+		List<DaikenGoodsBaseCategory> dbBaseCategorys = daikenGoodsBaseCategoryDao.getBaseCategory(levels);
+		List<GetBaseCategoryBO> result = new ArrayList<GetBaseCategoryBO>(dbBaseCategorys.size());
+		for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbBaseCategorys) {
+			GetBaseCategoryBO bo = new GetBaseCategoryBO();
+			BeanUtils.copyProperties(daikenGoodsBaseCategory, bo);
+			if (baseCategoryPO.getLevel() != null && baseCategoryPO.getLevel().equals(2)) {
+				List<DaikenGoodsBaseCategory> dbDaikenGoodsBaseCategory = daikenGoodsBaseCategoryDao.selectByProperties(
+						new String[] { KemeanConstant.DATA_DELETED, "pid" },
+						new Object[] { false, daikenGoodsBaseCategory.getId() });
+				List<GetBaseCategoryBO> baseCategorys = new ArrayList<GetBaseCategoryBO>(
+						dbDaikenGoodsBaseCategory.size());
+				for (DaikenGoodsBaseCategory daikenGoodsBaseCategory2 : dbDaikenGoodsBaseCategory) {
+					GetBaseCategoryBO bo1 = new GetBaseCategoryBO();
+					BeanUtils.copyProperties(daikenGoodsBaseCategory2, bo1);
+					baseCategorys.add(bo1);
+
+				}
+				bo.setGetBaseCategoryBO(baseCategorys);
+			}
+			if (baseCategoryPO.getObjId() != null) {
+				if (baseCategoryPO.getObjId().equals(daikenGoodsBaseCategory.getPid())) {
+					result.add(bo);
+				}
+			} else {
+				result.add(bo);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 获取规格分类
+	 * 
+	 * @author huwei
+	 * @date 2018年6月22日
+	 */
+	public List<GetBaseTypeBO> getBaseType(Integer objId) {
+		DaikenGoodsBaseCategory dbBaseCategory = daikenGoodsBaseCategoryDao.selectById(objId);
+		List<GetBaseTypeBO> result = new ArrayList<GetBaseTypeBO>();
+		if (StringUtils.isEmpty(dbBaseCategory.getRecordTypeId())) {
+			return result;
+		}
+		List<Integer> recordTypeIds = JSONArray.parseArray(dbBaseCategory.getRecordTypeId(), Integer.class);
+		result = new ArrayList<GetBaseTypeBO>(recordTypeIds.size());
+		if (CollectionUtils.isEmpty(recordTypeIds)) {
+			return result;
+		}
+		for (Integer typeId : recordTypeIds) {
+			DaikenGoodsBaseType dbBaseType = daikenGoodsBaseTypeDao.selectById(typeId);
+			GetBaseTypeBO bo = new GetBaseTypeBO();
+			BeanUtils.copyProperties(dbBaseType, bo);
+			result.add(bo);
+		}
+		return result;
+	}
+
+	/**
+	 * 获取商品分类(商户端)
+	 * 
+	 * @author huwei
+	 * @date 2018年6月28日
+	 */
+	public List<GetBaseCategoryBBO> getBaseCategoryB(BaseCategoryPO baseCategoryPO) {
+		Integer objId = 0;
+		if (baseCategoryPO.getObjId() != null) {
+			objId = baseCategoryPO.getObjId();
+		}
+
+		List<GetBaseCategoryBBO> result = new ArrayList<GetBaseCategoryBBO>();
+		List<DaikenGoodsBaseCategory> dbBaseCategorys = daikenGoodsBaseCategoryDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "level", "pid" },
+				new Object[] { false, baseCategoryPO.getLevel(), objId });
+		for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbBaseCategorys) {
+			GetBaseCategoryBBO bo = new GetBaseCategoryBBO();
+			BeanUtils.copyProperties(daikenGoodsBaseCategory, bo);
+			result.add(bo);
+		}
+		// 存到redis里面去
+
+		return result;
+	}
+
+	/**
+	 * 获取用户的兴趣爱好/职业
+	 * 
+	 * @author huwei
+	 * @date 2018年7月2日
+	 */
+	public List<UserHobbiesinterestsBO> getUserHobbiesinterests(Integer type) {
+		List<DaikenUserBase> dbUserBases = daikenUserBaseDao
+				.selectByProperties(new String[] { KemeanConstant.DATA_DELETED, "type" }, new Object[] { false, type });
+		List<UserHobbiesinterestsBO> result = new ArrayList<UserHobbiesinterestsBO>(dbUserBases.size());
+		for (DaikenUserBase daikenUserBase : dbUserBases) {
+			UserHobbiesinterestsBO bo = new UserHobbiesinterestsBO();
+			BeanUtils.copyProperties(daikenUserBase, bo);
+			result.add(bo);
+		}
+		return result;
+	}
+
+	/**
+	 * 获取数据库配置
+	 * 
+	 * @author huangyujian
+	 * @date 2018年4月2日
+	 */
+	public KemeanConfig getConfig(DaikenConfigEnum daikenConfigEnum) {
+		String cacheKey = String.format(DaikenRedisKeyEnum.CONFIG.getKey(), daikenConfigEnum.getType());
+		String cache = redisService.getString(cacheKey);
+		if (StringUtils.isNoneBlank(cache)) {
+			return JSONObject.parseObject(cache, KemeanConfig.class);
+		}
+		KemeanConfig dbConfig = kemeanConfigDao.selectUniqueEntityByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "type" },
+				new Object[] { false, daikenConfigEnum.getType() });
+		if (dbConfig == null) {
+			throw new KemeanException("获取数据配置异常，类型：" + daikenConfigEnum.getType());
+		}
+		redisService.setString(cacheKey, JSONObject.toJSONString(dbConfig));
+		return dbConfig;
+	}
+
+	/**
+	 * 全国地区联动
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	public List<ComRegionBO> region(Integer pid) {
+		String cacheKey = String.format(DaikenRedisKeyEnum.REGION.getKey(), pid);
+		String cacheRegion = redisService.getString(cacheKey);
+		if (StringUtils.isNoneBlank(cacheRegion)) {
+			return JSONObject.parseArray(cacheRegion, ComRegionBO.class);
+		}
+		List<KemeanRegion> dbRegions = kemeanRegionDao.selectByPid(pid);
+		List<ComRegionBO> result = Lists.transform(dbRegions, new Function<KemeanRegion, ComRegionBO>() {
+
+			@Override
+			public ComRegionBO apply(KemeanRegion item) {
+				ComRegionBO bo = new ComRegionBO();
+				BeanUtils.copyProperties(item, bo);
+				return bo;
+			}
+
+		});
+		redisService.setString(cacheKey, JSONObject.toJSONString(result));
+		return result;
+	}
+
+	/**
+	 * 首页轮播图
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	public List<ComLunboBO> lunbo(Integer locatType) {
+		List<KemeanLunbo> dbLunbos = kemeanLunboDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "locatType" }, new Object[] { false, locatType });
+		List<ComLunboBO> result = new ArrayList<ComLunboBO>(dbLunbos.size());
+		if (CollectionUtils.isEmpty(dbLunbos)) {
+			return result;
+		}
+		for (KemeanLunbo kemeanLunbo : dbLunbos) {
+			ComLunboBO bo = new ComLunboBO();
+			BeanUtils.copyProperties(kemeanLunbo, bo);
+			bo.setShopId(Integer.valueOf(kemeanLunbo.getRecord()));
+			result.add(bo);
+		}
+		return result;
+	}
+
+	/**
+	 * 获取用户职业
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	public List<UserHobbiesinterestsBO> getUserOccupation(Integer pid) {
+		List<DaikenUserBase> dbUserBase = daikenUserBaseDao.selectByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "type", "pid" }, new Object[] { false, 1101, pid });
+		List<UserHobbiesinterestsBO> result = new ArrayList<UserHobbiesinterestsBO>(dbUserBase.size());
+		for (DaikenUserBase daikenUserBase : dbUserBase) {
+			UserHobbiesinterestsBO bo = new UserHobbiesinterestsBO();
+			BeanUtils.copyProperties(daikenUserBase, bo);
+			result.add(bo);
+		}
+		return result;
+	}
+}

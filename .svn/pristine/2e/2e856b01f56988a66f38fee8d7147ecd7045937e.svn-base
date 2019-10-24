@@ -1,0 +1,18 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenOrderAfterSale;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenOrderAfterSaleDao extends Idao<DaikenOrderAfterSale> {
+	/**
+	 * 商品退货数量
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminChartBO> selectGoodsReturnNum(Integer shopId, String dateStart, String dateEnd, Integer limit);
+
+}

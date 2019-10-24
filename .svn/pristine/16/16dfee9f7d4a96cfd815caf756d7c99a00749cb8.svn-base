@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-comment-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">店铺入驻</font>
+		</div>
+		<div class="layui-card-body">
+			<div class="layui-row">
+				<div class="layui-col-md3 layui-col-sm3">
+					<button
+						class="layui-btn layui-btn-lg"
+						onclick="open_new_tab(1101)">
+						<i
+							class="fa fa-comment-o"
+							aria-hidden="true"></i> &nbsp;企业入驻： <span
+							class="layui-badge layui-bg-orange settled_shop"
+							th:text="${pageData.shopSettled}"></span>
+					</button>
+				</div>
+				<div class="layui-col-md3 layui-col-sm3">
+					<button
+						class="layui-btn layui-btn-lg"
+						onclick="open_new_tab(1102)">
+						<i
+							class="fa fa-comment-o"
+							aria-hidden="true"></i> &nbsp;个人入驻： <span
+							class="layui-badge layui-bg-orange settled_personal_shop"
+							th:text="${pageData.shopPersonalSettled}"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.js"></script>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.js"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	layui.use('layer', function(){
+	}); 
+	var url_web_socket_endpoint = /*[[@{/web_socket_endpoint}]]*/;
+	var url_soud = /*[[@{/soud/public.wav}]]*/;
+	
+	var stompClient = null;
+	
+	 //stompClient.disconnect();
+	  $(function(){
+		var socket = new SockJS(url_web_socket_endpoint);
+		stompClient = Stomp.over(socket);
+		stompClient.connect({}, function(frame) {
+			
+			stompClient.subscribe("/notification/admin/push", function(
+					result) {
+				//new Audio(url_soud).play();
+				var resultJson = JSON.parse(result.body);
+						layui.layer.open({
+							title:'消息通知',
+							skin:'layui-layer-molv',
+							offset: 'rb',
+						    content: resultJson.info,
+						    time:5000,
+						    btn:['知道了']
+					      });
+				
+				
+				//企业入驻
+				if(resultJson.code==1101){
+					var num=parseInt($(".settled_shop").html());
+					$(".settled_shop").html(num+1);
+					$(".settled_shop").addClass("layui-badge");
+					$(".settled_shop").removeClass("layui-bg-orange");
+				}
+				
+				//个人入驻
+				if(resultJson.code==1102){
+					var num=parseInt($(".settled_personal_shop").html());
+					$(".settled_personal_shop").html(num+1);
+					$(".settled_personal_shop").addClass("layui-badge");
+					$(".settled_personal_shop").removeClass("layui-bg-orange");
+				}
+				
+
+				
+		});
+		
+		function survival(){
+			setTimeout(function(){
+				stompClient.send("/survival", {});
+				survival();
+			},30000);
+		}
+		survival();
+	}); 
+	 });
+	 
+	 function open_new_tab(type) {
+			//企业入驻
+			if(type==1101){
+				$(".settled_shop").addClass("layui-bg-orange");
+				window.parent.openSettledShop();
+			}
+			//个人入驻
+			if(type==1102){
+				$(".settled_personal_shop").addClass("layui-bg-orange");
+				window.parent.openSettledPersonaShop();
+			}
+		}
+	 
+	
+	
+</script>
+</html>

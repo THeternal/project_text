@@ -1,0 +1,27 @@
+package com.kemean.vo.po.admin.investigate;
+
+import com.kemean.vo.po.admin.AdminChartPO;
+
+public class AdminInvestChartPO extends AdminChartPO {
+
+	private Integer type;
+
+	private Integer userUid;
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(Integer userUid) {
+		this.userUid = userUid;
+	}
+
+}

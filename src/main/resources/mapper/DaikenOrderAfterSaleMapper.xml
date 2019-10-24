@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenOrderAfterSaleMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenOrderAfterSale">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="goods_id" property="goodsId" jdbcType="INTEGER" />
+		<result column="goods_status" property="goodsStatus" jdbcType="BIT" />
+		<result column="goods_num" property="goodsNum" jdbcType="SMALLINT" />
+		<result column="refund_reason" property="refundReason"
+			jdbcType="VARCHAR" />
+		<result column="refund_money" property="refundMoney" jdbcType="DOUBLE" />
+		<result column="refund_status" property="refundStatus" jdbcType="SMALLINT" />
+		<result column="compensate_money" property="compensateMoney" jdbcType="DOUBLE" />
+		<result column="compensate_time" property="compensateTime" jdbcType="TIMESTAMP" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+		<result column="refund_img" property="refundImg" jdbcType="VARBINARY" />
+		<result column="sku_no" property="skuNo" jdbcType="VARBINARY" />
+		<result column="refund_record_logistics" property="refundRecordLogistics" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectGoodsReturnNum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+		(SELECT
+		  DATE_FORMAT(b.`create_time`,'%Y-%m-%d') AS name,
+		  SUM(b.`goods_num`) AS y
+		FROM
+		`daiken_order` a,
+		`daiken_order_after_sale` b
+		WHERE a.`data_deleted` = FALSE
+			AND b.`data_deleted` = FALSE
+			AND a.`order_no`= b.`order_no`
+		    <if test="shopId!=null and shopId!=''">
+			AND a.`id_shop` = #{shopId,jdbcType=INTEGER}
+		</if>
+		<if test="dateStart!=null and dateStart!=''">
+			AND b.`create_time` &gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND b.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(b.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+	</select>
+	
+	<!-- 获取售后订单补偿总金额  -->
+	<select id="selectOrderCompensateTotal" resultType="Double">
+		SELECT SUM(a.compensate_money) AS compensate_total FROM
+		`daiken_order_after_sale` a WHERE a.order_no IN (SELECT order_no FROM
+		`daiken_order` b WHERE b.id_shop = #{shopId})
+	</select>
+
+</mapper>

@@ -1,0 +1,274 @@
+package com.kemean.service.common;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.kemean.bean.DaikenUser;
+import com.kemean.bean.DaikenUserBase;
+import com.kemean.constant.DaikenApiResultTips;
+import com.kemean.constant.DaikenConfigEnum;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.DaikenSmsTypeEnum;
+import com.kemean.constant.DaikenUserEnum;
+import com.kemean.constant.DaikenUserEnum.DaikenUserStatusEnum;
+import com.kemean.constant.DaikenUserEnum.DaikenUserTypeEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanOrderEnum;
+import com.kemean.dao.DaikenInvestigateQuestionUserDao;
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.dao.DaikenUserBaseDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.service.SmsService;
+import com.kemean.util.KemeanUtilAid;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.WxLoginAppletsBO;
+import com.kemean.vo.bo.com.CBaseUserInfoBO;
+import com.kemean.vo.bo.com.HobbiesInterestsBO;
+import com.kemean.vo.db.SmsConfigBO;
+import com.kemean.vo.po.api.WxAppletsLoginPO;
+import com.kemean.vo.po.com.SendCodePO;
+
+/**
+ * 
+ * 【公共】用户业务层
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service
+public class UserService {
+
+	/** 需要校验手机号已注册的验证码类型 **/
+	private static final List<Integer> SMS_CHECK = Arrays.asList(DaikenSmsTypeEnum.LOGIN_B.getType());
+
+	@Autowired
+	private SmsService smsService;
+
+	@Autowired
+	private CommonService commonService;
+
+	@Autowired
+	private ThirdService thirdService;
+
+	@Autowired
+	private KemeanRedisService redisService;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenUserBaseDao daikenUserBaseDao;
+
+	@Autowired
+	private DaikenOrderDao daikenOrderDao;
+
+	@Autowired
+	private DaikenInvestigateQuestionUserDao daikenInvestigateQuestionUserDao;
+
+	/**
+	 * 发送验证码
+	 * 
+	 * @author huwei
+	 * @date 2018年6月13日
+	 */
+	public KemeanResult<String> sendCode(SendCodePO sendCodePO) {
+		boolean flag = false;
+		Integer type = sendCodePO.getType();
+		for (DaikenSmsTypeEnum item : DaikenSmsTypeEnum.values()) {
+			if (item.getType().equals(type)) {
+				flag = true;
+			}
+		}
+		if (!flag) {
+			return new KemeanResult<>(false, DaikenApiResultTips.SendCode.TYPE_INVALID);
+		}
+
+		// 登陆检查
+		if (SMS_CHECK.contains(type)) {
+			DaikenUser dbUser = daikenUserDao.selectByPhone(sendCodePO.getPhone(),
+					Arrays.asList(DaikenUserTypeEnum.BUSINESS.getType()));
+			if (dbUser == null) {
+				return new KemeanResult<>(false, DaikenApiResultTips.SendCode.PHONE_NOT_REGISTERED);
+			}
+			if (DaikenUserStatusEnum.DISABLED.getStatus().equals(dbUser.getUserStatus())) {
+				return new KemeanResult<>(false, DaikenApiResultTips.Login.ACCOUNT_DISABLED);
+			}
+		}
+
+		String msg = "";
+		String code = KemeanUtilAid.getRandomNumCode(6);
+
+		// 注册
+		if (DaikenSmsTypeEnum.REGISTERED_B.getType().equals(type)) {
+			if (daikenUserDao.selectByPhone(sendCodePO.getPhone(),
+					Arrays.asList(DaikenUserTypeEnum.BUSINESS.getType())) != null) {
+				return new KemeanResult<>(false, DaikenApiResultTips.SendCode.PHONE_REGISTERED);
+			}
+			msg = String.format(commonService.getConfig(DaikenConfigEnum.SMS_REGISTERED).getRecord(), code);
+		}
+		// 忘记密码
+		if (DaikenSmsTypeEnum.FORGET_B.getType().equals(type)) {
+			msg = String.format(commonService.getConfig(DaikenConfigEnum.SMS_RESET_PASSWORD).getRecord(), code);
+		}
+
+		// 小程序修改手机号
+		if (DaikenSmsTypeEnum.C_UPDATE_PHONE.getType().equals(type)) {
+			msg = String.format(commonService.getConfig(DaikenConfigEnum.SMS_RESET_PHONE).getRecord(), code);
+		}
+
+		// 提现
+		if (DaikenSmsTypeEnum.C_WITHDRAW.getType().equals(type)
+				|| DaikenSmsTypeEnum.B_WITHDRAW.getType().equals(type)) {
+			msg = String.format(commonService.getConfig(DaikenConfigEnum.WITH_DRAW).getRecord(), code);
+		}
+
+		KemeanResult<String> sendResult = daikenSendCode(sendCodePO.getPhone(), msg);
+		if (!sendResult.getSuccess()) {
+			return new KemeanResult<>(false, DaikenApiResultTips.SendCode.GET_FAILURE);
+		}
+		String cachaKey = String.format(DaikenRedisKeyEnum.CODE.getKey(), type, sendCodePO.getPhone());
+		redisService.setString(cachaKey, code);
+		return new KemeanResult<String>();
+	}
+
+	/**
+	 * 项目唯一短信入口
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月6日
+	 */
+	public KemeanResult<String> daikenSendCode(String phone, String msg) {
+		String record = commonService.getConfig(DaikenConfigEnum.SMS_CONFIG).getRecord();
+		return smsService.smsSend(phone, msg, JSONObject.parseObject(record, SmsConfigBO.class));
+	}
+
+	/**
+	 * 小程序登录
+	 * 
+	 * @author huangyujian
+	 * @date 2018年6月25日
+	 */
+	public KemeanResult<CBaseUserInfoBO> miniAppsLogin(WxAppletsLoginPO wxAppletsLoginPO) {
+		WxLoginAppletsBO loginResult = thirdService.appletsLogin(wxAppletsLoginPO.getCode(),
+				wxAppletsLoginPO.getEncryptedData(), wxAppletsLoginPO.getIv());
+		CBaseUserInfoBO bo = new CBaseUserInfoBO();
+		DaikenUser dbUser = daikenUserDao.selectUniqueEntityByProperty("wxOpenId", loginResult.getOpenid());
+		if (dbUser == null) {
+			Date now = new Date();
+			dbUser = new DaikenUser();
+			dbUser.setUpdateTime(now);
+			dbUser.setCreateTime(now);
+			dbUser.setUid(commonService.getUid());
+			dbUser.setUserType(DaikenUserEnum.DaikenUserTypeEnum.CONSUMER.getType());
+			dbUser.setToken(KemeanUtilAid.getUUIDString());
+			// 密码针对用户端无实际操作
+			dbUser.setPassword(KemeanUtilAid.md5("123123"));
+			// 头像
+			if (StringUtils.isNoneBlank(loginResult.getAvatarUrl())) {
+				dbUser.setHeadImg(loginResult.getAvatarUrl());
+			}
+			dbUser.setNickName(loginResult.getNickName());
+			dbUser.setSexMan(loginResult.getGender().equals("1"));
+			dbUser.setWxOpenId(loginResult.getOpenid());
+			dbUser.setUserStatus(DaikenUserEnum.DaikenUserStatusEnum.NORMAL.getStatus());
+			daikenUserDao.saveSelective(dbUser);
+		}
+		// 构造用户的基本信息
+		BeanUtils.copyProperties(dbUser, bo);
+		if (dbUser.getSexMan() != null) {
+			bo.setSexMan(dbUser.getSexMan() ? "男" : "女");
+		}
+
+		// 职业
+		if (dbUser.getProfession() != 0 && dbUser.getProfession() != null) {
+			DaikenUserBase dbUserBase = daikenUserBaseDao.selectById(dbUser.getProfession());
+			bo.setProfessionInt(dbUserBase.getId());
+			bo.setProfession(dbUserBase.getContent());
+		}
+
+		// 兴趣爱好
+		if (StringUtils.isNotBlank(dbUser.getHobbiesInterests())) {
+			List<Integer> hobbiesInterests = JSONArray.parseArray(dbUser.getHobbiesInterests(), Integer.class);
+			List<HobbiesInterestsBO> hobbiesInterestsStr = new ArrayList<HobbiesInterestsBO>(hobbiesInterests.size());
+			if (CollectionUtils.isNotEmpty(hobbiesInterests)) {
+				for (Integer hobbiesInterest : hobbiesInterests) {
+					DaikenUserBase dbUserBase = daikenUserBaseDao.selectById(hobbiesInterest);
+					HobbiesInterestsBO interestsbo = new HobbiesInterestsBO();
+					interestsbo.setHobbiesInterestsStr(dbUserBase.getContent());
+					interestsbo.setId(interestsbo.getId());
+
+					hobbiesInterestsStr.add(interestsbo);
+				}
+			}
+			bo.setHobbiesInterests(hobbiesInterestsStr);
+		}
+		bo.setInvestigatePlatformCharge(
+				Double.valueOf(commonService.getConfig(DaikenConfigEnum.INVESTIGATE_CHARGE).getRecord()));
+		// 资料是否填写完成
+		bo.setIsFillUserInfo(false);
+		if (StringUtils.isNotBlank(dbUser.getPhone()) && StringUtils.isNotBlank(dbUser.getFirstPhone())
+				&& StringUtils.isNotBlank(dbUser.getHeadImg()) && dbUser.getProfession() != null
+				&& StringUtils.isNotBlank(dbUser.getHobbiesInterests())) {
+			// 资料填写完成
+			bo.setIsFillUserInfo(true);
+		}
+		// 未付款订单
+		bo.setNumNoPayOrder(daikenOrderDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idUser", "statusUser" },
+				new Object[] { false, dbUser.getId(), KemeanOrderEnum.OrderStatusUser.NEW_WIAT_PAY.getStatus() }));
+
+		// 未发货订单
+		bo.setNumNoSendOrder(daikenOrderDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idUser", "statusUser", "deletedUser" },
+				new Object[] { false, dbUser.getId(), KemeanOrderEnum.OrderStatusUser.PAYED.getStatus(), false }));
+
+		// 未收货订单
+		bo.setNumNoTakeGoodsOrder(daikenOrderDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idUser", "statusUser", "deletedUser" },
+				new Object[] { false, dbUser.getId(), KemeanOrderEnum.OrderStatusUser.SHIP.getStatus(), false }));
+
+		// 未评价订单
+		bo.setNumNoAppraisalOrder(daikenOrderDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "idUser", "statusUser", "deletedUser" }, new Object[] {
+						false, dbUser.getId(), KemeanOrderEnum.OrderStatusUser.WAIT_APPRAISAL.getStatus(), false }));
+		// 未调研数量
+		bo.setNumNoInvestigate(daikenInvestigateQuestionUserDao
+				.countByProperties(new String[] { "userId", "isFinished" }, new Object[] { dbUser.getId(), false }));
+
+		// TODO 未实现
+		// 消息数量
+		bo.setNumMessage(10);
+		// 冻结资金
+		bo.setFrozenCapital(0.0);
+		// 本月做任务收益 任务（调研，点赞，问卷）
+		bo.setCurrMonthTaskPrice(10.0);
+		// 本月二手卖货收益
+		bo.setCurrMonthSellGoodsPrice(10.0);
+		// 本月买货收益（计算售后红包）
+		bo.setCurrMonthBuyGoodsPrice(10.0);
+		// 本月帮卖收益
+		bo.setCurrMonthHellpGoodsPrice(10.0);
+		// 代卖金额
+		bo.setCurrMonthHellpMoneyPrice(10.0);
+		// 第一次登陆
+		bo.setIsFirstLogin(false);
+		if (dbUser.getCreateTime().equals(dbUser.getUpdateTime())) {
+			bo.setIsFirstLogin(true);
+		}
+		bo.setSearchBoxDefaultValue(commonService.getConfig(DaikenConfigEnum.SEARCH_BOX_DEFAULT_VALUE).getRecord());
+		return new KemeanResult<CBaseUserInfoBO>(bo);
+	}
+
+}

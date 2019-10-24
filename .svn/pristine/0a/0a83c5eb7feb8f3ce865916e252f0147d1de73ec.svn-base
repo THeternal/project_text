@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenOrderAppraisalMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenOrderAppraisal">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+		<result column="id_shop" property="idShop" jdbcType="INTEGER" />
+		<result column="id_user" property="idUser" jdbcType="INTEGER" />
+		<result column="id_goods" property="idGoods" jdbcType="INTEGER" />
+		<result column="user_nick_name" property="userNickName"
+			jdbcType="VARCHAR" />
+		<result column="user_head_img" property="userHeadImg" jdbcType="VARCHAR" />
+		<result column="score" property="score" jdbcType="SMALLINT" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="content_img" property="contentImg" jdbcType="VARCHAR" />
+		<result column="is_new_goods" property="isNewGoods" jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+</mapper>

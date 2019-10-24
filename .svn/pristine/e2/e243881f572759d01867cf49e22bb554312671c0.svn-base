@@ -1,0 +1,238 @@
+package com.kemean.vo.bo.b.shop;
+
+public class ShopInfoBO {
+
+	/**
+	 * 用户类型
+	 */
+	private Integer userType;
+
+	/**
+	 * 商铺图片
+	 */
+	private String shopLogo;
+
+	/**
+	 * 商铺名称
+	 */
+	private String shopName;
+	/**
+	 * 商铺联系电话
+	 */
+	private String shopPhone;
+
+	/**
+	 * 店铺介绍
+	 */
+	private String presentation;
+
+	/**
+	 * 营业状态
+	 */
+	private Boolean workStatus;
+
+	/**
+	 * 商铺类型
+	 */
+	private String shopTypeStr;
+
+	/**
+	 * 商铺状态
+	 */
+	private Integer shopStatus;
+
+	/**
+	 * 平台推荐
+	 */
+	private Boolean platformRecommend;
+
+	/**
+	 * 销量
+	 */
+	private Integer salesVolume;
+
+	/**
+	 * 赞
+	 */
+	private Integer numPraise;
+
+	/**
+	 * 踩
+	 */
+	private Integer numTrample;
+
+	/**
+	 * 一般
+	 */
+	private Integer numCommon;
+
+	/**
+	 * 收藏
+	 */
+	private Integer numCollect;
+
+	/**
+	 * 好评度(百分比形式)
+	 */
+	private Float degreeOfPraise;
+
+	/**
+	 * 物流服务
+	 */
+	private Float logisticsService;
+
+	/**
+	 * 审核状态
+	 */
+	private Integer auditStatus;
+
+	/**
+	 * 消息未读数量
+	 */
+	private Integer messgeNoReadNum;
+
+	public Integer getMessgeNoReadNum() {
+		return messgeNoReadNum;
+	}
+
+	public void setMessgeNoReadNum(Integer messgeNoReadNum) {
+		this.messgeNoReadNum = messgeNoReadNum;
+	}
+
+	public Integer getNumCommon() {
+		return numCommon;
+	}
+
+	public void setNumCommon(Integer numCommon) {
+		this.numCommon = numCommon;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getShopPhone() {
+		return shopPhone;
+	}
+
+	public void setShopPhone(String shopPhone) {
+		this.shopPhone = shopPhone;
+	}
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+	public Boolean getWorkStatus() {
+		return workStatus;
+	}
+
+	public void setWorkStatus(Boolean workStatus) {
+		this.workStatus = workStatus;
+	}
+
+	public String getShopTypeStr() {
+		return shopTypeStr;
+	}
+
+	public void setShopTypeStr(String shopTypeStr) {
+		this.shopTypeStr = shopTypeStr;
+	}
+
+	public Integer getShopStatus() {
+		return shopStatus;
+	}
+
+	public void setShopStatus(Integer shopStatus) {
+		this.shopStatus = shopStatus;
+	}
+
+	public Boolean getPlatformRecommend() {
+		return platformRecommend;
+	}
+
+	public void setPlatformRecommend(Boolean platformRecommend) {
+		this.platformRecommend = platformRecommend;
+	}
+
+	public Integer getSalesVolume() {
+		return salesVolume;
+	}
+
+	public void setSalesVolume(Integer salesVolume) {
+		this.salesVolume = salesVolume;
+	}
+
+	public Integer getNumPraise() {
+		return numPraise;
+	}
+
+	public void setNumPraise(Integer numPraise) {
+		this.numPraise = numPraise;
+	}
+
+	public Integer getNumTrample() {
+		return numTrample;
+	}
+
+	public void setNumTrample(Integer numTrample) {
+		this.numTrample = numTrample;
+	}
+
+	public Integer getNumCollect() {
+		return numCollect;
+	}
+
+	public void setNumCollect(Integer numCollect) {
+		this.numCollect = numCollect;
+	}
+
+	public Float getDegreeOfPraise() {
+		return degreeOfPraise;
+	}
+
+	public void setDegreeOfPraise(Float degreeOfPraise) {
+		this.degreeOfPraise = degreeOfPraise;
+	}
+
+	public Float getLogisticsService() {
+		return logisticsService;
+	}
+
+	public void setLogisticsService(Float logisticsService) {
+		this.logisticsService = logisticsService;
+	}
+
+	public Integer getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(Integer auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public Integer getUserType() {
+		return userType;
+	}
+
+	public void setUserType(Integer userType) {
+		this.userType = userType;
+	}
+
+}

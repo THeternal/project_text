@@ -1,0 +1,294 @@
+package com.kemean.vo.bo.admin.user;
+
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kemean.vo.bo.KemeanIdBO;
+
+public class AdminUserInfoBO extends KemeanIdBO {
+
+	/**
+	 * 唯一标识(代研号)
+	 */
+	private Integer uid;
+
+	/**
+	 * 商铺ID
+	 */
+	private Integer shopId;
+
+	/**
+	 * 用户类型
+	 */
+	private String userTypeStr;
+
+	/**
+	 * 手机号
+	 */
+	private String phone;
+
+	/**
+	 * 始初手机号
+	 */
+	private String firstPhone;
+
+	/**
+	 * 余额
+	 */
+	private Double balancePrice;
+
+	/**
+	 * token余额
+	 */
+	private Double balanceToken;
+
+	/**
+	 * 头像
+	 */
+	private String headImg;
+
+	/**
+	 * 昵称
+	 */
+	private String nickName;
+
+	/**
+	 * 年龄
+	 */
+	private String age;
+
+	/**
+	 * true-男 false-女
+	 */
+	private Boolean sexMan;
+
+	/**
+	 * 职业
+	 */
+	private String professionStr;
+
+	/**
+	 * 兴趣爱好-json
+	 */
+	private List<String> hobbiesInterests;
+
+	/**
+	 * 撸羊毛标识,依赖daiken_red_share表信息
+	 */
+	private Boolean woolLabel;
+
+	/**
+	 * 用户状态
+	 */
+	private Integer userStatus;
+
+	/**
+	 * 省id
+	 */
+	private Integer provinceId;
+
+	/**
+	 * 省名
+	 */
+	private String provinceName;
+
+	/**
+	 * 市id
+	 */
+	private Integer cityId;
+
+	/**
+	 * 市名
+	 */
+	private String cityName;
+
+	/**
+	 * 区id
+	 */
+	private Integer areaId;
+
+	/**
+	 * 区名
+	 */
+	private String areaName;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+	private Date createTime;
+
+	public Integer getUid() {
+		return uid;
+	}
+
+	public void setUid(Integer uid) {
+		this.uid = uid;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public Integer getProvinceId() {
+		return provinceId;
+	}
+
+	public void setProvinceId(Integer provinceId) {
+		this.provinceId = provinceId;
+	}
+
+	public String getProvinceName() {
+		return provinceName;
+	}
+
+	public void setProvinceName(String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public Integer getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(Integer cityId) {
+		this.cityId = cityId;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public Integer getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(Integer areaId) {
+		this.areaId = areaId;
+	}
+
+	public String getAreaName() {
+		return areaName;
+	}
+
+	public void setAreaName(String areaName) {
+		this.areaName = areaName;
+	}
+
+	public String getUserTypeStr() {
+		return userTypeStr;
+	}
+
+	public void setUserTypeStr(String userTypeStr) {
+		this.userTypeStr = userTypeStr;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getFirstPhone() {
+		return firstPhone;
+	}
+
+	public void setFirstPhone(String firstPhone) {
+		this.firstPhone = firstPhone;
+	}
+
+	public Double getBalancePrice() {
+		return balancePrice;
+	}
+
+	public void setBalancePrice(Double balancePrice) {
+		this.balancePrice = balancePrice;
+	}
+
+	public Double getBalanceToken() {
+		return balanceToken;
+	}
+
+	public void setBalanceToken(Double balanceToken) {
+		this.balanceToken = balanceToken;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	public Boolean getSexMan() {
+		return sexMan;
+	}
+
+	public void setSexMan(Boolean sexMan) {
+		this.sexMan = sexMan;
+	}
+
+	public String getProfessionStr() {
+		return professionStr;
+	}
+
+	public void setProfessionStr(String professionStr) {
+		this.professionStr = professionStr;
+	}
+
+	public List<String> getHobbiesInterests() {
+		return hobbiesInterests;
+	}
+
+	public void setHobbiesInterests(List<String> hobbiesInterests) {
+		this.hobbiesInterests = hobbiesInterests;
+	}
+
+	public Boolean getWoolLabel() {
+		return woolLabel;
+	}
+
+	public void setWoolLabel(Boolean woolLabel) {
+		this.woolLabel = woolLabel;
+	}
+
+	public Integer getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(Integer userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+}

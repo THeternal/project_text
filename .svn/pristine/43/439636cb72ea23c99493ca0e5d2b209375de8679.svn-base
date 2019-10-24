@@ -1,0 +1,46 @@
+package com.kemean.vo.bo.c.order;
+
+import java.util.List;
+
+public class GetPaidOrderBO {
+
+	/**
+	 * 数量
+	 */
+	private Integer quantity;
+
+	/**
+	 * 支付价格
+	 */
+	private Double pricePay;
+
+	/**
+	 * 商品信息
+	 */
+	private List<GetPaidOrderGoodsBO> getPaidOrderGoodsBO;
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Double getPricePay() {
+		return pricePay;
+	}
+
+	public void setPricePay(Double pricePay) {
+		this.pricePay = pricePay;
+	}
+
+	public List<GetPaidOrderGoodsBO> getGetPaidOrderGoodsBO() {
+		return getPaidOrderGoodsBO;
+	}
+
+	public void setGetPaidOrderGoodsBO(List<GetPaidOrderGoodsBO> getPaidOrderGoodsBO) {
+		this.getPaidOrderGoodsBO = getPaidOrderGoodsBO;
+	}
+
+}

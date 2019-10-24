@@ -1,0 +1,69 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.DaikenUser;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface DaikenUserDao extends Idao<DaikenUser> {
+
+	DaikenUser selectByToken(String userToken, List<Integer> asList);
+
+	/**
+	 * 根据手机号找用户
+	 * 
+	 * @author huwei
+	 * @date 2018年6月20日
+	 */
+	DaikenUser selectByPhone(String phone, List<Integer> userType);
+
+	/**
+	 * 获取最大uid
+	 * 
+	 * @author huwei
+	 * @date 2018年6月21日
+	 */
+	Integer selectTheMaxId();
+
+	/**
+	 * 平台用户年龄统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	Integer selectCountAge(Integer minAge, Integer maxAge);
+
+	/**
+	 * 精准投放用户（爱好、职业、性别）
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	List<DaikenUser> selectPutUser(List<Integer> userJobId, Boolean userSex, Integer pageNo, Integer pageSize);
+
+	/**
+	 * 已领取token总数
+	 * 
+	 * @author huwei
+	 * @date 2018年7月16日
+	 */
+	Double countToken();
+
+	/**
+	 * 精准投放商品用户（地区、年龄、性别）
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月12日
+	 */
+	List<DaikenUser> selectGoodsPutUser(Integer userId, List<Integer> cityId, List<String> ages, List<Integer> userSex);
+
+	/**
+	 * 用户token统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminChartBO> selectUserToken(Integer userType, String dateStart, String dateEnd, Integer limit);
+
+}

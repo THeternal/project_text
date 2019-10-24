@@ -1,0 +1,73 @@
+package com.kemean.controller.consumer;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.common.CommonService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.com.CloseAccountListBO;
+import com.kemean.vo.bo.com.FinanceOrderListBO;
+import com.kemean.vo.po.com.FinanceOrderListPO;
+import com.kemean.vo.po.com.OrderSettleAccountsPO;
+
+/**
+ * 
+ * 【客户端】财务、钱包控制器
+ * 
+ * @Date 2018年7月9日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/c/finance")
+public class CFinanceController extends DaikenBaseController {
+
+	@Autowired
+	private CommonService commonService;
+
+	/**
+	 * 订单流水
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	@RequestMapping(value = "finance_order_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<FinanceOrderListBO>>> financeOrderList(
+			@RequestBody @Valid FinanceOrderListPO financeOrderListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<FinanceOrderListBO>>>(
+				commonService.financeOrderList(financeOrderListPO));
+	}
+
+	/**
+	 * 结算流水
+	 * 
+	 * @author huwei
+	 * @date 2018年7月9日
+	 */
+	@RequestMapping(value = "close_account_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<CloseAccountListBO>>> closeAccountList(
+			@Valid @RequestBody FinanceOrderListPO financeOrderListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<CloseAccountListBO>>>(
+				commonService.closeAccountList(financeOrderListPO));
+	}
+
+	/**
+	 * 客户端 -- 提现
+	 * 
+	 * @author huwei
+	 * @date 2018年6月7日
+	 */
+	@RequestMapping(value = "order_settle_accounts", method = RequestMethod.POST)
+	public KemeanResult<String> orderSettleAccounts(@Valid @RequestBody OrderSettleAccountsPO orderSettleAccountsPO) {
+		return commonService.orderSettleAccounts(orderSettleAccountsPO, getLoginBusiness());
+	}
+}

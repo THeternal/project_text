@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>IM</title>
+    <link rel="stylesheet" href="im.css">
+</head>
+
+<body>
+
+    <div id="rcs-app"></div>
+
+</body>
+
+<!-- 
+SDK 文档：http://www.rongcloud.cn/docs/web.html#sdk
+-->
+<script src="https://cdn.ronghub.com/RongIMLib-2.3.0.min.js"></script>
+<!-- <script src="./libs/RongEmoji.js"></script> -->
+<script src="https://cdn.ronghub.com/RongEmoji-2.2.6.min.js"></script>
+<script src="https://unpkg.com/qiniu-js@2.4.0/dist/qiniu.min.js"></script>
+
+<script src="./libs/utils.js"></script>
+<script src="./libs/qiniu-upload.js"></script>
+
+<script src="./template.js"></script>
+<script src="./emoji.js"></script>
+<script src="./im.js"></script>
+
+<!-- 实例化 -->
+<script>
+    /*
+        具体使用时：
+        1：切换到自己的 key 和 token
+        2：移除 im.js 里的 sendTextMessage(instance); 这行代码
+        3：自行二次开发
+        4：参考
+        - 用户数据处理 http://support.rongcloud.cn/kb/NjQ5
+        - 消息状态 http://support.rongcloud.cn/kb/NjMz
+        - 集成指南 https://rongcloud.github.io/websdk-demo/integrate/guide.html
+        - 其他 demo https://github.com/rongcloud/websdk-demo
+        */
+    (function () {
+        var appKey = "e5t4ouvpe6m7a";
+        var token =
+            "rkxgZYyINqm4cPJnnGeIB8NHXxCxFBtuJM0tKY8Hz1q9jwHoZhNzM8XlbO6i6ZGa4TthWdwgwbI/5k7npwmNARhSz4lCORNq";
+        RCS.init({
+            appKey: appKey,
+            token: token,
+            target: document.getElementById('rcs-app'),
+            showConversitionList: true,
+            templates: {
+                button: ['<div class="rongcloud-consult rongcloud-im-consult">',
+                    '   <button onclick="RCS.showCommon()"><span class="rongcloud-im-icon">好友列表</span></button>',
+                    '</div>',
+                    '<div class="customer-service" style="display: none;"></div>'
+                ].join('')
+            },
+            //七牛文件上传
+            fileUpload: function (file, type, callback) {
+                $fileUpload(file, type, function (data) {
+                    data.type = type;
+                    console.log(data);
+                    callback(data);
+                });
+            },
+            //会话列表加入头像昵称
+            getUserInfo: function (list, callback) {
+                //获取用户信息
+                var xmlhttp;
+                if (window.XMLHttpRequest) {
+                    xmlhttp = new XMLHttpRequest();
+                } else {
+                    xmlhttp = new ActiveXObject;
+                }
+                xmlhttp.open("POST", "https://dev.kemean.net/daiken/api/common/get_user_info", true);
+                xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xmlhttp.send(JSON.stringify({uids:list}));
+                xmlhttp.onreadystatechange = () => {
+                    if (xmlhttp.readyState == 4) {
+                        if (xmlhttp.status == 200) {
+                            var data = JSON.parse(xmlhttp.response);
+                            if(data.success){
+                                callback(data.data);
+                            }else{
+                                callback([]);
+                            }
+                        } else {
+                            // callback([]);
+                            console.error("获取用户头像失败");
+                        }
+                    }
+                }
+            },
+            extraInfo: {
+                // 当前登陆用户信息
+                userInfo: {
+                    name: "游客",
+                    grade: "VIP"
+                },
+                // 产品信息
+                requestInfo: {
+                    productId: "3200002",
+                    referrer: "3200002",
+                    define: "" // 自定义信息
+                }
+            }
+        });
+    })()
+</script>
+
+</html>

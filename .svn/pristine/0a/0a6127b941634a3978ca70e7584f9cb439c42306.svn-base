@@ -1,0 +1,9 @@
+package com.kemean.mapper;
+
+import com.kemean.bean.DaikenInvestigateOperation;
+import com.kemean.tk.TkMapper;
+
+public interface DaikenInvestigateOperationMapper extends TkMapper<DaikenInvestigateOperation> {
+
+	
+}

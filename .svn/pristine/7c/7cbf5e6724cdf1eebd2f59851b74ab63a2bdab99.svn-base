@@ -1,0 +1,29 @@
+package com.kemean.service.admin;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.po.admin.AdminChartPO;
+
+@Service
+public class AdminPlatformService {
+
+	@Autowired
+	private DaikenOrderDao daikenOrderDao;
+
+	/**
+	 * 平台总销售额
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月9日
+	 */
+	public List<AdminChartBO> platformSaleData(AdminChartPO adminChartPO, Integer limit) {
+		return daikenOrderDao.selectGoodInSaleNum(null, null, null, adminChartPO.getDateStart(),
+				adminChartPO.getDateStart(), limit);
+	}
+
+}

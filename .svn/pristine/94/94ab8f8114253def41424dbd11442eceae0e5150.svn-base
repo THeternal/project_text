@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/global.css}" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body class="layui-fluid">
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-home"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">商品基本信息</font>
+		</div>
+		<div class="layui-card-body layui-form">
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">标题：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_title"
+							th:value="${pageData.title}"
+							placeholder="请输入商品标题" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">分类名称：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.categoryName}" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">售卖类型：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input layui-word-aux"
+							readonly="readonly"
+							th:value="${pageData.salesTypeStr}" />
+					</div>
+				</div>
+				<div class=" layui-col-md4 layui-col-sm4">
+					<label class="layui-form-label">48小时发货：</label>
+					<div class="layui-input-block">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.fortyEight}"
+							class="param_fortyEight"
+							lay-text="是|否" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">销量：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_salesNum"
+							th:value="${pageData.salesNum}"
+							placeholder="请输入销量" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm4 ">
+					<label class="layui-form-label">假一赔十：</label>
+					<div class="layui-input-block">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.fakeGoods}"
+							class="param_fakeGoods"
+							lay-text="是|否" />
+					</div>
+				</div>
+
+				<div
+					class=" layui-col-md6 layui-col-sm5"
+					id="discountTimeDiv">
+					<label class="layui-form-label">折扣时间：</label>
+					<div class="layui-input-inline">
+						<input
+							type="text"
+							class="layui-input param_discountTimeBegin"
+							placeholder="开始时间"
+							th:value="${pageData.discountTimeBegin}" />
+					</div>
+					-
+					<div class="layui-input-inline">
+						<input
+							type="text"
+							class="layui-input param_discountTimeEnd"
+							placeholder="结束时间"
+							th:value="${pageData.discountTimeEnd}" />
+					</div>
+
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">售前红包：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_redBefore"
+							th:value="${pageData.redBefore}"
+							placeholder="请输入售前红包" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4 ">
+					<label class="layui-form-label">售后红包：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_redAfter"
+							th:value="${pageData.redAfter}"
+							placeholder="请输入售后红包" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md3 layui-col-sm5 ">
+					<label class="layui-form-label">上下架：</label>
+					<div class="layui-input-inline">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							th:checked="${pageData.goodsStatus}"
+							class="param_goodsStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4 ">
+					<label class="layui-form-label">帮代卖：</label>
+					<div class="layui-input-block">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							lay-filter="purchasing"
+							th:checked="${pageData.purchasing}"
+							class="param_purchasing"
+							lay-text="是|否" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4 ">
+					<label class="layui-form-label">代卖提成：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_pricePurchasing"
+							th:value="${pageData.pricePurchasing}"
+							placeholder="请输入代卖提成" />
+					</div>
+				</div>
+
+			</div>
+
+			<div
+				class="layui-row layui-form"
+				style="margin-top: 10px;">
+
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">是否包邮：</label>
+					<div class="layui-input-block">
+						<input
+							type="checkbox"
+							lay-skin="switch"
+							lay-filter="postageStatus"
+							th:checked="${pageData.postage} eq '0 '"
+							class="param_postageStatus"
+							lay-text="是|否" />
+					</div>
+				</div>
+
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">邮费：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_postage"
+							th:value="${pageData.postage}"
+							placeholder="请输入邮费" />
+					</div>
+				</div>
+			</div>
+			<div
+				class="layui-row layui-form"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md3 layui-col-sm4 ">
+					<label class="layui-form-label">最低售价：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_minPriceSales"
+							th:value="${pageData.minPriceSales}"
+							placeholder="请输入最低售价" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">门市价：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_minPriceStore"
+							th:value="${pageData.minPriceStore}"
+							placeholder="请输入门市价" />
+					</div>
+				</div>
+				<div class=" layui-col-md3 layui-col-sm4">
+					<label class="layui-form-label">折扣：</label>
+					<div class="layui-input-block">
+						<input
+							type="text"
+							class="layui-input param_minDiscount"
+							th:value="${pageData.minDiscount}"
+							placeholder="请输入折扣" />
+					</div>
+				</div>
+
+			</div>
+
+			<div
+				class="layui-row"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md6 layui-col-sm6">
+					<label class="layui-form-label">描述：</label>
+					<div class="layui-input-block">
+						<textarea
+							class="layui-textarea param_descStr"
+							th:text="${pageData.descStr}"
+							placeholder="请输入商品描述"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-picture-o"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">商品图文信息</font>
+		</div>
+		<div class="layui-card-body">
+			<div
+				class="layui-row layui-form"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md10 layui-col-sm10 ">
+					<label class="layui-form-label">轮播图：</label>
+					<div
+						class="layui-input-block"
+						id="img_lunbo"></div>
+				</div>
+			</div>
+			<div
+				class="layui-row layui-form"
+				style="margin-top: 10px;">
+				<div class=" layui-col-md10 layui-col-sm10 ">
+					<label class="layui-form-label">描述图：</label>
+					<div
+						class="layui-input-block"
+						id="img_desc"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div
+		class="layui-card"
+		style="margin-top: 30px;">
+		<div class="layui-card-header">
+			<i
+				class="fa fa-table"
+				aria-hidden="true"></i>&nbsp;<font
+				color="#009688"
+				style="font-weight: bold;">商品SKU信息</font>
+		</div>
+		<div class="layui-card-body">
+			<table
+				class="layui-hide"
+				id="pageData"></table>
+		</div>
+	</div>
+
+	<blockquote
+		class="layui-elem-quote"
+		style="background-color: #F0F0F0;">
+		<div class="layui-row layui-col-md-offset8">
+			<button
+				id="platform_distribution_button"
+				class="layui-btn"
+				onclick="updateShop()">
+				<i
+					class="fa fa-edit"
+					aria-hidden="true"></i>&nbsp;修改
+			</button>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+	</blockquote>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var url_page_list_data = /*[[@{/shop/goods/new}]]*/;
+	var pageData = /*[[${pageData}]]*/;
+	var url_uoload_img = /*[[@{/admin/open/upload}]]*/;
+	var url_page_data = /*[[@{/shop/goods/new_sku_data(objId=${pageData.id})}]]*/;
+	var url_update_goods = /*[[@{/shop/goods/new_update}]]*/;
+	var url_update_goods_sku = /*[[@{/shop/goods/new_sku_update}]]*/;
+	
+	 var table;
+	 var form;
+    layui.use(['table', 'layer','form','upload','laydate'], function () {
+    	 table = layui.table;
+    	 form=layui.form;
+    	 var laydate = layui.laydate;
+    	//时间选择器
+    	  laydate.render({
+    	    elem: '.param_discountTimeBegin'
+    	    ,type: 'datetime'
+    	  });
+    	  laydate.render({
+    	    elem: '.param_discountTimeEnd'
+    	    ,type: 'datetime'
+    	  });
+    	  
+    	  //监听【是否包邮】操作
+ 		 form.on('switch(postageStatus)', function(obj){
+	 		 if(obj.elem.checked){
+	 			$('.param_postage').prop("disabled",true).addClass("layui-word-aux");
+	 		 }else{
+	 			$('.param_postage').prop("disabled",false).removeClass("layui-word-aux");
+	 		 }
+ 		 });
+    	  
+ 		//监听【是否帮代卖】操作
+ 		 form.on('switch(purchasing)', function(obj){
+	 		 if(obj.elem.checked){
+	 			$(".param_pricePurchasing").prop("disabled",false).removeClass("layui-word-aux");
+	 		 }else{
+	 			$(".param_pricePurchasing").prop("disabled",true).addClass("layui-word-aux");
+	 		 }
+ 		 });
+    	  
+    	table = layui.table;
+       	 table.render({
+            elem: '#pageData',
+            url:url_page_data,
+            cols: [[
+            	{
+                    field: 'skuNo',
+                    title: 'sku编号'
+                }, 	
+                {
+                    field: 'recordType',
+                    title: '规格记录'
+                },
+                {
+                    field: 'priceStore',
+                    title: '门市价'
+                }, 	
+                {
+                    field: 'priceSales',
+                    title: '销售价'
+                }, 	
+                {
+                    field: 'discount',
+                    title: '折扣'
+                }, 	
+                {
+                    field: 'stock',
+                    title: '库存'
+                }, 	
+                {
+                    field: 'stockFreeze',
+                    title: '冻结库存'
+                },{
+                    field: 'salesNum',
+                    title: '销售数量'
+                }
+                ,{
+    				toolbar : "#operateResetPrice",
+                    title: '操作'
+    			}
+                ]],
+            page: true,
+            id: 'dataTable',
+        });
+    });
+	 
+	 
+   
+    $(function(){
+    	//轮播图
+    	$.each(pageData.imgsHead, function(i, elt) {
+			var imgHtml='<div id="delImg'+i+'" class="layui-col-md2 layui-col-sm3">'
+			+'<img class="param_imgs" src="'+elt+'" width="200px" onclick="visitImg(this.src);" /></div>';
+				$("#img_lunbo").append(imgHtml);
+		})
+		
+		//描述图
+    	$.each(pageData.imgsDesc, function(i, elt) {
+			var imgHtml='<div id="delImg'+i+'" class="layui-col-md2 layui-col-sm3">'
+			+'<img class="param_imgs" src="'+elt+'" width="200px" onclick="visitImg(this.src);" /></div>';
+				$("#img_desc").append(imgHtml);
+		});
+    	
+    	//售价类型为  限时折扣时，显示 折扣时间
+      if(pageData.salesType==1102){
+    	  $("#discountTimeDiv").show();
+      }else{
+    	  $("#discountTimeDiv").hide();
+      }
+		
+      
+	  //是否包邮
+		
+ 		 if(pageData.postage == 0){
+ 			$('.param_postage').prop("disabled",true).addClass("layui-word-aux");
+ 		 }else{
+ 			$('.param_postage').prop("disabled",false).removeClass("layui-word-aux");
+ 		 }
+	  
+		//是否帮代卖
+		
+ 		 if(pageData.purchasing){
+ 			$(".param_pricePurchasing").prop("disabled",false).removeClass("layui-word-aux");
+ 		 }else{
+ 			$(".param_pricePurchasing").prop("disabled",true).addClass("layui-word-aux");
+ 		 }
+    	
+    })
+    
+	 
+    function resetPriceDiv(priceSales,priceStore,discount,salesNum,stock){
+		return	  '<div class="layui-form-item"><label class="layui-form-label">销售价格:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_priceSales" value="'+priceSales+'" placeholder="请输入销售价格" /></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">门市价:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_priceStore" value="'+priceStore+'" placeholder="请输入门市价"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">折扣:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_discount" value="'+discount+'" placeholder="请输入折扣"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">库存:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_stock" value="'+stock+'" placeholder="请输入库存"/></div></div>'
+				 +'<div class="layui-form-item"><label class="layui-form-label">销售数量:</label>'
+				 +'<div class="layui-input-block"><input type="text" class="layui-input param_goods_salesNum" value="'+salesNum+'"  placeholder="请输入销售数量" /></div></div>';
+	}
+	
+	
+	function resetPrice(objId,priceSales,priceStore,discount,salesNum,stock,stockFreeze){
+		layer.open({
+			title : "修改价格信息",
+			content :resetPriceDiv(priceSales,priceStore,discount,salesNum,stock),
+			skin : "layui-layer-molv",
+			area : [ '387px', '395px' ],
+			btn : [ '修改' ],
+			offset: '100px',
+			btn1 : function() {
+				var paramPriceSales=$(".param_priceSales").val();
+				var paramPriceStore=$(".param_priceStore").val();
+				var paramDiscount=$(".param_discount").val();
+				var paramSalesNum=$(".param_goods_salesNum").val();
+				var paramStock=$(".param_stock").val();
+				if(!paramPriceSales){
+					layer.msg("请输入销售价格");
+					return false;
+				}
+				if(!paramPriceStore){
+					layer.msg("请输入门市价");
+					return false;
+				}
+				if(!paramDiscount){
+					layer.msg("请输入折扣");
+					return false;
+				}
+				if(!paramSalesNum){
+					layer.msg("请输入销售数量");
+					return false;
+				}
+				
+				if(!paramStock){
+					layer.msg("请输入库存数");
+					return false;
+				}
+				
+				
+				if(parseInt(paramSalesNum)>parseInt(paramStock)+stockFreeze){
+					layer.msg("库存数不能小于销售数");
+					
+					return false;
+				}
+				
+				var stock=parseInt(paramStock)-parseInt(paramSalesNum);
+				$.post(url_update_goods_sku, 
+						{priceSales:paramPriceSales,
+						priceStore:paramPriceStore,
+						discount:paramDiscount,
+						salesNum:paramSalesNum,
+						stock:stock,
+						objId:objId}, function(data, textStatus, req) {
+							layer.msg(data.info);
+							 table.reload("dataTable");
+				});
+			},
+			closeBtn : 1,
+			anim : 0
+		})	
+	}
+	
+	function updateShop(){
+		
+		var paramTitle = $(".param_title").val();
+		
+		if(!paramTitle){
+			layer.msg('标题不能为空');
+			return false;
+		}
+		
+		var paramFortyEight=$(".param_fortyEight").prop("checked");
+		
+		var paramPostage=$(".param_postage").val();
+		var paramPostageStatus=$(".param_postageStatus").prop("checked");
+		if(!paramPostageStatus){
+			paramPostage=0;
+		}
+		
+		var paramFakeGoods=$(".param_fakeGoods").prop("checked");
+		
+		var paramDiscountTimeBegin = $(".param_discountTimeBegin").val();
+		var paramDiscountTimeEnd = $(".param_discountTimeEnd").val();
+		
+		
+		 /*<![CDATA[*/    
+		  if(pageData.salesType == 1102){
+				 
+		if (!paramDiscountTimeEnd  && paramDiscountTimeBegin) {
+			
+			layer.msg('结束时间不能为空');
+			return false;
+		}
+		 
+		if (!paramDiscountTimeBegin  && paramDiscountTimeEnd) {
+			
+			layer.msg('开始时间不能为空');
+			return false;
+		}
+		
+		if(Date.parse(paramDiscountTimeBegin)>Date.parse(paramDiscountTimeEnd)){
+			
+			layer.msg('开始时间不能大于结束时间');
+			return false;
+		}
+	
+  	}
+		/*]]>*/
+		
+		
+		
+		
+		var paramRedBefore = $(".param_redBefore").val();
+		if(!paramRedBefore){
+			layer.msg('售前红包不能为空');
+			return false;
+		}
+		
+		var paramRedAfter = $(".param_redAfter").val();
+		
+		if(!paramRedAfter){
+			layer.msg('售后红包不能为空');
+			return false;
+		}
+		
+		var paramPurchasing=$(".param_purchasing").prop("checked");
+		
+		var paramPricePurchasing = $(".param_pricePurchasing").val();
+	
+		var paramSalesNum = $(".param_salesNum").val();
+		
+		
+		
+		var paramGoodsStatus= $(".param_goodsStatus").prop("checked");
+		
+		
+		var paramMinPriceSales = $(".param_minPriceSales").val();
+		
+		var paramMinDiscount = $(".param_minDiscount").val();
+		
+		var paramDescStr = $(".param_descStr").val();
+		
+		if(!paramDescStr){
+			layer.msg('商品描述不能为空');
+			return false;
+		}
+		
+		
+		$.post(url_update_goods,{objId:pageData.id,title:paramTitle,fortyEight:paramFortyEight,postage:paramPostage,fakeGoods:paramFakeGoods,
+			discountTimeBegin:paramDiscountTimeBegin,discountTimeEnd:paramDiscountTimeEnd,redBefore:paramRedBefore,redAfter:paramRedAfter,
+			purchasing:paramPurchasing,pricePurchasing:paramPricePurchasing,salesNum:paramSalesNum,
+			goodsStatus:paramGoodsStatus,minPriceSales:paramMinPriceSales,minDiscount:paramMinDiscount,descStr:paramDescStr
+		},function(data, textStatus, req){
+				showResultMsgAndJumpByFlag(data.success,data.info,url_page_list_data);
+		});
+	}
+	
+</script>
+
+<script
+	type="text/html"
+	id="operateResetPrice">
+		<button class="layui-btn layui-btn-sm" onclick="resetPrice({{d.objId}},{{d.priceSales}},{{d.priceStore}},
+					{{d.discount}},{{d.salesNum}},{{d.stock}},{{d.stockFreeze}})"><i
+				class="fa fa-edit"
+				aria-hidden="true"></i>&nbsp;修改</button> 
+</script>
+
+</html>

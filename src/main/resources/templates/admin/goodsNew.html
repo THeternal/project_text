@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+		<div class="layui-col-md2 layui-col-sm3">
+			<blockquote
+				class="layui-elem-quote"
+				th:text="'当前商铺：'+${shopData.name}"></blockquote>
+		</div>
+
+	</div>
+	<div class="layui-row">
+
+		<div class="layui-col-md4 layui-col-sm4  layui-col-md-offset1">
+			<div class="layui-block">
+				<label class="layui-form-label">标题：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_title"
+						placeholder="请输入商品名称,可模糊查询" />
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-block layui-form">
+				<label class="layui-form-label">售卖类型：</label>
+				<div class="layui-input-inline">
+					<select class="param_salesType">
+						<option
+							value=""
+							id="all">全部</option>
+						<option value="1101">正常售卖</option>
+						<option value="1102">限时折扣</option>
+						<option value="1103">亏本走量</option>
+						<option value="1104">9.9包邮</option>
+						<option value="1105">名牌折扣</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div
+		class="layui-row"
+		style="margin: 10px 0px;">
+
+		<div class="layui-col-md3 layui-col-sm4 layui-col-md-offset1">
+			<div class="layui-block">
+				<label class="layui-form-label">商品编号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_goodsUid"
+						placeholder="请输入商品编号" />
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-md4 layui-col-sm4">
+			<div class="layui-block layui-form">
+				<label class="layui-form-label">审核状态：</label>
+				<div class="layui-input-inline">
+					<select class="param_auditStatus">
+						<option
+							value=""
+							id="all">全部</option>
+						<option value="1201">待审核</option>
+						<option value="1301">审核失败</option>
+						<option value="1401">审核成功</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="layui-col-md4 layui-col-sm4">
+			<button
+				class="layui-btn"
+				onclick="search()">
+				<i class="layui-icon">&#xe615;</i> 搜索
+			</button>
+			<button
+				class="layui-btn copy_button"
+				onclick="copyGoodsFun()">
+				<i class="fa fa-clone" aria-hidden="true"></i> &nbsp;复制
+			</button>
+			<a
+				class="layui-btn"
+				th:href="@{/admin/goods/new_add_page(shopId=${shopData.id})}"> <i
+				class="fa fa-plus"
+				aria-hidden="true"></i>&nbsp;新增
+			</a>
+			<button
+				class="layui-btn layui-btn-primary"
+				onclick="history.back();">
+				<i
+					class="fa fa-arrow-left"
+					aria-hidden="true"></i>&nbsp;返回
+			</button>
+		</div>
+
+	</div>
+
+	<div class="layui-row">
+		<table
+			class="layui-hide"
+			id="pageData"
+			lay-filter="checkId"></table>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	var shopId=/*[[${shopId}]]*/;
+    var url_page_data = /*[[@{/admin/goods/news_page_data(shopId=${shopData.id}) }]]*/;
+    var url_shop_status_operate = /*[[@{/admin/goods/status_operate}]]*/;
+   	var url_goods_delete=/*[[@{/admin/goods/new_del}]]*/;
+   	var url_goods_info=/*[[@{/admin/goods/news_info_page}]]*/;
+	var url_goods_copy_page=/*[[@{/admin/goods/news_copy_page}]]*/;
+   	var goodsId=new Array();
+   	var table;
+    layui.use(['table', 'laydate','element'], function () {
+         table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        //监听【商铺状态】操作
+		 form.on('switch(goodsStatus)', function(obj){
+			 if(this.name!=1401){
+				 layer.msg('审核未通过,商品上架失败!');
+				 table.reload("dataTable");
+				 return false;
+			 }
+			 
+			 if(!obj.elem.checked){
+				 layer.open({
+						title : "商品下架",
+						content : "确认下架此商品吗?",
+						skin : "layui-layer-molv",
+						area : [ '500px', '180px' ],
+						btn : [ '确定' ,'取消'],
+						offset : '100px',
+						btn1 : function() {
+							$.get(url_shop_status_operate,{objId:obj.elem.value,status:false,tjOperate:false},function(result){
+								layer.msg(result.info);
+								if (result.success) {
+									table.reload("dataTable");
+								}
+							});
+						},
+						btn2:function(){
+							table.reload("dataTable");
+						},
+						closeBtn : 1,
+						anim : 0
+					});
+			 }else{
+				 $.get(url_shop_status_operate,{objId:this.value,status:true,tjOperate:false},function(result){
+						layer.msg(result.info);
+						if (result.success) {
+							table.reload("dataTable");
+						}
+					});
+			 }
+		 	
+		 });
+        
+        table.on('checkbox(checkId)', function(obj) {
+        	
+        	
+        	goodsId=getCheckId();
+        	
+        })
+        
+
+        table.render({
+            elem: '#pageData',
+            url: url_page_data,
+            cols: [[{ type:'checkbox'},
+            	{
+                    field: 'goodsUid',
+                    title: '商品编号',
+                },{
+                    field: 'categoryName',
+                    title: '分类名称',
+                },{
+	                field: 'salesTypeStr',
+	                title: '优惠种类'
+	            }, {
+	                title: '商品标题',
+	                field: 'title'
+	            },{
+                    field: 'salesNum',
+                    title: '销量'
+                },{
+                    templet : '#switch_recommend',
+                    title: '推荐'
+                },{
+                	field : 'auditStatusStr',
+                	title : '审核状态'
+                },{
+                    templet : '#switch_goods_status',
+                    title: '商品状态'
+                },{
+                    field: 'createTime',
+                    title: '创建时间'
+                },{
+                    toolbar: "#operate",
+                    title: '操作',
+                    width:280
+                }]],
+            page: true,
+            id: 'dataTable'
+        });
+    });
+    
+    function getCheckId(){
+    	var ids=new Array();
+		var checkStatus = table.checkStatus('dataTable'); 
+		var set = checkStatus.data;
+	    $(set).each(function(i,e) {
+	       ids.push(e.objId);
+	    });
+	    return ids;
+    }
+    
+    //复制商品
+    function copyGoodsFun(){
+    	
+    	if(goodsId.length>1){
+    		layer.msg('最多只能选择一条商品');
+    		 return false;
+    	}
+    	
+    	if(goodsId==""){
+    		layer.msg('至少选择一条数据');
+	    	 return false;
+    	}
+    	layer.open({
+			title : "商品复制",
+			content : "确认复制此商品吗?",
+			skin : "layui-layer-molv",
+			area : [ '500px', '180px' ],
+			btn : [ '确定' ,'取消'],
+			offset : '100px',
+			btn1 : function() {
+					window.location=url_goods_copy_page+"?objId="+goodsId;
+			},
+			closeBtn : 1,
+			anim : 0
+		});
+    	
+    }
+
+    function search() {
+        var table = layui.table;
+        var paramTitle = $(".param_title").val();
+        var paramSalesType = $(".param_salesType").val();
+        var param_goodUid=$(".param_goodsUid").val();
+        var auditStatus=$(".param_auditStatus").val();
+        table.reload("dataTable",
+            {
+                page: {curr: 1},
+                where: {
+                	title: paramTitle,
+                	salesType:paramSalesType,
+                	goodsNo:param_goodUid,
+                	auditStatus:auditStatus      	
+                }
+            });
+       
+    }
+ 
+</script>
+
+<script
+	type="text/html"
+	id="switch_recommend">
+    {{# if(d.recommend){ }}
+    	<input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="是|否" lay-filter="recommend"
+          	 checked="checked"></input>
+    {{# }else{ }}
+    	<input type="checkbox" value="{{d.objId}}" lay-skin="switch" lay-text="是|否" lay-filter="recommend"></input>
+    {{# } }}
+</script>
+
+
+<script
+	type="text/html"
+	id="switch_goods_status">
+    {{# if(d.goodsStatus){ }}
+    <input type="checkbox" value="{{d.objId}}" name="{{d.auditStatus}}" lay-skin="switch"  class="goodsStatus_operate" lay-text="上架|下架" lay-filter="goodsStatus"
+           checked="checked"></input>
+    {{# }else{ }}
+    <input type="checkbox" value="{{d.objId}}" name="{{d.auditStatus}}" lay-skin="switch" class="goodsStatus_operate" lay-text="上架|下架" lay-filter="goodsStatus"></input>
+    {{# } }}
+ 	
+</script>
+
+
+
+<script
+	type="text/html"
+	id="operate">
+	<a th:href="@{/admin/goods/news_info_page?objId={{d.objId}}}" class="layui-btn layui-btn-sm"><i class="fa fa-info" aria-hidden="true"></i>&nbsp;详情</a>
+<button class="layui-btn layui-btn-sm" onclick="deleteByObjId({{d.objId}},url_goods_delete)"><i class="fa fa-trash" aria-hidden="true"></i>&nbsp;删除</button>
+</script>
+</html>

@@ -1,0 +1,79 @@
+package com.kemean.conf;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.kemean.constant.KemeanConstant;
+import com.kemean.interceptor.AdminSaleLoginInterceptor;
+import com.kemean.interceptor.AdminShopLoginInterceptor;
+import com.kemean.interceptor.BusinessLoginInterceptor;
+import com.kemean.interceptor.ConsumerLoginInterceptor;
+import com.kemean.interceptor.KemeanAdminLoginInterceptor;
+
+/**
+ * 
+ * 登录拦截
+ * 
+ * @Date 2018年6月6日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Configuration
+public class LoginConf extends WebMvcConfigurerAdapter {
+
+	@Autowired
+	private ConsumerLoginInterceptor consumerLoginInterceptor;
+
+	@Autowired
+	private BusinessLoginInterceptor businessLoginInterceptor;
+
+	@Autowired
+	private KemeanAdminLoginInterceptor kemeanAdminLoginInterceptor;
+
+	@Autowired
+	private AdminShopLoginInterceptor adminShopLoginInterceptor;
+
+	@Autowired
+	private AdminSaleLoginInterceptor adminSaleLoginInterceptor;
+
+	/**
+	 * 消费端API接口前缀
+	 */
+	private static final String CONSUMER_API_PREFIX = "/api/c/";
+
+	/**
+	 * 消费端不需要拦截的API地址
+	 */
+	private static final String[] CONSUMER_NOT_INTERCEPTOR = new String[] { "/api/common/mini_apps_login",
+			CONSUMER_API_PREFIX + "order/get_paid_order", CONSUMER_API_PREFIX + "pay/pay_sign_wx",
+			CONSUMER_API_PREFIX + "message/im_record" };
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		// 消费端
+		registry.addInterceptor(consumerLoginInterceptor).addPathPatterns("/api/c/**")
+				.excludePathPatterns(CONSUMER_NOT_INTERCEPTOR);
+
+		// 商户端
+		registry.addInterceptor(businessLoginInterceptor)
+				.excludePathPatterns(new String[] { KemeanConstant.KEMEAN_URL_API, "/api/b/open/**" })
+				.addPathPatterns("/api/b/**");
+		// 管理后台(平台)
+		registry.addInterceptor(kemeanAdminLoginInterceptor)
+				.excludePathPatterns(new String[] { KemeanConstant.KEMEAN_URL_ADMIN, "/admin/open/**" })
+				.addPathPatterns("/admin/**");
+
+		// 管理后台(商家)
+		registry.addInterceptor(adminShopLoginInterceptor)
+				.excludePathPatterns(new String[] { KemeanConstant.KEMEAN_URL_ADMIN, "/shop/open/**" })
+				.addPathPatterns("/shop/**");
+
+		// 管理后台(销售)
+		registry.addInterceptor(adminSaleLoginInterceptor)
+				.excludePathPatterns(new String[] { KemeanConstant.KEMEAN_URL_ADMIN, "/sale/open/**" })
+				.addPathPatterns("/sale/**");
+
+	}
+}

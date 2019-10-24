@@ -1,0 +1,142 @@
+package com.kemean.dao.impl;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.dao.DaikenGoodsNewDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenGoodsNewMapper;
+import com.kemean.vo.bo.admin.AdminChartBO;
+import com.kemean.vo.mysql.DaikenGoodsNewDB;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class DaikenGoodsNewDaoImpl extends DaoSupport<DaikenGoodsNew> implements DaikenGoodsNewDao {
+
+	@Autowired
+	private DaikenGoodsNewMapper mapper;
+
+	@Override
+	protected Mapper<DaikenGoodsNew> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<DaikenGoodsNewDB> newGoodsList(String descStr, Double minPriceSales, Double maxPriceSales,
+			List<Integer> categoryIds, Boolean purchasing, String keyWord) {
+		// Example example = new Example(DaikenGoodsNew.class);
+		// Criteria criteria = example.createCriteria();
+		// criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		// criteria.andGreaterThanOrEqualTo("minPriceSales", minPriceSales);
+		// criteria.andLessThanOrEqualTo("minPriceSales", maxPriceSales);
+		// criteria.andIn("categoryId", categoryIds);
+		// criteria.andEqualTo("goodsStatus", true);
+		// if (purchasing) {
+		// criteria.andEqualTo("purchasing", true);
+		// }
+		//
+		// if (StringUtils.isNotBlank(keyWord)) {
+		// criteria.andLike("title", keyWord);
+		// criteria.andLike("minPriceStore", keyWord);
+		// }
+		// if (StringUtils.isNotBlank(descStr)) {
+		// example.setOrderByClause(descStr + " DESC");
+		// }
+		return mapper.newGoodsList(descStr, minPriceSales, maxPriceSales, categoryIds, purchasing, keyWord);
+
+	}
+
+	@Override
+	public List<DaikenGoodsNew> goodsActivity(List<Integer> salesTypes, String descStr, Double minPriceSales,
+			Double maxPriceSales, Integer pageNo, Integer pageSize, List<Integer> categoryIds) {
+		Example example = new Example(DaikenGoodsNew.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("salesType", salesTypes);
+		criteria.andGreaterThanOrEqualTo("minPriceSales", minPriceSales);
+		criteria.andLessThanOrEqualTo("minPriceSales", maxPriceSales);
+		criteria.andIn("categoryId", categoryIds);
+		criteria.andEqualTo("goodsStatus", true);
+		if (StringUtils.isNotBlank(descStr)) {
+			example.setOrderByClause(descStr + " DESC");
+		}
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenGoodsNew> recommendGoods(Integer pageNo, Integer pageSize) {
+		Example example = new Example(DaikenGoodsNew.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("goodsStatus", true);
+		example.setOrderByClause(" sales_num DESC");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenGoodsNew> goodsList(List<Integer> salesTypes, String title, Integer shopId, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenGoodsNew.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("salesType", salesTypes);
+		criteria.andEqualTo("shopId", shopId);
+		if (StringUtils.isNotBlank(title)) {
+			criteria.andLike("title", "%" + title + "%");
+		}
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenGoodsNew> goodsInfo(List<Integer> categoryIds, String title, Integer shopId, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenGoodsNew.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andIn("categoryId", categoryIds);
+		criteria.andEqualTo("shopId", shopId);
+		criteria.andEqualTo("goodsStatus", true);
+		if (StringUtils.isNotBlank(title)) {
+			criteria.andLike("title", "%" + title + "%");
+		}
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenGoodsNew> search(String searchInfo) {
+		Example example = new Example(DaikenGoodsNew.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("goodsStatus", true);
+		criteria.andLike("title", "%" + searchInfo + "%");
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodsRedBefore(Integer shopId, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodsRedBefore(shopId, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodsRedAfter(Integer shopId, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodsRedAfter(shopId, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodsPurchasing(Integer shopId, String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodsPurchasing(shopId, dateStart, dateEnd, limit);
+	}
+
+}

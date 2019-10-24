@@ -1,0 +1,25 @@
+package com.kemean.vo.bo.com;
+
+public class RecommendGoodsBO {
+
+	private Integer goodsId;
+
+	private String img;
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+}

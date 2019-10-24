@@ -1,0 +1,43 @@
+package com.kemean.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import com.kemean.bean.KemeanFinanceOrder;
+import com.kemean.dao.su.Idao;
+
+public interface KemeanFinanceOrderDao extends Idao<KemeanFinanceOrder> {
+
+	/**
+	 * 【客户端】钱包信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月13日
+	 */
+	List<KemeanFinanceOrder> wallet(Integer userId, Date plusDay, Integer pageNo, Integer pageSize);
+
+	/**
+	 * 【商家端】 订单流水
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	List<KemeanFinanceOrder> financeOrderList(Date plusDay, Integer shopId, Integer pageNo, Integer pageSize);
+
+	/**
+	 * 冻结资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	Double freezeMoney(Integer shopId, Date cycleDate);
+
+	/**
+	 * 可提现资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	Double waitMoney(Integer shopId, Date cycleDate);
+
+}

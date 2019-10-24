@@ -1,0 +1,31 @@
+#极光推送
+jg.ios.online=false
+#激光base64
+jg.base64=NWUzM2ZmMGJiZGFhMzIxODdlYzE3MjU4OmVkYTFlZjMyMTZhZDZkMWJmZThhYWU5ZA==
+#激光base64 【商家端】
+jg.base64.b=YTFmZGY5YjkxYzE0OTM4NGIzMzdmZDkxOjUwMzZkY2JkZjY4ZGVhMjhiYmYzNjdjNA==
+#极光base64 【客户端】
+jg.base64.c=NWUzM2ZmMGJiZGFhMzIxODdlYzE3MjU4OmVkYTFlZjMyMTZhZDZkMWJmZThhYWU5ZA==
+
+#七牛AK
+qn.ak=HgPbcInvEbyJ6kdFpHfX6Fq700OmHR2NYzGjOic9
+#七牛SK
+qn.sk=sfqkBVw-s3DLeH65iwjlUgN9bcySrLjhNQrsn_WE
+#七牛存储空间
+qn.bucket=daiken
+#七牛访问前缀
+qn.visit.prefix=http://qn.zzldaiyan.com/
+#存储文件夹
+qn.upload.folder=upload/
+
+#融云key
+im.ry.key=e5t4ouvpe6m7a
+#融云Secret
+im.ry.app-secret=lkjuQTttbm
+#融云平台客服uid
+im.ry.service-uid=666
+
+#快递鸟 Api key
+kd.bird.key=91fd39fb-b238-45ce-8ae1-a77f01241d03
+#快递鸟电商id
+kd.bird.id=test1364773

@@ -1,0 +1,94 @@
+package com.kemean.dao;
+
+import java.util.Date;
+import java.util.List;
+
+import com.kemean.bean.KemeanFinanceOrder;
+import com.kemean.dao.su.Idao;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+public interface KemeanFinanceOrderDao extends Idao<KemeanFinanceOrder> {
+
+	/**
+	 * 【客户端】钱包信息
+	 * 
+	 * @author huwei
+	 * @date 2018年7月13日
+	 */
+	List<KemeanFinanceOrder> wallet(Integer userId, Date plusDay, Integer pageNo, Integer pageSize);
+
+	/**
+	 * 【商家端】 订单流水
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	List<KemeanFinanceOrder> financeOrderList(Date plusDay, Integer shopId, Integer pageNo, Integer pageSize);
+
+	/**
+	 * 【管理平台】用户流水账单
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月14日
+	 */
+	List<KemeanFinanceOrder> userFinanceOrderList(String orderNo, String userName, String dateStart, String dateEnd,
+			Integer pageNo, Integer pageSize);
+
+	/**
+	 * 冻结资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	Double freezeMoney(Integer shopId, Date cycleDate);
+
+	/**
+	 * 可提现资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	Double waitMoney(Integer shopId, Date cycleDate);
+
+	/**
+	 * 本月做任务收入
+	 * 
+	 * @author huwei
+	 * @date 2018年7月16日
+	 */
+	Double currMonthPrice(Integer userId, List<Integer> financeTypes, Boolean flag);
+
+	/**
+	 * 帮卖总金额
+	 * 
+	 * @author huwei
+	 * @date 2018年7月16日
+	 */
+	Double hellpGoodsSumMoneyPrice(Integer id);
+
+	/**
+	 * 总资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月16日
+	 */
+	Double totalAssets(Integer shopId);
+
+	/**
+	 * 用户收入统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月7日
+	 */
+	List<AdminChartBO> selectUserOrderCount(List<Integer> financeTypes, String dateStart, String dateEnd,
+			Integer limit);
+
+	/**
+	 * 现余额
+	 * 
+	 * @author huwei
+	 * @date 2018年7月23日
+	 */
+	Double consumerCountIncome(Integer userId, List<Integer> financeTypes, boolean flag);
+
+}

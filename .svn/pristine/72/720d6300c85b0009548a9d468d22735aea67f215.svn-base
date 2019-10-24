@@ -1,0 +1,43 @@
+package com.kemean.service.business;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kemean.bean.DaikenShop;
+import com.kemean.bean.DaikenUser;
+import com.kemean.dao.DaikenShopDao;
+import com.kemean.dao.KemeanFinanceOrderDao;
+import com.kemean.util.DaikenUtil;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.b.finance.SettleAccountsListBO;
+
+@Service
+public class BFinanceService {
+
+	@Autowired
+	private KemeanFinanceOrderDao kemeanFinanceOrderDao;
+
+	@Autowired
+	private DaikenShopDao daikenShopDao;
+
+	/**
+	 * 可提现资金和冻结资金
+	 * 
+	 * @author huwei
+	 * @date 2018年7月14日
+	 */
+	public KemeanResult<SettleAccountsListBO> freezehWaitMoney(DaikenUser loginBusiness) {
+		SettleAccountsListBO bo = new SettleAccountsListBO();
+		// 可提现资金
+		DaikenShop dbShop = daikenShopDao.selectById(loginBusiness.getShopId());
+		Date cycleDate = DaikenUtil.plusDay(-dbShop.getCycle(), new Date());
+		Double waitMoney = kemeanFinanceOrderDao.waitMoney(loginBusiness.getShopId(), cycleDate);
+		bo.setWaitMoney(waitMoney);
+		// 冻结资金
+		Double freezeMoney = kemeanFinanceOrderDao.freezeMoney(loginBusiness.getShopId(), cycleDate);
+		bo.setFreezeMoney(freezeMoney);
+		return new KemeanResult<SettleAccountsListBO>(bo);
+	}
+}

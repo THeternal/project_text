@@ -1,0 +1,24 @@
+package com.kemean.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenInvestigateOptions;
+import com.kemean.dao.DaikenInvestigateOptionsDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenInvestigateOptionsMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenInvestigateOptionsDaoImpl extends DaoSupport<DaikenInvestigateOptions>
+		implements DaikenInvestigateOptionsDao {
+
+	@Autowired
+	private DaikenInvestigateOptionsMapper mapper;
+
+	@Override
+	protected Mapper<DaikenInvestigateOptions> getMapper() {
+		return mapper;
+	}
+}

@@ -1,0 +1,112 @@
+package com.kemean.vo.bo.com;
+
+public class BBaseUserInfoBO {
+
+	public BBaseUserInfoBO() {
+		super();
+	}
+
+	public BBaseUserInfoBO(String token, String headImg, Double balanceToken, Double balancePrice, String sex,
+			Integer auditStatus, Integer check) {
+		super();
+		this.token = token;
+		this.headImg = headImg;
+		this.balanceToken = balanceToken;
+		this.balancePrice = balancePrice;
+		this.sex = sex;
+		this.check = check;
+		this.auditStatus = auditStatus;
+	}
+
+	/**
+	 * token
+	 */
+	private String token;
+
+	/**
+	 * 用户头像
+	 */
+	private String headImg;
+
+	/**
+	 * token积分（钱币）
+	 */
+	private Double balanceToken;
+
+	/**
+	 * 余额
+	 */
+	private Double balancePrice;
+
+	/**
+	 * 性别
+	 */
+	private String sex;
+
+	/**
+	 * 登陆校验
+	 */
+	private Integer check;
+
+	/**
+	 * 审核状态
+	 */
+	private Integer auditStatus;
+
+	public Integer getCheck() {
+		return check;
+	}
+
+	public void setCheck(Integer check) {
+		this.check = check;
+	}
+
+	public Integer getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(Integer auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getHeadImg() {
+		return headImg;
+	}
+
+	public void setHeadImg(String headImg) {
+		this.headImg = headImg;
+	}
+
+	public Double getBalanceToken() {
+		return balanceToken;
+	}
+
+	public void setBalanceToken(Double balanceToken) {
+		this.balanceToken = balanceToken;
+	}
+
+	public Double getBalancePrice() {
+		return balancePrice;
+	}
+
+	public void setBalancePrice(Double balancePrice) {
+		this.balancePrice = balancePrice;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+}

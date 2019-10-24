@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.KemeanFinanceClearMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.KemeanFinanceClear">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="finance_no" property="financeNo" jdbcType="VARCHAR" />
+		<result column="finance_type" property="financeType" jdbcType="SMALLINT" />
+		<result column="submit_aims_id" property="submitAimsId"
+			jdbcType="INTEGER" />
+		<result column="submit_aims_name" property="submitAimsName"
+			jdbcType="VARCHAR" />
+		<result column="submit_money" property="submitMoney" jdbcType="DOUBLE" />
+		<result column="rate" property="rate" jdbcType="DOUBLE" />
+		<result column="deal_money" property="dealMoney" jdbcType="DOUBLE" />
+		<result column="balance" property="balance" jdbcType="DOUBLE" />
+		<result column="pay_method" property="payMethod" jdbcType="SMALLINT" />
+		<result column="pay_account" property="payAccount" jdbcType="VARCHAR" />
+		<result column="third_trade_no" property="thirdTradeNo"
+			jdbcType="VARCHAR" />
+		<result column="third_trade_status" property="thirdTradeStatus"
+			jdbcType="VARCHAR" />
+		<result column="finance_status" property="financeStatus"
+			jdbcType="SMALLINT" />
+		<result column="finance_month" property="financeMonth"
+			jdbcType="VARCHAR" />
+		<result column="admin_name" property="adminName" jdbcType="VARCHAR" />
+		<result column="admin_id" property="adminId" jdbcType="INTEGER" />
+		<result column="finance_data" property="financeData" jdbcType="DATE" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+
+
+	<select id="selectShopFinanceSum" resultType="com.kemean.vo.bo.admin.AdminChartBO">
+		SELECT
+		*
+		FROM
+			(SELECT
+				DATE_FORMAT(a.`create_time`,'%Y-%m-%d') AS name,
+				SUM(a.`deal_money`) AS y
+			FROM
+			`kemean_finance_clear` a
+			WHERE a.`data_deleted` = FALSE
+		<if test="financeType!=null">
+			AND	a.`finance_type` IN 
+			<foreach collection="financeType"  open="("  separator=","  close=")" index="index" item="item">
+			${item}
+			</foreach>
+		</if>
+		
+		<if test="submitAimsId!= null">
+			AND	a.`submit_aims_id` = #{submitAimsId,jdbcType=INTEGER}
+			
+		</if>
+		<if test="financeStatus!=null and financeStatus!=''">
+			AND a.`finance_status`= #{financeStatus,jdbcType=INTEGER}
+		</if>
+		<if test="dateStart!=null and dateStart!=''">
+			AND a.`create_time`&gt;= #{dateStart,jdbcType=VARCHAR}
+		</if>
+		<if test="dateEnd!=null and dateEnd!=''">
+			AND a.`create_time`&lt;= #{dateEnd,jdbcType=VARCHAR}
+		</if>
+		GROUP BY DATE_FORMAT(a.`create_time`,'%Y-%m-%d')
+		<if test="limit>0">
+			LIMIT #{limit,jdbcType=INTEGER}
+		</if>
+		) b
+		ORDER BY name
+	</select>
+	
+</mapper>

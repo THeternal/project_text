@@ -1,0 +1,151 @@
+package com.kemean.controller.admin.shop;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminGoodsService;
+import com.kemean.vo.bo.admin.goods.AdminGoodsChartBO;
+import com.kemean.vo.po.admin.goods.AdminGoodsChartPO;
+
+/**
+ * 商品报表
+ * 
+ * @Date 2018年6月25日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("shop/goods/chart")
+public class AdminShopGoodsChartController extends DaikenBaseController {
+
+	@Autowired
+	private AdminGoodsService adminGoodsService;
+
+	/**
+	 * 商品收入报表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "in_page", method = RequestMethod.GET)
+	public String goodsInChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsInChartData(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsInChart";
+	}
+
+	/**
+	 * 商品代卖报表
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "purchasing_page", method = RequestMethod.GET)
+	public String goodsPurchasingChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsInChartData(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsPurchasingChart";
+	}
+
+	/**
+	 * 商品收入、代卖报表数据
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "search", method = RequestMethod.GET)
+	public AdminGoodsChartBO chartSearch(@Valid AdminGoodsChartPO adminChartsPO) {
+		return adminGoodsService.goodsInChartData(adminChartsPO, 0, getAdminLoginShop());
+	}
+
+	/**
+	 * 促销商品报表page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "promotion_page", method = RequestMethod.GET)
+	public String goodsPromotionChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsInChartData(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsPromotionChart";
+	}
+
+	/**
+	 * 总销售统计
+	 *
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String goodsChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsInChartData(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsChart";
+	}
+
+	/**
+	 * 总(代卖佣金，售前后红包)统计
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "red_purchasing_page", method = RequestMethod.GET)
+	public String goodsRedPurchasingChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate",
+				adminGoodsService.goodsExpendChartData(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsRedAndPurchasingChart";
+	}
+
+	/**
+	 * 总(代卖佣金，售前后红包)搜索
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "red_purchasing_search", method = RequestMethod.GET)
+	public AdminGoodsChartBO goodsRedPurchasingChartSearch(@Valid AdminGoodsChartPO adminChartsPO) {
+		return adminGoodsService.goodsExpendChartData(adminChartsPO, 0, getAdminLoginShop());
+	}
+
+	/**
+	 * 商品红包分享记录page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "red_share_page", method = RequestMethod.GET)
+	public String goodsRedShareChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsRedShareRecord(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsNewRedChart";
+	}
+
+	/**
+	 * 商品红包领取记录page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "red_share_get_page", method = RequestMethod.GET)
+	public String goodsRedShareGetChartPage(@Valid AdminGoodsChartPO adminChartsPO) {
+		request.setAttribute("pageDate", adminGoodsService.goodsRedShareRecord(adminChartsPO, 15, getAdminLoginShop()));
+		return "shop/goodsNewRedGetChart";
+	}
+
+	/**
+	 * 商品红包分享记录
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年7月5日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "red_share_search", method = RequestMethod.GET)
+	public AdminGoodsChartBO goodsRedSharechartSearch(@Valid AdminGoodsChartPO adminChartsPO) {
+		return adminGoodsService.goodsRedShareRecord(adminChartsPO, 0, getAdminLoginShop());
+	}
+
+}

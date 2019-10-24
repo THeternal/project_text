@@ -1,0 +1,202 @@
+package com.kemean.dao.impl;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.github.pagehelper.PageHelper;
+import com.kemean.bean.DaikenOrder;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanOrderEnum;
+import com.kemean.dao.DaikenOrderDao;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenOrderMapper;
+import com.kemean.util.DaikenUtil;
+import com.kemean.vo.bo.admin.AdminChartBO;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Repository
+public class DaikenOrderDaoImpl extends DaoSupport<DaikenOrder> implements DaikenOrderDao {
+
+	@Autowired
+	private DaikenOrderMapper mapper;
+
+	@Override
+	protected Mapper<DaikenOrder> getMapper() {
+		return mapper;
+	}
+
+	@Override
+	public List<DaikenOrder> orderListBusiness(String keyWord, Integer shopId, Integer orderStatus, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("deletedShop", false);
+		criteria.andEqualTo("idShop", shopId);
+		// 代发货
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusBusiness.ACCEPT.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.PAYED.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.ACCEPT.getStatus());
+		}
+		// 待收货
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusBusiness.SHIP.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.SHIP.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.SHIP.getStatus());
+		}
+		// 已完成
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusBusiness.FINISH.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.FINISH.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.FINISH.getStatus());
+		}
+		// 售后
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusBusiness.AFTER_SALE.getStatus())) {
+			criteria.andIn("statusUser",
+					Arrays.asList(KemeanOrderEnum.OrderStatusUser.AFTER_SALES.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_WAIT.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_ED.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_RE.getStatus()));
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.AFTER_SALE.getStatus());
+		}
+		// 模糊查询
+		if (StringUtils.isNotBlank(keyWord)) {
+			// 判断是订单编号还是商品名称
+			if (DaikenUtil.isOrderNo(keyWord)) {
+				// 订单编号
+				criteria.andLike("orderNo", "%" + keyWord + "%");
+			} else {
+				// 商品名称
+				criteria.andLike("goodsTitles", "%" + keyWord + "%");
+			}
+		}
+		example.setOrderByClause("id desc");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<DaikenOrder> orderListConsumer(Integer userId, String keyWord, Integer orderStatus, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("deletedUser", false);
+		criteria.andEqualTo("idUser", userId);
+		// 只找订单（不包扣调研订单）
+		criteria.andEqualTo("idInvestigate", 0);
+		// 待支付
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusUser.NEW_WIAT_PAY.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.NEW_WIAT_PAY.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.WAIT_PAY.getStatus());
+		}
+		// 代发货
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusUser.PAYED.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.PAYED.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.ACCEPT.getStatus());
+		}
+
+		// 待收货
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusUser.SHIP.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.SHIP.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.SHIP.getStatus());
+		}
+
+		// 待评价
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusUser.WAIT_APPRAISAL.getStatus())) {
+			criteria.andEqualTo("statusUser", KemeanOrderEnum.OrderStatusUser.WAIT_APPRAISAL.getStatus());
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.FINISH.getStatus());
+		}
+
+		// 待售后
+		if (orderStatus.equals(KemeanOrderEnum.OrderStatusUser.AFTER_SALES.getStatus())) {
+			criteria.andIn("statusUser",
+					Arrays.asList(KemeanOrderEnum.OrderStatusUser.AFTER_SALES.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_WAIT.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_ED.getStatus(),
+							KemeanOrderEnum.OrderStatusUser.REFUND_RE.getStatus()));
+			criteria.andEqualTo("statusShop", KemeanOrderEnum.OrderStatusBusiness.AFTER_SALE.getStatus());
+		}
+
+		// 全部订单 则不做处理
+
+		// 模糊查询
+		if (StringUtils.isNotBlank(keyWord)) {
+			// 判断是订单编号还是商品名称
+			if (DaikenUtil.isOrderNo(keyWord)) {
+				// 订单编号
+				criteria.andLike("orderNo", "%" + keyWord + "%");
+			} else {
+				// 商品名称
+				criteria.andLike("goodsTitles", "%" + keyWord + "%");
+			}
+		}
+		example.setOrderByClause("id desc");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodInSaleNum(Integer shopId, String goodsTitles, Boolean purchasing,
+			String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodInSaleNum(shopId, goodsTitles, purchasing, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectGoodInSaleMoney(Integer shopId, String goodsTitles, Boolean purchasing,
+			String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectGoodInSaleMoney(shopId, goodsTitles, purchasing, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<AdminChartBO> selectUserSaleMoney(List<Integer> statusUsers, String dateStart, String dateEnd,
+			Integer limit) {
+		return mapper.selectUserSaleMoney(statusUsers, dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public List<DaikenOrder> orderListData(String orderNo, String shopName, Integer orderStatus, Integer pageNo,
+			Integer pageSize) {
+		Example example = new Example(DaikenOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("deletedShop", false);
+		criteria.andGreaterThanOrEqualTo("idShop", 0);
+		if (StringUtils.isNoneBlank(shopName)) {
+			criteria.andEqualTo("shopName", shopName);
+		}
+
+		if (StringUtils.isNoneBlank(orderNo)) {
+			criteria.andEqualTo("orderNo", orderNo);
+		}
+		criteria.andEqualTo("statusUser", orderStatus);
+		example.setOrderByClause("id desc");
+		PageHelper.startPage(pageNo, pageSize);
+		return mapper.selectByExample(example);
+	}
+
+	@Override
+	public List<AdminChartBO> selectUserOrderNum(String dateStart, String dateEnd, Integer limit) {
+		return mapper.selectUserOrderNum(dateStart, dateEnd, limit);
+	}
+
+	@Override
+	public Integer countNoAfterSaleOrder(Integer userId) {
+		Example example = new Example(DaikenOrder.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo(KemeanConstant.DATA_DELETED, false);
+		criteria.andEqualTo("idUser", userId);
+		criteria.andIn("statusUser",
+				Arrays.asList(KemeanOrderEnum.OrderStatusUser.AFTER_SALES.getStatus(),
+						KemeanOrderEnum.OrderStatusUser.REFUND_WAIT.getStatus(),
+						KemeanOrderEnum.OrderStatusUser.REFUND_ED.getStatus(),
+						KemeanOrderEnum.OrderStatusUser.REFUND_RE.getStatus()));
+		return mapper.selectByExample(example).size();
+	}
+
+}

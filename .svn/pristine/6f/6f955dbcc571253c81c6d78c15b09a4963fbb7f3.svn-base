@@ -1,0 +1,10 @@
+package com.kemean.constant;
+
+public class DaikenConstant {
+
+	/** 前台发布 **/
+	public static final Integer front_desk_issue = 1101;
+
+	/** 后台发布 **/
+	public static final Integer back_ground_issue = 1101;
+}

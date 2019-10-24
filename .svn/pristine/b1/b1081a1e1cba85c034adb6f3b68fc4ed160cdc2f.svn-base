@@ -1,0 +1,401 @@
+package com.kemean.bean;
+
+import javax.persistence.Column;
+import javax.persistence.Table;
+
+@Table(name = "daiken_goods_new")
+public class DaikenGoodsNew extends KemeanAbstractBaseBean {
+
+	/**
+	 * 与商铺关联
+	 */
+	@Column(name = "shop_id")
+	private Integer shopId;
+
+	/**
+	 * 标题
+	 */
+	@Column(name = "title")
+	private String title;
+
+	/**
+	 * 分类id
+	 */
+	@Column(name = "category_id")
+	private Integer categoryId;
+
+	/**
+	 * 分类名称
+	 */
+	@Column(name = "category_name")
+	private String categoryName;
+
+	/**
+	 * 规格类型-json
+	 */
+	@Column(name = "record_type")
+	private String recordType;
+
+	/**
+	 * 封面轮播图-json
+	 */
+	@Column(name = "imgs_head")
+	private String imgsHead;
+
+	/**
+	 * 描述
+	 */
+	@Column(name = "desc_str")
+	private String descStr;
+
+	/**
+	 * 描述图-json
+	 */
+	@Column(name = "imgs_desc")
+	private String imgsDesc;
+
+	/**
+	 * 赞
+	 */
+	@Column(name = "num_praise")
+	private Integer numPraise;
+
+	/**
+	 * 踩
+	 */
+	@Column(name = "num_trample")
+	private Integer numTrample;
+
+	/**
+	 * 一般
+	 */
+	@Column(name = "num_common")
+	private Integer numCommon;
+
+	/**
+	 * 售卖类型
+	 */
+	@Column(name = "sales_type")
+	private Integer salesType;
+
+	/**
+	 * 折扣时间-json(开始时间-结束时间)
+	 */
+	@Column(name = "discount_time")
+	private String discountTime;
+
+	/**
+	 * 48小时发货
+	 */
+	@Column(name = "forty_eight")
+	private Boolean fortyEight;
+
+	/**
+	 * 假一赔十
+	 */
+	@Column(name = "fake_goods")
+	private Boolean fakeGoods;
+
+	/**
+	 * 邮费,0-免邮
+	 */
+	@Column(name = "postage")
+	private Double postage;
+
+	/**
+	 * 推荐
+	 */
+	@Column(name = "recommend")
+	private Boolean recommend;
+
+	/**
+	 * 售前红包
+	 */
+	@Column(name = "red_before")
+	private Double redBefore;
+
+	/**
+	 * 售后红包
+	 */
+	@Column(name = "red_after")
+	private Double redAfter;
+
+	/**
+	 * 帮代卖
+	 */
+	@Column(name = "purchasing")
+	private Boolean purchasing;
+
+	/**
+	 * 代卖提成
+	 */
+	@Column(name = "price_purchasing")
+	private Double pricePurchasing;
+
+	/**
+	 * 销量
+	 */
+	@Column(name = "sales_num")
+	private Integer salesNum;
+
+	/**
+	 * 数据版本号
+	 */
+	@Column(name = "date_version")
+	private Integer dateVersion;
+
+	/**
+	 * 上下架状态,针对全局SKU
+	 */
+	@Column(name = "goods_status")
+	private Boolean goodsStatus;
+
+	/**
+	 * 最低售价
+	 */
+	@Column(name = "min_price_sales")
+	private Double minPriceSales;
+
+	/**
+	 * 最低售价的门市价
+	 */
+	@Column(name = "min_price_store")
+	private Double minPriceStore;
+
+	/**
+	 * 最低售价的折扣
+	 */
+	@Column(name = "min_discount")
+	private Float minDiscount;
+
+	/**
+	 * 分享次数
+	 */
+	@Column(name = "num_share")
+	private Integer numShare;
+
+	public Integer getNumShare() {
+		return numShare;
+	}
+
+	public void setNumShare(Integer numShare) {
+		this.numShare = numShare;
+	}
+
+	public Double getPricePurchasing() {
+		return pricePurchasing;
+	}
+
+	public void setPricePurchasing(Double pricePurchasing) {
+		this.pricePurchasing = pricePurchasing;
+	}
+
+	public Double getMinPriceStore() {
+		return minPriceStore;
+	}
+
+	public void setMinPriceStore(Double minPriceStore) {
+		this.minPriceStore = minPriceStore;
+	}
+
+	public Double getMinPriceSales() {
+		return minPriceSales;
+	}
+
+	public void setMinPriceSales(Double minPriceSales) {
+		this.minPriceSales = minPriceSales;
+	}
+
+	public Float getMinDiscount() {
+		return minDiscount;
+	}
+
+	public void setMinDiscount(Float minDiscount) {
+		this.minDiscount = minDiscount;
+	}
+
+	public Integer getNumPraise() {
+		return numPraise;
+	}
+
+	public void setNumPraise(Integer numPraise) {
+		this.numPraise = numPraise;
+	}
+
+	public Integer getNumTrample() {
+		return numTrample;
+	}
+
+	public void setNumTrample(Integer numTrample) {
+		this.numTrample = numTrample;
+	}
+
+	public Integer getNumCommon() {
+		return numCommon;
+	}
+
+	public void setNumCommon(Integer numCommon) {
+		this.numCommon = numCommon;
+	}
+
+	public Integer getShopId() {
+		return shopId;
+	}
+
+	public void setShopId(Integer shopId) {
+		this.shopId = shopId;
+	}
+
+	public Integer getSalesType() {
+		return salesType;
+	}
+
+	public void setSalesType(Integer salesType) {
+		this.salesType = salesType;
+	}
+
+	public String getDiscountTime() {
+		return discountTime;
+	}
+
+	public void setDiscountTime(String discountTime) {
+		this.discountTime = discountTime;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getRecordType() {
+		return recordType;
+	}
+
+	public void setRecordType(String recordType) {
+		this.recordType = recordType;
+	}
+
+	public String getImgsHead() {
+		return imgsHead;
+	}
+
+	public void setImgsHead(String imgsHead) {
+		this.imgsHead = imgsHead;
+	}
+
+	public String getDescStr() {
+		return descStr;
+	}
+
+	public void setDescStr(String descStr) {
+		this.descStr = descStr;
+	}
+
+	public String getImgsDesc() {
+		return imgsDesc;
+	}
+
+	public void setImgsDesc(String imgsDesc) {
+		this.imgsDesc = imgsDesc;
+	}
+
+	public Boolean getFortyEight() {
+		return fortyEight;
+	}
+
+	public void setFortyEight(Boolean fortyEight) {
+		this.fortyEight = fortyEight;
+	}
+
+	public Boolean getFakeGoods() {
+		return fakeGoods;
+	}
+
+	public void setFakeGoods(Boolean fakeGoods) {
+		this.fakeGoods = fakeGoods;
+	}
+
+	public Double getPostage() {
+		return postage;
+	}
+
+	public void setPostage(Double postage) {
+		this.postage = postage;
+	}
+
+	public Boolean getRecommend() {
+		return recommend;
+	}
+
+	public void setRecommend(Boolean recommend) {
+		this.recommend = recommend;
+	}
+
+	public Double getRedBefore() {
+		return redBefore;
+	}
+
+	public void setRedBefore(Double redBefore) {
+		this.redBefore = redBefore;
+	}
+
+	public Double getRedAfter() {
+		return redAfter;
+	}
+
+	public void setRedAfter(Double redAfter) {
+		this.redAfter = redAfter;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public Integer getSalesNum() {
+		return salesNum;
+	}
+
+	public void setSalesNum(Integer salesNum) {
+		this.salesNum = salesNum;
+	}
+
+	public Integer getDateVersion() {
+		return dateVersion;
+	}
+
+	public void setDateVersion(Integer dateVersion) {
+		this.dateVersion = dateVersion;
+	}
+
+	public Boolean getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(Boolean goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+}

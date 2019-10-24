@@ -1,0 +1,430 @@
+package com.kemean.service.consumer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageInfo;
+import com.kemean.bean.DaikenGoodsBaseCategory;
+import com.kemean.bean.DaikenGoodsNew;
+import com.kemean.bean.DaikenGoodsOld;
+import com.kemean.bean.DaikenInvestigate;
+import com.kemean.bean.DaikenRedShare;
+import com.kemean.bean.DaikenShop;
+import com.kemean.bean.DaikenUser;
+import com.kemean.constant.DaikenApiResultTips;
+import com.kemean.constant.DaikenInvestigate.DaikenInvestigateTypeEnum;
+import com.kemean.constant.DaikenRedisKeyEnum;
+import com.kemean.constant.DaikenShareTypeEnum;
+import com.kemean.constant.DaikenwoolLabelTypeEnum;
+import com.kemean.constant.KemeanConstant;
+import com.kemean.constant.KemeanDateFormatEnum;
+import com.kemean.constant.KemeanResultEnum;
+import com.kemean.dao.DaikenGoodsBaseCategoryDao;
+import com.kemean.dao.DaikenGoodsNewDao;
+import com.kemean.dao.DaikenGoodsNewSkuDao;
+import com.kemean.dao.DaikenGoodsOldDao;
+import com.kemean.dao.DaikenInvestigateDao;
+import com.kemean.dao.DaikenRedShareDao;
+import com.kemean.dao.DaikenShopDao;
+import com.kemean.dao.DaikenUserDao;
+import com.kemean.service.KemeanRedisService;
+import com.kemean.util.DaikenUtil;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.common.SearchInfoBO;
+import com.kemean.vo.bo.c.mall.NewGoodsActivityListBO;
+import com.kemean.vo.bo.com.CBaseUserInfoBO;
+import com.kemean.vo.bo.com.ShareRedPacketBO;
+import com.kemean.vo.po.c.common.GoodsActivityPO;
+import com.kemean.vo.po.c.common.SearchGoodsPO;
+import com.kemean.vo.po.c.common.ShareRedPacketPO;
+
+/**
+ * 【客户端】首页业务层
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Service("userCommonService")
+public class CommonService {
+
+	@Autowired
+	private DaikenGoodsNewDao daikenGoodsNewDao;
+
+	@Autowired
+	private DaikenGoodsBaseCategoryDao daikenGoodsBaseCategoryDao;
+
+	@Autowired
+	private KemeanRedisService redisService;
+
+	@Autowired
+	private DaikenRedShareDao daikenRedShareDao;
+
+	@Autowired
+	private DaikenUserDao daikenUserDao;
+
+	@Autowired
+	private DaikenGoodsOldDao daikenGoodsOldDao;
+
+	@Autowired
+	private DaikenInvestigateDao daikenInvestigateDao;
+
+	@Autowired
+	private DaikenShopDao daikenShopDao;
+
+	@Autowired
+	private CMallService cMallService;
+
+	@Autowired
+	private DaikenGoodsNewSkuDao daikenGoodsNewSkuDao;
+
+	/**
+	 * 搜索
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	public List<SearchInfoBO> search(SearchGoodsPO searchGoodsPO) {
+		List<DaikenGoodsBaseCategory> dbGoodsBaseCategorys = daikenGoodsBaseCategoryDao
+				.search(searchGoodsPO.getSearchInfo());
+		List<DaikenGoodsNew> dbGoodsNews = daikenGoodsNewDao.search(searchGoodsPO.getSearchInfo());
+		List<SearchInfoBO> result = new ArrayList<SearchInfoBO>(dbGoodsBaseCategorys.size());
+		if (CollectionUtils.isEmpty(dbGoodsBaseCategorys) && CollectionUtils.isEmpty(dbGoodsNews)) {
+			return result;
+		}
+		for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbGoodsBaseCategorys) {
+			SearchInfoBO bo = new SearchInfoBO();
+			BeanUtils.copyProperties(daikenGoodsBaseCategory, bo);
+			result.add(bo);
+		}
+		for (DaikenGoodsNew daikenGoodsNew : dbGoodsNews) {
+			SearchInfoBO bo = new SearchInfoBO();
+			bo.setName(daikenGoodsNew.getTitle());
+			result.add(bo);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 商品活动
+	 * 
+	 * @author huwei
+	 * @date 2018年6月15日
+	 */
+	public KemeanPageApiBO<List<NewGoodsActivityListBO>> goodsActivity(GoodsActivityPO goodsActivityPO) {
+		Date now = new Date();
+		String descStr = "";
+		if (goodsActivityPO.getIsHot() != null) {
+			if (goodsActivityPO.getIsHot()) {
+				descStr += " sales_num, ";
+			}
+		}
+		if (goodsActivityPO.getRedPacket() != null) {
+			if (goodsActivityPO.getRedPacket()) {
+				descStr += " red_after, ";
+			}
+		}
+		if (goodsActivityPO.getDiscount() != null) {
+			if (goodsActivityPO.getDiscount()) {
+				descStr += " min_discount, ";
+			}
+		}
+		if (StringUtils.isNotBlank(descStr)) {
+			descStr = descStr.substring(0, descStr.length() - 2);
+		}
+		// 设置一个最大值
+		Double maxPriceSales = 1000000000.0;
+		if (goodsActivityPO.getMaxPriceSales() != null) {
+			maxPriceSales = goodsActivityPO.getMaxPriceSales();
+		}
+		// 设置一个最小值
+		Double minPriceSales = 0.0;
+		if (goodsActivityPO.getMinPriceSales() != null) {
+			minPriceSales = goodsActivityPO.getMinPriceSales();
+		}
+		List<Integer> categoryIds = new ArrayList<Integer>();
+		if (goodsActivityPO.getCategoryId() == null) {
+			// 加载全部的商品分类
+			List<DaikenGoodsBaseCategory> dbGoodsBaseCategorys = daikenGoodsBaseCategoryDao.selectByProperties(
+					new String[] { KemeanConstant.DATA_DELETED, "level" }, new Object[] { false, 3 });
+			if (CollectionUtils.isNotEmpty(dbGoodsBaseCategorys)) {
+				for (DaikenGoodsBaseCategory daikenGoodsBaseCategory : dbGoodsBaseCategorys) {
+					categoryIds.add(daikenGoodsBaseCategory.getId());
+				}
+			}
+		} else {
+			categoryIds.add(goodsActivityPO.getCategoryId());
+		}
+
+		String keyWord = "";
+		if (goodsActivityPO.getKeyWord() != null) {
+			keyWord = goodsActivityPO.getKeyWord();
+		}
+		List<DaikenGoodsNew> dbGoodsNews = daikenGoodsNewDao.goodsActivity(
+				Arrays.asList(goodsActivityPO.getSalesType()), descStr, minPriceSales, maxPriceSales, categoryIds,
+				keyWord, goodsActivityPO.getPageNo(), goodsActivityPO.getPageSize());
+		List<NewGoodsActivityListBO> result = new ArrayList<NewGoodsActivityListBO>(dbGoodsNews.size());
+		if (CollectionUtils.isEmpty(dbGoodsNews)) {
+			return new KemeanPageApiBO<List<NewGoodsActivityListBO>>(0l, 1, result);
+		}
+		for (DaikenGoodsNew daikenGoodsNew : dbGoodsNews) {
+			NewGoodsActivityListBO bo = new NewGoodsActivityListBO();
+			Integer countStock = daikenGoodsNewSkuDao.countStock(daikenGoodsNew.getId());
+			BeanUtils.copyProperties(daikenGoodsNew, bo);
+			bo.setPriceSales(daikenGoodsNew.getMinPriceSales());
+			bo.setPriceStore(daikenGoodsNew.getMinPriceStore());
+			bo.setHeadImg(JSONArray.parseArray(daikenGoodsNew.getImgsHead(), String.class).get(0));
+			bo.setSalesTypeStr(cMallService.parseSalesTypeStr(daikenGoodsNew.getSalesType()));
+			if (daikenGoodsNew.getUserShopId() == null || daikenGoodsNew.getUserShopId() == 0) {
+				bo.setUserShopId(0);
+			}
+			if (daikenGoodsNew.getUserShopId() != null) {
+				bo.setId(daikenGoodsNew.getGoodsId());
+			}
+			bo.setCountStock(countStock);
+			bo.setIsOver(false);
+			Integer dateDifference = DaikenUtil.dateDifference(now, daikenGoodsNew.getDiscountTimeEnd());
+			if (dateDifference <= 0) {
+				bo.setIsOver(true);
+			}
+			bo.setDiscountTimeEndStr(DaikenUtil.formatDate(daikenGoodsNew.getDiscountTimeEnd()));
+			result.add(bo);
+		}
+		PageInfo<DaikenGoodsNew> pageInfo = new PageInfo<DaikenGoodsNew>(dbGoodsNews);
+		return new KemeanPageApiBO<List<NewGoodsActivityListBO>>(pageInfo.getTotal(), pageInfo.getPages(), result);
+	}
+
+	/**
+	 * 基础信息（跟登录接口返回一致）
+	 * 
+	 * @author huwei
+	 * @date 2018年6月12日
+	 */
+	// TODO 未完成（可以利用缓存技术）
+	public KemeanResult<CBaseUserInfoBO> baseInfo(DaikenUser daikenUser) {
+		CBaseUserInfoBO bo = new CBaseUserInfoBO();
+		bo.setToken("token");
+		bo.setBalancePrice(10.0);
+		bo.setBalanceToken(8.0);
+		bo.setHeadImg("https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=673508801,1596260131&fm=27&gp=0.jpg");
+		bo.setNickName("昵称");
+		bo.setAge(24);
+		bo.setSexMan("男");
+		bo.setProfession("程序猿");
+		bo.setPhone("手机号");
+		// bo.setHobbiesInterests(Arrays.asList("羽毛球", "足球", "篮球"));
+		bo.setInvestigatePlatformCharge(0.0);
+		bo.setNumMessage(10);
+		bo.setNumNoInvestigate(10);
+		bo.setIsFillUserInfo(false);
+		bo.setNumNoPayOrder(5);
+		bo.setNumNoSendOrder(5);
+		bo.setNumNoTakeGoodsOrder(5);
+		bo.setNumNoAppraisalOrder(10);
+		bo.setCurrMonthTaskPrice(10.0);
+		bo.setCurrMonthSellGoodsPrice(10.0);
+		bo.setCurrMonthBuyGoodsPrice(10.0);
+		bo.setCurrMonthHellpGoodsPrice(10.0);
+		bo.setCurrMonthHellpMoneyPrice(10.0);
+		return new KemeanResult<CBaseUserInfoBO>(bo);
+	}
+
+	/**
+	 * 分享红包
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	@Transactional
+	public KemeanResult<ShareRedPacketBO> shareRedPacket(ShareRedPacketPO shareRedPacketPO, DaikenUser loginConsumer) {
+		Date now = new Date();
+		Integer typeId = shareRedPacketPO.getTypeId();
+		ShareRedPacketBO bo = new ShareRedPacketBO();
+		bo.setInvestigateId(0);
+		KemeanResult<ShareRedPacketBO> result = new KemeanResult<ShareRedPacketBO>(bo);
+		if (loginConsumer.getWoolLabel()) {
+			result.setCode(KemeanResultEnum.FAILURE.getCode());
+			result.setSuccess(false);
+			result.setInfo(DaikenApiResultTips.ShareRedPacket.SHARE_RED_PACKET_FORBIDDEN);
+			bo.setRelieveWoolType(DaikenwoolLabelTypeEnum.FORBIDDEN_PERPETUAL.getType());
+			bo.setWoolLabelDateStr(DaikenUtil.formatDate(DaikenUtil.plusDay(3600, now)));
+			return result;
+		}
+		// 一天只能分享三次 ，如果有购买能力，可以再发三次
+		Boolean isThreeDay = daikenRedShareDao.countGoodsThreeDay(loginConsumer.getId(), typeId,
+				DaikenUtil.formatDate(now, KemeanDateFormatEnum.DATE));
+		if (isThreeDay) {
+			result.setSuccess(false);
+			result.setInfo(DaikenApiResultTips.ShareRedPacket.TODAY_SHARE_TANTO);
+			bo.setRelieveWoolType(DaikenwoolLabelTypeEnum.TODAY_REPETITION.getType());
+			return result;
+		}
+		// 判断用户是否已经超过三次
+		Integer countrelieveWool = daikenRedShareDao.countByProperties(
+				new String[] { KemeanConstant.DATA_DELETED, "userId", "relieveWool" },
+				new Object[] { false, loginConsumer.getId(), true });
+		if (countrelieveWool > 3 && countrelieveWool <= 5) {
+			loginConsumer.setWoolLabel(true);
+			loginConsumer.setUpdateTime(now);
+			loginConsumer.setWoolLabelDate(now);
+			loginConsumer.setCause(DaikenApiResultTips.ShareRedPacket.SHARE_RED_PACKET_FORBIDDEN_TWO);
+			daikenUserDao.updateByPrimaryKeySelective(loginConsumer);
+			result.setSuccess(false);
+			result.setInfo(DaikenApiResultTips.ShareRedPacket.SHARE_RED_PACKET_FORBIDDEN_TWO);
+			bo.setRelieveWoolType(DaikenwoolLabelTypeEnum.FORBIDDEN_ONE_WEEK.getType());
+			bo.setWoolLabelDateStr(DaikenUtil.formatDate(now));
+			return result;
+		}
+		if (countrelieveWool > 5) {
+			loginConsumer.setWoolLabel(true);
+			loginConsumer.setUpdateTime(now);
+			loginConsumer.setCause(DaikenApiResultTips.ShareRedPacket.SHARE_RED_PACKET_FORBIDDEN_THREE);
+			daikenUserDao.updateByPrimaryKeySelective(loginConsumer);
+			result.setSuccess(false);
+			result.setInfo(DaikenApiResultTips.ShareRedPacket.SHARE_RED_PACKET_FORBIDDEN_THREE);
+			bo.setRelieveWoolType(DaikenwoolLabelTypeEnum.FORBIDDEN_PERPETUAL.getType());
+			bo.setWoolLabelDateStr(DaikenUtil.formatDate(DaikenUtil.plusDay(3600, now)));
+			return result;
+		}
+		loginConsumer.setWoolLabelNum(loginConsumer.getWoolLabelNum() + 1);
+		loginConsumer.setUpdateTime(now);
+		daikenUserDao.updateByPrimaryKeySelective(loginConsumer);
+		redisService.del(String.format(DaikenRedisKeyEnum.USER_CONSUMER.getKey(), loginConsumer.getToken()));
+		// 类型
+		Integer type = 0;
+		// 版本号
+		Integer typeDateVersion = 0;
+		// 调研标题
+		String title = "";
+		// 售前红包金额
+		Double redBefore = 0.0;
+		// 商铺名称
+		String shopName = "二手商品";
+		// 调研说明 = 商品信息
+		String imgsHead = "";
+		String headStr = "";
+		// 调研type
+		Integer investigateType = 0;
+		// 商铺id
+		Integer shopId = 0;
+		// 商品名称
+		String goodsTitle = "";
+		// 一手
+		if (shareRedPacketPO.getIsNewGoods()) {
+			type = DaikenShareTypeEnum.NEW_GOODS.getType();
+			investigateType = DaikenInvestigateTypeEnum.NEW_GOODS_LIKE.getType();
+			DaikenGoodsNew dbGoodsNew = daikenGoodsNewDao.selectById(typeId);
+			if (dbGoodsNew.getNumShare() > 5) {
+				result.setCode(KemeanResultEnum.FAILURE.getCode());
+				result.setSuccess(false);
+				result.setInfo(DaikenApiResultTips.ShareRedPacket.SHARE_NUM_BEYOND);
+				return result;
+			}
+			dbGoodsNew.setNumShare(dbGoodsNew.getNumShare() + 1);
+			dbGoodsNew.setUpdateTime(now);
+			daikenGoodsNewDao.updateByPrimaryKeySelective(dbGoodsNew);
+			shopId = dbGoodsNew.getShopId();
+			goodsTitle = dbGoodsNew.getTitle();
+			if (dbGoodsNew == null || !dbGoodsNew.getGoodsStatus()) {
+				result.setCode(KemeanResultEnum.FAILURE.getCode());
+				result.setSuccess(false);
+				result.setInfo(DaikenApiResultTips.ShareRedPacket.GOODS_NO_OR_SOLD_OUT);
+				return result;
+			}
+			typeDateVersion = dbGoodsNew.getDateVersion();
+			title = dbGoodsNew.getTitle();
+			redBefore = dbGoodsNew.getRedBefore();
+			DaikenShop dbShop = daikenShopDao.selectById(dbGoodsNew.getShopId());
+			shopName = dbShop.getShopName();
+			headStr = dbGoodsNew.getDescStr();
+			imgsHead = dbGoodsNew.getImgsHead();
+		}
+		// 二手
+		if (!shareRedPacketPO.getIsNewGoods()) {
+			type = DaikenShareTypeEnum.OLD_GOODS.getType();
+			investigateType = DaikenInvestigateTypeEnum.OLD_GOODS_LIKE.getType();
+			DaikenGoodsOld dbGoodsOld = daikenGoodsOldDao.selectById(typeId);
+			if (dbGoodsOld.getNumShare() > 5) {
+				result.setCode(KemeanResultEnum.FAILURE.getCode());
+				result.setSuccess(false);
+				result.setInfo(DaikenApiResultTips.ShareRedPacket.SHARE_NUM_BEYOND);
+				return result;
+			}
+			dbGoodsOld.setNumShare(dbGoodsOld.getNumShare() + 1);
+			dbGoodsOld.setUpdateTime(now);
+			daikenGoodsOldDao.updateByPrimaryKeySelective(dbGoodsOld);
+
+			if (dbGoodsOld == null || !dbGoodsOld.getGoodsStatus()) {
+				result.setCode(KemeanResultEnum.FAILURE.getCode());
+				result.setSuccess(false);
+				result.setInfo(DaikenApiResultTips.ShareRedPacket.GOODS_NO_OR_SOLD_OUT);
+				return result;
+			}
+			typeDateVersion = dbGoodsOld.getDateVersion();
+			title = dbGoodsOld.getTitle();
+			redBefore = dbGoodsOld.getRedBefore();
+			headStr = dbGoodsOld.getDescStr();
+			imgsHead = dbGoodsOld.getImgsHead();
+			goodsTitle = dbGoodsOld.getTitle();
+		}
+		// 同个商品一天只能分享一次
+		Boolean isOnecDay = daikenRedShareDao.countGoodsOnecDay(loginConsumer.getId(), type, typeId,
+				DaikenUtil.formatDate(now, KemeanDateFormatEnum.DATE));
+		if (isOnecDay) {
+			result.setCode(KemeanResultEnum.FAILURE.getCode());
+			result.setSuccess(false);
+			result.setInfo(DaikenApiResultTips.ShareRedPacket.GOODS_ONE_DAY_ONCE);
+			return result;
+		}
+		String token = DaikenUtil.getUUIDString();
+		DaikenRedShare newRedShare = new DaikenRedShare();
+		newRedShare.setUserId(loginConsumer.getId());
+		newRedShare.setUserNickName(loginConsumer.getNickName());
+		newRedShare.setToken(token);
+		newRedShare.setGoodsTitle(goodsTitle);
+		newRedShare.setType(type);
+		newRedShare.setShopId(shopId);
+		newRedShare.setTypeId(typeId);
+		newRedShare.setTypeDateVersion(typeDateVersion);
+		newRedShare.setCreateTime(now);
+		newRedShare.setUpdateTime(now);
+		daikenRedShareDao.saveSelective(newRedShare);
+		// 调研添加
+		DaikenInvestigate newInvestigate = new DaikenInvestigate();
+		newInvestigate.setUserId(loginConsumer.getId());
+		newInvestigate.setUserUId(loginConsumer.getUid());
+		newInvestigate.setToken(token);
+		newInvestigate.setTitle(title);
+		// TODO 红包分享次数由平台设置，现在默认是五次
+		newInvestigate.setRewardPrice(redBefore / 50);
+		newInvestigate.setMaxPeopleNum(10);
+		newInvestigate.setType(investigateType);
+		// 三天后结束
+		newInvestigate.setEndTime(DaikenUtil.plusDay(3, now));
+		newInvestigate.setInitiatorUnit(shopName);
+		// 调研说明
+		newInvestigate.setInvestigateExplain(headStr);
+		newInvestigate.setInvestigateImg(imgsHead);
+		// 默认上架 和 已支付
+		newInvestigate.setInvestigateStatus(true);
+		newInvestigate.setPayStatus(true);
+		newInvestigate.setCreateTime(now);
+		newInvestigate.setUpdateTime(now);
+		daikenInvestigateDao.saveSelective(newInvestigate);
+		bo.setInvestigateId(newInvestigate.getId());
+		bo.setRelieveWoolType(DaikenwoolLabelTypeEnum.ORDINARY.getType());
+		return result;
+	}
+}

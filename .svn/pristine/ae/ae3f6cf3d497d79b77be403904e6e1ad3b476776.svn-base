@@ -1,0 +1,18 @@
+package com.kemean.dao;
+
+import java.util.List;
+
+import com.kemean.bean.KemeanRegion;
+import com.kemean.dao.su.Idao;
+
+public interface KemeanRegionDao extends Idao<KemeanRegion> {
+
+	/**
+	 * 全国地区联动
+	 * 
+	 * @author huwei
+	 * @date 2018年7月4日
+	 */
+	List<KemeanRegion> selectByPid(Integer pid);
+
+}

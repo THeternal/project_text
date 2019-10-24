@@ -1,0 +1,10 @@
+#项目名称
+project.name=代研
+
+#图片验证码
+kaptcha.border=no
+kaptcha.image.width=160
+kaptcha.image.height=60
+kaptcha.textproducer.font.color=
+kaptcha.background.clear.from=
+kaptcha.background.clear.to=

@@ -1,0 +1,221 @@
+package com.kemean.vo.po.b.shop;
+
+import java.util.Date;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class SubmitSettledInfoPO {
+
+	@NotBlank(message = "商铺名称不能为空")
+	private String shopName;
+
+	@NotNull(message = "入驻类型不能为空")
+	private Boolean settledPersonal;
+
+	@NotBlank(message = "负责人正面身份证件照不能为空")
+	private String principalIdCardFrontImg;
+
+	@NotBlank(message = "负责人背面身份证件照不能为空")
+	private String principalIdCardReverseImg;
+
+	@NotBlank(message = "负责人姓名不能为空")
+	private String principalName;
+
+	@NotBlank(message = "负责人电话不能为空")
+	private String principalPhone;
+
+	@NotBlank(message = "身份证号不能为空")
+	private String principalIdCard;
+
+	@NotNull(message = "身份证有效期")
+	private Boolean isIdCardValidity;
+
+	/**
+	 * 固定有效期结束时间
+	 */
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+	private Date periodOfValidity;
+
+	private String businessLicenseImg;
+
+	private String businessLicenseName;
+
+	private String legalPersonName;
+
+	private String businessLicenseRegisterNo;
+
+	private String businessLicenseLocation;
+
+	/**
+	 * 商铺图片
+	 */
+	private String shopLogo;
+
+	private String phone;
+
+	private String code;
+
+	private String password;
+
+	/**
+	 * 店铺介绍
+	 */
+	private String presentation;
+
+	public Boolean getSettledPersonal() {
+		return settledPersonal;
+	}
+
+	public void setSettledPersonal(Boolean settledPersonal) {
+		this.settledPersonal = settledPersonal;
+	}
+
+	public String getShopName() {
+		return shopName;
+	}
+
+	public void setShopName(String shopName) {
+		this.shopName = shopName;
+	}
+
+	public String getShopLogo() {
+		return shopLogo;
+	}
+
+	public void setShopLogo(String shopLogo) {
+		this.shopLogo = shopLogo;
+	}
+
+	public String getPrincipalIdCardFrontImg() {
+		return principalIdCardFrontImg;
+	}
+
+	public void setPrincipalIdCardFrontImg(String principalIdCardFrontImg) {
+		this.principalIdCardFrontImg = principalIdCardFrontImg;
+	}
+
+	public String getPrincipalIdCardReverseImg() {
+		return principalIdCardReverseImg;
+	}
+
+	public void setPrincipalIdCardReverseImg(String principalIdCardReverseImg) {
+		this.principalIdCardReverseImg = principalIdCardReverseImg;
+	}
+
+	public String getPresentation() {
+		return presentation;
+	}
+
+	public void setPresentation(String presentation) {
+		this.presentation = presentation;
+	}
+
+	public String getPrincipalName() {
+		return principalName;
+	}
+
+	public void setPrincipalName(String principalName) {
+		this.principalName = principalName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPrincipalPhone() {
+		return principalPhone;
+	}
+
+	public void setPrincipalPhone(String principalPhone) {
+		this.principalPhone = principalPhone;
+	}
+
+	public String getPrincipalIdCard() {
+		return principalIdCard;
+	}
+
+	public void setPrincipalIdCard(String principalIdCard) {
+		this.principalIdCard = principalIdCard;
+	}
+
+	public Boolean getIsIdCardValidity() {
+		return isIdCardValidity;
+	}
+
+	public void setIsIdCardValidity(Boolean isIdCardValidity) {
+		this.isIdCardValidity = isIdCardValidity;
+	}
+
+	public Date getPeriodOfValidity() {
+		return periodOfValidity;
+	}
+
+	public void setPeriodOfValidity(Date periodOfValidity) {
+		this.periodOfValidity = periodOfValidity;
+	}
+
+	public String getBusinessLicenseImg() {
+		return businessLicenseImg;
+	}
+
+	public void setBusinessLicenseImg(String businessLicenseImg) {
+		this.businessLicenseImg = businessLicenseImg;
+	}
+
+	public String getBusinessLicenseName() {
+		return businessLicenseName;
+	}
+
+	public void setBusinessLicenseName(String businessLicenseName) {
+		this.businessLicenseName = businessLicenseName;
+	}
+
+	public String getLegalPersonName() {
+		return legalPersonName;
+	}
+
+	public void setLegalPersonName(String legalPersonName) {
+		this.legalPersonName = legalPersonName;
+	}
+
+	public String getBusinessLicenseRegisterNo() {
+		return businessLicenseRegisterNo;
+	}
+
+	public void setBusinessLicenseRegisterNo(String businessLicenseRegisterNo) {
+		this.businessLicenseRegisterNo = businessLicenseRegisterNo;
+	}
+
+	public String getBusinessLicenseLocation() {
+		return businessLicenseLocation;
+	}
+
+	public void setBusinessLicenseLocation(String businessLicenseLocation) {
+		this.businessLicenseLocation = businessLicenseLocation;
+	}
+
+}

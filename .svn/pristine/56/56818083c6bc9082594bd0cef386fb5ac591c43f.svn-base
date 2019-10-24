@@ -1,0 +1,25 @@
+package com.kemean.vo.po.c.oder;
+
+public class SubmitOrderSkuPO {
+
+	private String skuNo;
+
+	private Integer quantity;
+
+	public String getSkuNo() {
+		return skuNo;
+	}
+
+	public void setSkuNo(String skuNo) {
+		this.skuNo = skuNo;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+}

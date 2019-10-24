@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenShopSettledMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenShopSettled">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="shop_id" property="shopId" jdbcType="INTEGER" />
+		<result column="settled_personal" property="settledPersonal"
+			jdbcType="INTEGER" />
+		<result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+		<result column="principal_id_card_front_img" property="principalIdCardFrontImg"
+			jdbcType="VARCHAR" />
+		<result column="principal_id_card_reverse_img" property="principalIdCardReverseImg"
+			jdbcType="VARCHAR" />
+		<result column="principal_name" property="principalName"
+			jdbcType="VARCHAR" />
+		<result column="principal_phone" property="principalPhone"
+			jdbcType="VARCHAR" />
+		<result column="principal_id_card" property="principalIdCard"
+			jdbcType="VARCHAR" />
+		<result column="is_id_card_validity" property="isIdCardValidity"
+			jdbcType="BIT" />
+		<result column="period_of_validity" property="periodOfValidity"
+			jdbcType="TIMESTAMP" />
+		<result column="business_license_img" property="businessLicenseImg"
+			jdbcType="VARCHAR" />
+		<result column="business_license_name" property="businessLicenseName"
+			jdbcType="VARCHAR" />
+		<result column="legal_person_name" property="legalPersonName"
+			jdbcType="VARCHAR" />
+		<result column="business_license_register_no" property="businessLicenseRegisterNo"
+			jdbcType="VARCHAR" />
+		<result column="business_license_location" property="businessLicenseLocation"
+			jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="SMALLINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="TINYINT" />
+	</resultMap>
+</mapper>

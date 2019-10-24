@@ -1,0 +1,25 @@
+package com.kemean.vo.bo.b.finance;
+
+public class SettleAccountsListBO {
+
+	private Double freezeMoney;
+
+	private Double waitMoney;
+
+	public Double getFreezeMoney() {
+		return freezeMoney;
+	}
+
+	public void setFreezeMoney(Double freezeMoney) {
+		this.freezeMoney = freezeMoney;
+	}
+
+	public Double getWaitMoney() {
+		return waitMoney;
+	}
+
+	public void setWaitMoney(Double waitMoney) {
+		this.waitMoney = waitMoney;
+	}
+
+}

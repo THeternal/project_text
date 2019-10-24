@@ -1,0 +1,201 @@
+package com.kemean.controller.consumer;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.kemean.constant.DaikenConstant;
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.consumer.CInvestigateService;
+import com.kemean.vo.bo.KemeanPageApiBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.c.investigate.InvestigateAwardBO;
+import com.kemean.vo.bo.c.investigate.InvestigateListBO;
+import com.kemean.vo.bo.c.investigate.InvestigateOrderBO;
+import com.kemean.vo.bo.c.investigate.LikeInfoBO;
+import com.kemean.vo.bo.c.investigate.LikeInfoOverBO;
+import com.kemean.vo.bo.c.investigate.QuestionnaireInfoBO;
+import com.kemean.vo.bo.c.investigate.VoteInfoBO;
+import com.kemean.vo.bo.c.investigate.VoteInfoOverBO;
+import com.kemean.vo.bo.c.investigate.VotePlyerInfoBO;
+import com.kemean.vo.po.c.investigate.InvestigateListPO;
+import com.kemean.vo.po.c.investigate.LikePO;
+import com.kemean.vo.po.c.investigate.PostLikePO;
+import com.kemean.vo.po.c.investigate.PostVotePO;
+import com.kemean.vo.po.c.investigate.PostVotePlyearPO;
+import com.kemean.vo.po.c.investigate.QuestionInvestigateInfoPO;
+
+/**
+ * 【客户端】 调研控制器
+ * 
+ * @Date 2018年6月7日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@RestController
+@RequestMapping("api/c/investigate")
+public class CInvestigateController extends DaikenBaseController {
+
+	@Autowired
+	private CInvestigateService cinvestigateService;
+
+	/**
+	 * 调研列表
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "investigate_list", method = RequestMethod.POST)
+	public KemeanResult<KemeanPageApiBO<List<InvestigateListBO>>> investigateList(
+			@Valid @RequestBody InvestigateListPO investigateListPO) {
+		return new KemeanResult<KemeanPageApiBO<List<InvestigateListBO>>>(
+				cinvestigateService.investigateList(investigateListPO, getLoginConsumer()));
+	}
+
+	/**
+	 * 发布（修改）投票
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "post_vote", method = RequestMethod.POST)
+	public KemeanResult<InvestigateOrderBO> postVote(@Valid @RequestBody PostVotePO postVotePO) {
+		return cinvestigateService.postVote(postVotePO, getLoginConsumer(), DaikenConstant.front_desk_issue);
+	}
+
+	/**
+	 * 发布（修改）点赞
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "post_like", method = RequestMethod.POST)
+	public KemeanResult<InvestigateOrderBO> postLike(@Valid @RequestBody PostLikePO postLikePO) {
+		return cinvestigateService.postLike(postLikePO, getLoginConsumer(), DaikenConstant.front_desk_issue);
+	}
+
+	/**
+	 * 点赞：一个用户只能操作投票问卷一次 type 1101 赞 1102 一般 1103 踩
+	 * 
+	 * @author huwei
+	 * @throws InterruptedException
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "like_investigate_info", method = RequestMethod.POST)
+	public KemeanResult<InvestigateAwardBO> likeInvestigateInfo(@Valid @RequestBody LikePO likePO)
+			throws InterruptedException {
+		return cinvestigateService.likeInvestigateInfo(likePO, getLoginConsumer());
+	}
+
+	/**
+	 * 投票
+	 * 
+	 * @author huwei
+	 * @throws InterruptedException
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "vote_investigate_plyer_info", method = RequestMethod.GET)
+	public KemeanResult<InvestigateAwardBO> voteInvestigatePlyerInfo(@RequestParam Integer objId)
+			throws InterruptedException {
+		return cinvestigateService.voteInvestigatePlyerInfo(objId, getLoginConsumer());
+	}
+
+	/**
+	 * 点赞详情
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "like_info", method = RequestMethod.GET)
+	public KemeanResult<LikeInfoBO> likeInfo(@RequestParam Integer objId) {
+		return new KemeanResult<LikeInfoBO>(cinvestigateService.likeInfo(objId));
+	}
+
+	/**
+	 * 已结束 --- 点赞详情
+	 * 
+	 * @author huwei
+	 * @date 2018年7月11日
+	 */
+	@RequestMapping(value = "like_info_over", method = RequestMethod.GET)
+	public KemeanResult<LikeInfoOverBO> likeInfoOver(@RequestParam Integer objId) {
+		return new KemeanResult<LikeInfoOverBO>(cinvestigateService.likeInfoOver(objId));
+	}
+
+	/**
+	 * 调查问卷详情
+	 * 
+	 * @author huwei
+	 * @date 2018年7月5日
+	 */
+
+	@RequestMapping(value = "questionnaire_info", method = RequestMethod.GET)
+	public KemeanResult<QuestionnaireInfoBO> questionnaireInfo(@RequestParam Integer objId) {
+		return new KemeanResult<QuestionnaireInfoBO>(cinvestigateService.questionnaireInfo(objId));
+	}
+
+	/**
+	 * 提交调查问卷
+	 * 
+	 * @author huwei
+	 * @throws InterruptedException
+	 * @date 2018年7月5日
+	 */
+	@RequestMapping(value = "question_investigate_info", method = RequestMethod.POST)
+	public KemeanResult<InvestigateAwardBO> questionInvestigateInfo(
+			@Valid @RequestBody QuestionInvestigateInfoPO questionInvestigateInfoPO) throws InterruptedException {
+		return cinvestigateService.questionInvestigateInfo(questionInvestigateInfoPO, getLoginConsumer());
+	}
+
+	/**
+	 * 投票详情
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "vote_info", method = RequestMethod.GET)
+	public KemeanResult<VoteInfoBO> voteInfo(@RequestParam Integer objId) {
+		return new KemeanResult<VoteInfoBO>(cinvestigateService.voteInfo(objId));
+	}
+
+	/**
+	 * 已结束 --- 投票详情
+	 * 
+	 * @author huwei
+	 * @date 2018年7月12日
+	 */
+	@RequestMapping(value = "vote_info_over", method = RequestMethod.GET)
+	public KemeanResult<VoteInfoOverBO> voteInfoOver(@RequestParam Integer objId) {
+		return new KemeanResult<VoteInfoOverBO>(cinvestigateService.voteInfoOver(objId));
+	}
+
+	/**
+	 * 投票选手详细信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月9日
+	 */
+	@RequestMapping(value = "vote_plyer_info", method = RequestMethod.GET)
+	public KemeanResult<VotePlyerInfoBO> votePlyerInfo(@RequestParam Integer objId) {
+		return new KemeanResult<VotePlyerInfoBO>(cinvestigateService.votePlyerInfo(objId));
+	}
+
+	/**
+	 * 添加投票选手信息
+	 * 
+	 * @author huwei
+	 * @date 2018年6月27日
+	 */
+	@RequestMapping(value = "add_investigate_pyler", method = RequestMethod.POST)
+	public KemeanResult<String> addInvestigatePlyer(@Valid @RequestBody PostVotePlyearPO postVotePlyearPO) {
+		return cinvestigateService.addInvestigatePlyear(postVotePlyearPO);
+	}
+
+}

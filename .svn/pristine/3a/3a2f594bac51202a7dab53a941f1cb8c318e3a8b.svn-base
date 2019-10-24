@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div class="layui-input-block">
+					<img
+						class="param_img_url_show"
+						width="200px"
+						th:onclick="'javascript:visitImg(this.src);'" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<button
+						type="button"
+						class="layui-btn"
+						id="uploadimg">
+						<i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+					<input
+						type="hidden"
+						class="layui-input param_img_url" />
+				</div>
+			</div>
+			<div
+				class="layui-form-item"
+				style="display: none;">
+				<label class="layui-form-label">序号：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_label"
+						th:value="${pageData.typeId}"
+						placeholder="商铺、商品序号"
+						readonly="readonly" />
+				</div>
+			</div>
+			<div class="layui-form-item recommend_type">
+				<label class="layui-form-label">推荐类型：</label>
+				<div class="layui-input-block">
+					<select
+						class="param_recommend_type"
+						lay-filter="recommend_type">
+						<option value="">----请选择----</option>
+						<option value="1101">时长</option>
+						<option value="1201">点击</option>
+					</select>
+				</div>
+			</div>
+			<div
+				class="recommend_type_sele layui-form-item"
+				style="display: none;">
+				<label class="layui-form-label">时间片段：</label>
+				<div class="layui-input-block">
+					<select
+						class="param_recommend_type_sele"
+						lay-filter="recommend_type">
+						<option value="">----请选择----</option>
+						<option
+							th:each="item:${pageData.charges}"
+							th:value="${item.chargeValue}"
+							th:text="${item.chargeText}" />
+					</select>
+				</div>
+			</div>
+			<div
+				class="layui-form-item buy_days "
+				style="display: none;">
+				<label class="layui-form-label">购买天数：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_buy_days"
+						placeholder="请输入购买天数" />
+				</div>
+			</div>
+
+			<div
+				class="throw_in layui-form-item"
+				style="display: none">
+				<label class="layui-form-label">投放方式：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<input
+						class="param_thorw_in_radio"
+						type="radio"
+						name="param_recommend_way"
+						value="1"
+						title="投放金额"
+						lay-filter="recommend_manner" /> <input
+						class="param_thorw_in_radio"
+						type="radio"
+						name="param_recommend_way"
+						value="2"
+						title="投放次数"
+						lay-filter="recommend_manner" />
+				</div>
+			</div>
+
+			<div
+				class="money layui-form-item"
+				style="display: none;">
+				<label class="layui-form-label">输入金额：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_label param_money"
+						placeholder="请输入你要投放的金额" />
+				</div>
+			</div>
+
+			<div
+				class="num layui-form-item"
+				style="display: none;">
+				<label class="layui-form-label">输入次数：</label>
+				<div class="layui-input-block">
+					<input
+						type="text"
+						class="layui-input param_label param_num"
+						placeholder="请输入你要点击的次数" />
+				</div>
+			</div>
+
+
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="addShopRecommend()">购买</button>
+					<button
+						class="layui-btn layui-btn-primary"
+						onclick="history.back();">
+						<i
+							class="fa fa-arrow-left"
+							aria-hidden="true"></i>&nbsp;返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var url_uoload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_add_recommend = /*[[@{/shop/common/shop_recommend_add}]]*/;
+	var url_click_show_charge = /*[[@{/api/common/get_click_show_charge}]]*/;
+	var url_home_page = /*[[@{/shop/goods/new}]]*/;
+	var pageData = /*[[${pageData}]]*/;
+	var recommendWay = pageData.recommendWay;
+	function addShopRecommend(){
+		
+		var paramImgUrl=$(".param_img_url").val();
+		if(!paramImgUrl){
+			layer.msg("推荐图片不能为空");
+			return false;
+		}
+		
+		// typeId
+		var paramLabel = $(".param_label").val();
+		if(!paramLabel){
+			layer.msg("请填写序号");
+			return false;
+		}
+		
+		var paramRecommendType = $(".param_recommend_type").val();
+		
+		if(paramRecommendType == 1101 || paramRecommendType == 1201){
+			
+			var paramRecommendTypeSele = $(".param_recommend_type_sele").val();
+			if(!paramRecommendTypeSele){
+				layer.msg("请选择购买的时间片段");
+				return false;
+			}
+			if(paramRecommendType == 1101){
+				var paramBuyDays = $('.param_buy_days').val();
+				if(!paramBuyDays){
+					layer.msg("请选择购买的天数");
+					return false;
+				}
+			}
+			
+			if(paramRecommendType == 1201){
+				var paramThorwInRadio = $("input[name='param_recommend_way']:checked").val();
+				if(!paramThorwInRadio){
+					layer.msg("请选择投放方式");
+					return false;
+				}
+				if(paramThorwInRadio == 1){
+					var paramMoney = $(".param_money").val();
+					if(!paramMoney){
+						layer.msg("请填写输入的金额");
+						return false;
+					}
+				}
+				if(paramThorwInRadio == 2){
+					var paramNum = $(".param_num").val();
+					if(!paramNum){
+						layer.msg("请填写投放的次数");
+						return false;
+					}
+				}
+			}
+		}
+		
+		var paramClickNum = 0;
+		// 1101 时长 1201 点击
+		if(paramRecommendType == 1101 || paramRecommendType == 1201){
+			// 收钱
+			$.get(url_click_show_charge,{hours : paramRecommendTypeSele}, function(result){
+				if(result.success){
+					var clickCharge = result.data.clickCharge;
+					var showCharge = result.data.showCharge;
+					var recommendId = result.data.recommendId;
+					// 时长，直接显示收取的费用
+					if(paramRecommendType == 1101){
+						layer.open({
+							content : '您选择的时候时长收费，购买了' + paramBuyDays + '天' + '，需要支付' + showCharge * paramBuyDays + "元钱",
+							  btn: ['确定', '拒绝'],
+							  yes: function(index, layero){
+								  var homeIndex = parent.layer.getFrameIndex(window.name);
+								  AddRecommendUrl(paramRecommendTypeSele,recommendWay,paramLabel,paramRecommendType,paramImgUrl,paramBuyDays,paramClickNum,homeIndex)
+							  },
+							  btn2: function(index, layero){
+								  layer.close(index);
+								  return false;
+							  }
+							});
+					}
+					
+					if(paramRecommendType == 1201){
+						var payMoney = 0;
+						var clickNum = 0;
+						if(paramThorwInRadio == 1){
+							payMoney = $(".param_money").val();
+							clickNum = payMoney / clickCharge;
+						}
+						if(paramThorwInRadio == 2){
+							clickNum = $(".param_num").val();
+							payMoney = clickNum * clickCharge;
+						}
+						clickNum = parseInt(clickNum);
+						layer.open({
+							content : '您选择的是点击收费，需要支付' + payMoney + '元钱\n可以点击' + clickNum + '次',
+							  btn: ['确定', '拒绝'],
+							  yes: function(index, layero){
+								  var homeIndex = parent.layer.getFrameIndex(window.name);
+								  AddRecommendUrl(paramRecommendTypeSele,recommendWay,paramLabel,paramRecommendType,paramImgUrl,paramBuyDays,clickNum,homeIndex)
+							  },
+							  btn2: function(index, layero){
+								  layer.close(index);
+								  return false;
+							  }
+							});
+					}
+				}else{
+					layer.msg("获取收取费用失败");
+				}
+			});
+		}
+		
+		function AddRecommendUrl(paramRecommendTypeSele,recommendWay,paramLabel,paramRecommendType,paramImgUrl,paramBuyDays,paramClickNum,index){
+			var load = layer.load(1);
+			$.post(url_add_recommend,{
+				recommendTypeSele : paramRecommendTypeSele,
+				typeId : paramLabel,
+				recommendWay : recommendWay,
+				recommendType : paramRecommendType,
+				img : paramImgUrl,
+				buyDays : paramBuyDays,
+				buyClickNum : paramClickNum
+			},function(result){
+				var flag = result.success;
+				var msg = result.info;
+				if(!flag){
+					layer.msg(result.info);
+					return false;
+				}
+				
+				var table = layui.table;
+				layer.open({
+					title : "系统提示",
+					content : msg,
+					skin : "layui-layer-molv",
+					area : [ '500px', '180px' ],
+					btn : [ '确定' ],
+					offset : '100px',
+					btn1 : function() {
+						parent.layer.close(index);
+						layer.close(load);
+					},
+					closeBtn : 1,
+					anim : 0
+				})
+			});
+		}
+		
+		
+	}
+	
+	layui.use([ 'table', 'upload','element' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		var element = layui.element;
+
+		form = layui.form;
+		//监听【显示推荐方式】操作
+		form.on('select(recommend_type)', function(data){
+			var value = data.value;
+			$('.recommend_type_sele').show();
+			// 选的时长
+			if(value == 1101){
+				$('.buy_days').show();
+				$('.throw_in').hide();
+				$('.num').hide();
+				$('.money').hide();
+			}
+			
+			// 选的点击
+			if(value == 1201){
+				$('.throw_in').show();
+				$('.buy_days').hide();
+			}
+		});
+		
+		//监听【显示投放方式】操作
+		form.on('radio(recommend_manner)', function(data){
+			var value = data.value;
+			// 投放金额
+			if(value == 1){
+				$('.money').show();
+				$('.num').hide();
+			}
+			
+			// 投放次数
+			if(value == 2){
+				$('.num').show();
+				$('.money').hide();
+			}
+		});
+		
+		var uploadInst = upload.render({
+			elem : '#uploadimg',
+			url : url_uoload_img,
+			data:{resetName:true},
+			done : function(res) {
+				//上传完毕回调
+				$(".param_img_url").val(res.data);
+				$(".param_img_url_show").prop("src",res.data);
+				$("#img_div").show();
+				layer.msg('上传成功');
+			}
+		});
+	});
+</script>
+
+</html>

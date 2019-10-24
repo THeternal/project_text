@@ -1,0 +1,344 @@
+package com.kemean.bean;
+
+import javax.persistence.*;
+
+@Table(name = "daiken_goods_old")
+public class DaikenGoodsOld extends KemeanAbstractBaseBean {
+
+	/**
+	 * 商品编号
+	 */
+	@Column(name = "goods_uid")
+	private String goodsUid;
+
+	/**
+	 * 用户id
+	 */
+	@Column(name = "user_id")
+	private Integer userId;
+
+	/**
+	 * 唯一标识(代研号)
+	 */
+	@Column(name = "user_uid")
+	private Integer userUid;
+
+	/**
+	 * 用户昵称
+	 */
+	@Column(name = "nick_name")
+	private String nickName;
+
+	/**
+	 * 用户头像
+	 */
+	@Column(name = "user_head_img")
+	private String userHeadImg;
+
+	/**
+	 * 标题
+	 */
+	@Column(name = "title")
+	private String title;
+
+	/**
+	 * 分类id
+	 */
+	@Column(name = "category_id")
+	private Integer categoryId;
+
+	/**
+	 * 分类名称
+	 */
+	@Column(name = "category_name")
+	private String categoryName;
+
+	/**
+	 * 封面轮播图-json
+	 */
+	@Column(name = "imgs_head")
+	private String imgsHead;
+
+	/**
+	 * 描述
+	 */
+	@Column(name = "desc_str")
+	private String descStr;
+
+	/**
+	 * 成色
+	 */
+	@Column(name = "quality")
+	private Float quality;
+
+	/**
+	 * 售价
+	 */
+	@Column(name = "price_sales")
+	private Double priceSales;
+
+	/**
+	 * 原价
+	 */
+	@Column(name = "price_original")
+	private Double priceOriginal;
+
+	/**
+	 * 代卖提成
+	 */
+	@Column(name = "price_purchasing")
+	private Double pricePurchasing;
+
+	/**
+	 * 帮代卖
+	 */
+	@Column(name = "purchasing")
+	private Boolean purchasing;
+
+	/**
+	 * 售后红包
+	 */
+	@Column(name = "red_after")
+	private Double redAfter;
+
+	/**
+	 * 售前红包
+	 */
+	@Column(name = "red_before")
+	private Double redBefore;
+
+	/**
+	 * 数据版本号
+	 */
+	@Column(name = "date_version")
+	private Integer dateVersion;
+
+	/**
+	 * 上下架状态,针对全局SKU
+	 */
+	@Column(name = "goods_status")
+	private Boolean goodsStatus;
+
+	/**
+	 * 商品地址
+	 */
+	@Column(name = "goods_address")
+	private String goodsAddress;
+
+	/**
+	 * 是否被卖出
+	 */
+	@Column(name = "is_buy")
+	private Boolean isBuy;
+
+	/**
+	 * 分享次数
+	 */
+	@Column(name = "num_share")
+	private Integer numShare;
+
+	/**
+	 * 帮卖商铺id
+	 */
+	@Column(name = "user_shop_id")
+	private Integer userShopId;
+
+	/**
+	 * 帮卖商品id
+	 */
+	@Column(name = "goods_id")
+	private Integer goodsId;
+
+	public String getGoodsUid() {
+		return goodsUid;
+	}
+
+	public void setGoodsUid(String goodsUid) {
+		this.goodsUid = goodsUid;
+	}
+
+	public Integer getGoodsId() {
+		return goodsId;
+	}
+
+	public void setGoodsId(Integer goodsId) {
+		this.goodsId = goodsId;
+	}
+
+	public Integer getUserShopId() {
+		return userShopId;
+	}
+
+	public void setUserShopId(Integer userShopId) {
+		this.userShopId = userShopId;
+	}
+
+	public Integer getNumShare() {
+		return numShare;
+	}
+
+	public void setNumShare(Integer numShare) {
+		this.numShare = numShare;
+	}
+
+	public Boolean getIsBuy() {
+		return isBuy;
+	}
+
+	public void setIsBuy(Boolean isBuy) {
+		this.isBuy = isBuy;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
+	public String getUserHeadImg() {
+		return userHeadImg;
+	}
+
+	public void setUserHeadImg(String userHeadImg) {
+		this.userHeadImg = userHeadImg;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getGoodsAddress() {
+		return goodsAddress;
+	}
+
+	public void setGoodsAddress(String goodsAddress) {
+		this.goodsAddress = goodsAddress;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getImgsHead() {
+		return imgsHead;
+	}
+
+	public void setImgsHead(String imgsHead) {
+		this.imgsHead = imgsHead;
+	}
+
+	public String getDescStr() {
+		return descStr;
+	}
+
+	public void setDescStr(String descStr) {
+		this.descStr = descStr;
+	}
+
+	public Float getQuality() {
+		return quality;
+	}
+
+	public void setQuality(Float quality) {
+		this.quality = quality;
+	}
+
+	public Double getPriceSales() {
+		return priceSales;
+	}
+
+	public void setPriceSales(Double priceSales) {
+		this.priceSales = priceSales;
+	}
+
+	public Double getPriceOriginal() {
+		return priceOriginal;
+	}
+
+	public void setPriceOriginal(Double priceOriginal) {
+		this.priceOriginal = priceOriginal;
+	}
+
+	public Double getPricePurchasing() {
+		return pricePurchasing;
+	}
+
+	public void setPricePurchasing(Double pricePurchasing) {
+		this.pricePurchasing = pricePurchasing;
+	}
+
+	public Boolean getPurchasing() {
+		return purchasing;
+	}
+
+	public void setPurchasing(Boolean purchasing) {
+		this.purchasing = purchasing;
+	}
+
+	public Double getRedAfter() {
+		return redAfter;
+	}
+
+	public void setRedAfter(Double redAfter) {
+		this.redAfter = redAfter;
+	}
+
+	public Double getRedBefore() {
+		return redBefore;
+	}
+
+	public void setRedBefore(Double redBefore) {
+		this.redBefore = redBefore;
+	}
+
+	public Integer getDateVersion() {
+		return dateVersion;
+	}
+
+	public void setDateVersion(Integer dateVersion) {
+		this.dateVersion = dateVersion;
+	}
+
+	public Boolean getGoodsStatus() {
+		return goodsStatus;
+	}
+
+	public void setGoodsStatus(Boolean goodsStatus) {
+		this.goodsStatus = goodsStatus;
+	}
+
+	public Integer getUserUid() {
+		return userUid;
+	}
+
+	public void setUserUid(Integer userUid) {
+		this.userUid = userUid;
+	}
+
+}

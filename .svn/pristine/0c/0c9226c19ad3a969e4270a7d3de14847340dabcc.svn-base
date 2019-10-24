@@ -1,0 +1,169 @@
+package com.kemean.controller.admin.shop;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.kemean.controller.DaikenBaseController;
+import com.kemean.service.admin.AdminCommonService;
+import com.kemean.service.admin.AdminGoodsService;
+import com.kemean.vo.bo.KemeanPageAdminBO;
+import com.kemean.vo.bo.KemeanResult;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewBO;
+import com.kemean.vo.bo.admin.goods.AdminGoodsNewSkuBO;
+import com.kemean.vo.po.admin.AdminMonitorPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsListPO;
+import com.kemean.vo.po.admin.goods.AdminGoodsNewSkuUpdatePO;
+import com.kemean.vo.po.admin.goods.AdminGoodsNewUpdatePO;
+
+/**
+ * 商品管理
+ * 
+ * @Date 2018年6月25日
+ *
+ * @company 深圳科名网络有限公司 {@link www.kemean.com}
+ */
+@Controller
+@RequestMapping("shop/goods")
+public class AdminShopGoodsController extends DaikenBaseController {
+
+	@Autowired
+	private AdminGoodsService adminGoodsService;
+
+	@Autowired
+	private AdminCommonService adminCommonService;
+
+	/**
+	 * 一手商品 列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "new", method = RequestMethod.GET)
+	public String goodsNewPage() {
+		return "shop/goodsNew";
+	}
+
+	/**
+	 * 添加 一手商品 列表 page
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "new_add_page", method = RequestMethod.GET)
+	public String goodsNewAddPage() {
+		request.setAttribute("category", adminCommonService.goodsBeseCategory(0));
+		return "shop/goodsNewAdd";
+	}
+
+	/**
+	 * 一手商品列表 Data
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "news_page_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminGoodsNewBO>> goodsNewListData(@Valid AdminGoodsListPO adminGoodsListPO) {
+		return adminGoodsService.goodsNewListData(adminGoodsListPO, getAdminLoginShop());
+
+	}
+
+	/**
+	 * 操作商品上下架/推荐状态
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "status_operate", method = RequestMethod.GET)
+	public KemeanResult<String> goodsNewStatusOperate(@Valid AdminMonitorPO adminMonitorPO) {
+		return adminGoodsService.goodsNewStatusOperate(adminMonitorPO, null);
+	}
+
+	/**
+	 * 商品详情
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@RequestMapping(value = "news_info_page", method = RequestMethod.GET)
+	public String goodsNewInfoPage(@RequestParam Integer objId) {
+		request.setAttribute("pageData", adminGoodsService.goodsNewInfoData(objId));
+		return "shop/goodsNewInfo";
+	}
+
+	/**
+	 * 商品SKU
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_sku_data", method = RequestMethod.GET)
+	public KemeanPageAdminBO<List<AdminGoodsNewSkuBO>> goodsNewSkuData(@RequestParam Integer objId,
+			@RequestParam Integer limit, @RequestParam Integer page) {
+		return adminGoodsService.goodsNewSkuData(objId, page, limit);
+
+	}
+
+	/**
+	 * 商品信息修改
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_update", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewUpdate(@Valid AdminGoodsNewUpdatePO adminGoodsNewUpdatePO) {
+		return adminGoodsService.goodsNewUpdate(adminGoodsNewUpdatePO);
+
+	}
+
+	/**
+	 * 商品信息删除
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_del", method = RequestMethod.GET)
+	public KemeanResult<String> goodsNewDel(@RequestParam Integer objId) {
+		return adminGoodsService.goodsNewDel(objId);
+
+	}
+
+	/**
+	 * 商品信息添加
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月25日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_add", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewAdd(@Valid @RequestBody AdminGoodsNewUpdatePO adminGoodsNewUpdatePO) {
+		return adminGoodsService.addGoods(adminGoodsNewUpdatePO);
+
+	}
+
+	/**
+	 * 商品SKU信息更改
+	 * 
+	 * @author tanggengxiang
+	 * @date 2018年6月26日
+	 */
+	@ResponseBody
+	@RequestMapping(value = "new_sku_update", method = RequestMethod.POST)
+	public KemeanResult<String> goodsNewSkuUpdate(@Valid AdminGoodsNewSkuUpdatePO adminGoodsNewSkuUpdatePO) {
+		return adminGoodsService.goodsNewSkuUpdate(adminGoodsNewSkuUpdatePO);
+	}
+
+}

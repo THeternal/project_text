@@ -1,0 +1,104 @@
+var host = "http://" + location.host;
+
+var navs = [
+		{
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/goods/new",
+			"icon" : "fa-database",
+			"title" : "商品管理"
+		},
+		{
+			"children" : [
+					{
+						"children" : [],
+						"href" : ""
+								+ host
+								+ "/daiken/shop/goods/chart/in_page",
+						"icon" : "fa-database",
+						"title" : "商品收入报表"
+
+					},
+					{
+						"children" : [],
+						"href" : "" + host
+								+ "/daiken/shop/goods/chart/red_share_page",
+						"icon" : "fa-database",
+						"title" : "商品红包领取报表"
+					},
+					{
+						"children" : [],
+						"href" : "" + host
+								+ "/daiken/shop/goods/chart/red_share_get_page",
+						"icon" : "fa-database",
+						"title" : "商品红包分享记录"
+					},
+					{
+						"children" : [],
+						"href" : ""
+								+ host
+								+ "/daiken/shop/goods/chart/promotion_page?type=1101",
+						"icon" : "fa-database",
+						"title" : "促销商品报表"
+					},
+					{
+						"children" : [],
+						"href" : ""
+								+ host
+								+ "/daiken/shop/goods/chart/red_purchasing_page",
+						"icon" : "fa-database",
+						"title" : "活动金额分析"
+					}, {
+						"children" : [],
+						"href" : "" + host + "/daiken/shop/goods/chart/",
+						"icon" : "fa-database",
+						"title" : "总销售报表"
+					} ],
+			"href" : "",
+			"icon" : "fa-database",
+			"title" : "商品统计"
+		}, {
+			"children" : [],
+			"href" : "" + host + "/daiken/shop/invest/",
+			"icon" : "fa-database",
+			"title" : "调研管理"
+		}, {
+			"children" : [{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/result",
+				"icon" : "fa-database",
+				"title" : "结果统计"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/like_report",
+				"icon" : "fa-database",
+				"title" : "点赞报表"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/question_report",
+				"icon" : "fa-database",
+				"title" : "投票报表"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/question_report",
+				"icon" : "fa-database",
+				"title" : "问卷调查报表"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/like_page",
+				"icon" : "fa-database",
+				"title" : "点赞统计"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/vote_page",
+				"icon" : "fa-database",
+				"title" : "投票统计"
+			},{
+				"children" : [],
+				"href" : "" + host + "/daiken/shop/invest/chart/question_page",
+				"icon" : "fa-database",
+				"title" : "问卷调查统计"
+			}],
+			"href" : "",
+			"icon" : "fa-database",
+			"title" : "调研统计"
+		} ];

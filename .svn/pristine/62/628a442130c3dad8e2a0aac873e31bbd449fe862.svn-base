@@ -1,0 +1,24 @@
+package com.kemean.dao.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.kemean.bean.DaikenCourierServicesCompany;
+import com.kemean.dao.su.DaoSupport;
+import com.kemean.mapper.DaikenCourierServicesCompanyMapper;
+
+import tk.mybatis.mapper.common.Mapper;
+
+@Repository
+public class DaikenCourierServicesCompanyDaoImpl extends DaoSupport<DaikenCourierServicesCompany>
+		implements com.kemean.dao.DaikenCourierServicesCompanyDao {
+
+	@Autowired
+	private DaikenCourierServicesCompanyMapper mapper;
+
+	@Override
+	protected Mapper<DaikenCourierServicesCompany> getMapper() {
+		return mapper;
+	}
+
+}

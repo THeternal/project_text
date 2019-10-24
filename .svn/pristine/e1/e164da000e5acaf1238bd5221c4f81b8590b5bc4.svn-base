@@ -1,0 +1,70 @@
+package com.kemean.vo.po.c.oder;
+
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+public class SubmitOrderPO {
+
+	/**
+	 * 如果是商铺自卖就传0
+	 */
+	@NotNull(message = "代卖商铺id不能为空")
+	private Integer userShopId;
+
+	/**
+	 * 区分一手(true)、二手(false)商品
+	 */
+	@NotNull(message = "类型不能为空")
+	private Boolean type;
+
+	@Size(min = 1, message = "最少得购买一个物品")
+	private List<SubmitOrderSkuPO> skuNos;
+
+	@NotNull(message = "收货地址不能为空")
+	private Integer addressId;
+
+	private String remark;
+
+	public Integer getUserShopId() {
+		return userShopId;
+	}
+
+	public void setUserShopId(Integer userShopId) {
+		this.userShopId = userShopId;
+	}
+
+	public Boolean getType() {
+		return type;
+	}
+
+	public void setType(Boolean type) {
+		this.type = type;
+	}
+
+	public List<SubmitOrderSkuPO> getSkuNos() {
+		return skuNos;
+	}
+
+	public void setSkuNos(List<SubmitOrderSkuPO> skuNos) {
+		this.skuNos = skuNos;
+	}
+
+	public Integer getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(Integer addressId) {
+		this.addressId = addressId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+}

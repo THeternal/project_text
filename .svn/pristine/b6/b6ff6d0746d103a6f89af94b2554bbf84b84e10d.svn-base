@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kemean.mapper.DaikenGoodsNewSkuMapper">
+	<resultMap id="BaseResultMap" type="com.kemean.bean.DaikenGoodsNewSku">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<id column="goods_id" property="goodsId" jdbcType="INTEGER" />
+		<result column="sku_no" property="skuNo" jdbcType="VARCHAR" />
+		<result column="price_store" property="priceStore" jdbcType="DOUBLE" />
+		<result column="discount" property="discount" jdbcType="REAL" />
+		<result column="price_sales" property="priceSales" jdbcType="DOUBLE" />
+		<result column="record_type" property="recordType" jdbcType="VARCHAR" />
+		<result column="stock" property="stock" jdbcType="SMALLINT" />
+		<result column="stock_freeze" property="stockFreeze" jdbcType="SMALLINT" />
+		<result column="sales_num" property="salesNum" jdbcType="INTEGER" />
+		<result column="date_version" property="dateVersion" jdbcType="INTEGER" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="data_deleted" property="dataDeleted" jdbcType="BIT" />
+	</resultMap>
+	
+	
+	<select id="selectGoodStockSum" resultType="com.kemean.vo.bo.admin.shop.AdminShopPromotionBO">
+	
+		SELECT 
+		     a.`update_time` as discountTimeEnd,
+		      SUM(a.`stock`) as stock
+		FROM `daiken_goods_new_sku` a 
+		WHERE a.`goods_id`= #{goodsId,jdbcType=INTEGER}
+			GROUP BY a.`update_time`
+			ORDER BY a.`update_time`
+	</select>
+	
+	<update id="updateByHappyLock">
+		UPDATE
+		`daiken_goods_new_sku` a
+		SET
+		a.`date_version` = a.`date_version` + 1
+		WHERE a.`date_version` = #{dateVersion,jdbcType=INTEGER}
+		AND a.`id` = #{goodsSkuid,jdbcType=INTEGER}
+	</update>
+	
+</mapper>

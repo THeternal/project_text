@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta
+	http-equiv="X-UA-Compatible"
+	content="IE=edge,chrome=1" />
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1" />
+<link
+	rel="stylesheet"
+	th:href="@{/layui/css/layui.css}"
+	media="all" />
+<link
+	rel="stylesheet"
+	href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css" />
+</head>
+<body>
+	<div
+		class="layui-row"
+		style="margin-top: 40px;">
+		<div class="layui-col-md4 layui-col-sm5 layui-form">
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div class="layui-input-block">
+					<img
+						class="param_img_url_show"
+						width="200px"
+						th:onclick="'javascript:visitImg(this.src);'" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">图片：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<button
+						type="button"
+						class="layui-btn"
+						id="uploadimg">
+						<i class="layui-icon">&#xe67c;</i>上传图片
+					</button>
+					<input
+						type="hidden"
+						class="layui-input param_img_url" />
+				</div>
+			</div>
+			<div class="recommend layui-form-item">
+				<label class="layui-form-label">推荐方式：</label>
+				<div
+					class="layui-input-block"
+					style="margin-top: 15px;">
+					<input
+						type="radio"
+						name="param_recommend"
+						value="1101"
+						title="商铺"
+						lay-filter="recommend" /> <input
+						type="radio"
+						name="param_recommend"
+						value="1201"
+						title="商品"
+						lay-filter="recommend" />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">选择商铺：</label>
+				<div class="layui-input-block">
+					<select
+						class="param_shop_info"
+						lay-filter="shop_info">
+						<option value="">----请选择----</option>
+						<option
+							th:each="item:${shopData}"
+							th:value="${item.id}"
+							th:text="${item.shopName}" />
+					</select>
+				</div>
+			</div>
+
+			<div
+				class="layui-form-item goods_info"
+				style="display: none;">
+				<label class="layui-form-label">选择商品：</label>
+				<div class="layui-input-block">
+					<select
+						id="goods_info"
+						class="param_goods_info">
+						<option value="">----请选择----</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<button
+						class="layui-btn"
+						onclick="addHotRecommend()">购买</button>
+					<button
+						class="layui-btn layui-btn-primary"
+						onclick="history.back();">
+						<i
+							class="fa fa-arrow-left"
+							aria-hidden="true"></i>&nbsp;返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js "></script>
+<script
+	th:src="@{/layui/layui.js}"
+	charset="utf-8"></script>
+<script
+	th:src="@{/js/kemean_layui.js}"
+	charset="utf-8"></script>
+<script
+	type="text/javascript"
+	th:inline="javascript">
+	
+	var shopData = /*[[${shopData}]]*/;
+	var url_goods_data = /*[[@{/admin/treasure/goods_data}]]*/;;
+	var url_uoload_img = /*[[@{/admin/open/qiniu_batch_upload}]]*/;
+	var url_add_substitution_recommend = /*[[@{/admin/recommend/substitution_recommend}]]*/;
+	function addHotRecommend(){
+		
+		var paramImgUrl=$(".param_img_url").val();
+		if(!paramImgUrl){
+			layer.msg("请选择你要上传的图片");
+			return false;
+		}
+		
+		var paramRecommendWay = $('input[name="param_recommend"]:checked').val();
+		if(!paramRecommendWay){
+			layer.msg('请选择推荐方式!');
+			return false;
+		}
+		var typeId = null;
+		
+		var paramShopId = null
+		if(paramRecommendWay == 1101){
+			paramShopId = $('.param_shop_info').val();
+			typeId = paramShopId;
+			if(!paramShopId){
+				layer.msg('请选择要推荐的商铺!');
+				return false;
+			}
+		}
+		
+		var paramGoodsId = null;
+		if(paramRecommendWay == 1201){
+			if(!$('.param_shop_info').val()){
+				layer.msg('请选择要推荐的商铺!');
+				return false;
+			}
+			paramGoodsId = $('.param_goods_info').val();
+			typeId = paramGoodsId;
+			if(!paramGoodsId){
+				layer.msg('请选择要推荐的商品!');
+				return false;
+			}
+		}
+		
+		
+		$.get(url_add_substitution_recommend,{
+			typeId : typeId,
+			img : paramImgUrl,
+			recommendWay : paramRecommendWay
+		},function(result){
+			var flag = result.success;
+			var msg = result.info;
+			if(!flag){
+				layer.msg(result.info);
+				return false;
+			}
+			var table = layui.table;
+			layer.open({
+				title : "系统提示",
+				content : msg,
+				skin : "layui-layer-molv",
+				area : [ '500px', '180px' ],
+				btn : [ '确定' ],
+				offset : '100px',
+				btn1 : function(index) {
+					parent.layer.close(index);
+				},
+				closeBtn : 1,
+				anim : 0
+			})
+			
+		});
+	}
+	
+	layui.use([ 'table', 'upload','element' ], function() {
+		var table = layui.table;
+		var upload = layui.upload;
+		var element = layui.element;
+		form = layui.form;
+		form.on('select(shop_info)',function(data){
+			var shopId = data.value;
+			$.get(url_goods_data,{
+				shopId : shopId
+			},function(data){
+				var goodsInfo = $('#goods_info');
+				goodsInfo.empty();
+				data.forEach(function(item) {
+					goodsInfo.append(new Option(item["title"], item["objId"]));
+				});
+				form.render('select');
+			});
+		});
+		
+		form.on('radio(recommend)',function(data){
+			var value = data.value;
+			if(value == 1101){
+				$('.goods_info').hide();
+			}
+			
+			if(value == 1201){
+				$('.goods_info').show();
+			}
+			
+		});
+		var uploadInst = upload.render({
+			elem : '#uploadimg',
+			url : url_uoload_img,
+			data:{resetName:true},
+			done : function(res) {
+				//上传完毕回调
+				$(".param_img_url").val(res.data);
+				$(".param_img_url_show").prop("src",res.data);
+				$("#img_div").show();
+				layer.msg('上传成功');
+			}
+		});
+		
+	});
+</script>
+
+</html>
